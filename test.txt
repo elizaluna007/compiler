@@ -1,0 +1,152 @@
+CompUnit -> (Decl | FuncDef) [CompUnit]
+Decl -> ConstDecl | VarDecl
+ConstDecl -> 'const' BType ConstDef { ',' ConstDef } ';'
+BType -> 'int' | 'float'
+ConstDef -> Ident { '[' ConstExp ']' } '=' ConstInitVal
+ConstInitVal -> ConstExp | '{' [ ConstInitVal { ',' ConstInitVal } ] '}'
+VarDecl -> BType VarDef { ',' VarDef } ';'
+VarDef -> Ident { '[' ConstExp ']' } [ '=' InitVal ]
+InitVal -> Exp | '{' [ InitVal { ',' InitVal } ] '}'
+FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
+FuncType -> 'void' | 'int' | 'float'
+FuncFParam -> BType Ident ['[' ']' { '[' Exp ']' }]
+FuncFParams -> FuncFParam { ',' FuncFParam }
+Block -> '{' { BlockItem } '}'
+BlockItem -> Decl | Stmt
+Stmt -> LVal '=' Exp ';' | Block | 'if' '(' Cond ')' Stmt [ 'else' Stmt ] | 'while' '(' Cond ')' Stmt | 'break' ';' | 'continue' ';' | 'return' [Exp] ';' | [Exp] ';'
+Exp -> AddExp
+Cond -> LOrExp
+LVal -> Ident {'[' Exp ']'}
+Number -> IntConst | floatConst
+PrimaryExp -> '(' Exp ')' | LVal | Number
+UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
+UnaryOp -> '+' | '-' | '!'
+FuncRParams -> Exp { ',' Exp }
+MulExp -> UnaryExp { ('\*' | '/' | '%') UnaryExp }
+AddExp -> MulExp { ('+' | '-') MulExp }
+RelExp -> AddExp { ('<' | '>' | '<=' | '>=') AddExp }
+EqExp -> RelExp { ('==' | '!=') RelExp }
+LAndExp -> EqExp [ '&&' LAndExp ]
+LOrExp -> LAndExp [ '||' LOrExp ]
+ConstExp -> AddExp
+
+CompUnit -> (Decl | FuncDef) [CompUnit]
+FIRSTVT(CompUnit) = {'const', 'int', 'float', 'void'}
+
+Decl -> ConstDecl | VarDecl
+FIRSTVT(Decl) = {'const', 'int', 'float'}
+
+
+FIRSTVT(ConstDecl) = {'const'}
+
+FIRSTVT(BType) = {'int', 'float'}
+
+FIRSTVT(ConstDef) = {Ident}
+
+FIRSTVT(ConstInitVal) = {ConstExp, '{'}
+
+VarDecl -> BType VarDef { ',' VarDef } ';'
+FIRSTVT(VarDecl) = {'int', 'float'}
+
+VarDef -> Ident { '[' ConstExp ']' } [ '=' InitVal ]
+FIRSTVT(VarDef) = {Ident}
+
+InitVal -> Exp | '{' [ InitVal { ',' InitVal } ] '}'
+FIRSTVT(InitVal) = {Exp, '{'}
+
+FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
+FIRSTVT(FuncDef) = {'void', 'int', 'float'}
+
+FuncType -> 'void' | 'int' | 'float'
+FIRSTVT(FuncType) = {'void', 'int', 'float'}
+
+FuncFParam -> BType Ident ['[' ']' { '[' Exp ']' }]
+FIRSTVT(FuncFParam) = {'int', 'float'}
+
+FuncFParams -> FuncFParam { ',' FuncFParam }
+FIRSTVT(FuncFParams) = {'int', 'float'}
+
+Block -> '{' { BlockItem } '}'
+FIRSTVT(Block) = {'{'}
+
+BlockItem -> Decl | Stmt
+FIRSTVT(BlockItem) = {'const', 'int', 'float', Ident, '{', 'if', 'while', 'break', 'continue', 'return'}
+
+Stmt -> LVal '=' Exp ';' | Block | 'if' '(' Cond ')' Stmt [ 'else' Stmt ] | 'while' '(' Cond ')' Stmt | 'break' ';' | 'continue' ';' | 'return' [Exp] ';' | [Exp] ';'
+FIRSTVT(Stmt) = {Ident, '{', 'if', 'while', 'break', 'continue', 'return'}
+
+Exp -> AddExp
+FIRSTVT(Exp) = FIRSTVT(AddExp)
+
+Cond -> LOrExp
+FIRSTVT(Cond) = FIRSTVT(LOrExp)
+
+LVal -> Ident {'[' Exp ']'}
+FIRSTVT(LVal) = {Ident}
+
+Number -> IntConst | floatConst
+FIRSTVT(Number) = {IntConst, floatConst}
+
+PrimaryExp -> '(' Exp ')' | LVal | Number
+FIRSTVT(PrimaryExp) = {'(', Ident, IntConst, floatConst}
+
+UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
+FIRSTVT(UnaryExp) = {'(', Ident, IntConst, floatConst
+UnaryOp -> '+' | '-' | '!'
+FIRSTVT(UnaryOp) = {'+', '-', '!'}
+
+FuncRParams -> Exp { ',' Exp }
+FIRSTVT(FuncRParams) = FIRSTVT(Exp)
+
+MulExp -> UnaryExp { ('*' | '/' | '%') UnaryExp }
+FIRSTVT(MulExp) = FIRSTVT(UnaryExp)
+
+AddExp -> MulExp { ('+' | '-') MulExp }
+FIRSTVT(AddExp) = FIRSTVT(MulExp)
+
+RelExp -> AddExp { ('<' | '>' | '<=' | '>=') AddExp }
+FIRSTVT(RelExp) = FIRSTVT(AddExp)
+
+EqExp -> RelExp { ('==' | '!=') RelExp }
+FIRSTVT(EqExp) = FIRSTVT(RelExp)
+
+LAndExp -> EqExp [ '&&' LAndExp ]
+FIRSTVT(LAndExp) = FIRSTVT(EqExp)
+
+LOrExp -> LAndExp [ '||' LOrExp ]
+FIRSTVT(LOrExp) = FIRSTVT(LAndExp)
+
+ConstExp -> AddExp
+FIRSTVT(ConstExp) = FIRSTVT(AddExp)
+
+FirstVT(CompUnit) = { 'const', 'int', 'float' }
+FirstVT(Decl) = { 'const', 'int', 'float' }
+FirstVT(ConstDecl) = { 'const' }
+FirstVT(BType) = { 'int', 'float' }
+FirstVT(ConstDef) = { Ident }
+FirstVT(ConstInitVal) = { '{', Ident, IntConst, floatConst }
+FirstVT(VarDecl) = { 'int', 'float' }
+FirstVT(VarDef) = { Ident }
+FirstVT(InitVal) = { '{', Ident, IntConst, floatConst }
+FirstVT(FuncDef) = { 'void', 'int', 'float' }
+FirstVT(FuncType) = { 'void', 'int', 'float' }
+FirstVT(FuncFParam) = { 'int', 'float' }
+FirstVT(FuncFParams) = { 'int', 'float' }
+FirstVT(Block) = { '{' }
+FirstVT(BlockItem) = { 'const', 'int', 'float', '{', Ident, 'if', 'while', 'break', 'continue', 'return' }
+FirstVT(Stmt) = { '{', Ident, 'if', 'while', 'break', 'continue', 'return', IntConst, floatConst, '(', '+' , '-' , '!' }
+FirstVT(Exp) = { Ident, IntConst, floatConst, '(', '+' , '-' , '!' }
+FirstVT(Cond) = { Ident, IntConst, floatConst, '(', '+' , '-' , '!' }
+FirstVT(LVal) = { Ident }
+FirstVT(Number) = { IntConst, floatConst }
+FirstVT(PrimaryExp) = { '(', Ident, IntConst, floatConst }
+FirstVT(UnaryExp) = { '+', '-', '!', '(', Ident, IntConst, floatConst }
+FirstVT(UnaryOp) = { '+', '-', '!' }
+FirstVT(FuncRParams) = { '(', Ident, IntConst, floatConst, '+', '-', '!' }
+FirstVT(MulExp) = { Ident, IntConst, floatConst, '(', '+', '-', '!' }
+FirstVT(AddExp) = { Ident, IntConst, floatConst, '(', '+', '-', '!' }
+FirstVT(RelExp) = { Ident, IntConst, floatConst, '(', '+', '-', '!' }
+FirstVT(EqExp) = { Ident, IntConst, floatConst, '(', '+', '-', '!' }
+FirstVT(LAndExp) = { Ident, IntConst, floatConst, '(', '+', '-', '!' }
+FirstVT(LOrExp) = { Ident, IntConst, floatConst, '(', '+', '-', '!' }
+FirstVT(ConstExp) = { Ident, IntConst, floatConst, '(', '+', '-', '!' }

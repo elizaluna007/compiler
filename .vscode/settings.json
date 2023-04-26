@@ -56,7 +56,15 @@
         "xstddef": "cpp",
         "xtr1common": "cpp",
         "xtree": "cpp",
-        "xutility": "cpp"
+        "xutility": "cpp",
+        "*.tcc": "cpp",
+        "cstdarg": "cpp",
+        "cwctype": "cpp",
+        "unordered_map": "cpp",
+        "memory_resource": "cpp",
+        "optional": "cpp",
+        "string_view": "cpp"
     },
-    "cmake.sourceDirectory": "D:/360MoveData/Users/Luna/Desktop/compiler/exp_1_s0_47_comments"
+    "cmake.sourceDirectory": "D:/360MoveData/Users/Luna/Desktop/compiler/exp_1_s0_47_comments",
+    "C_Cpp.errorSquiggles": "disabled"
 }

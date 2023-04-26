@@ -1,0 +1,2 @@
+G:\MinGW\bin\ar.exe qc D:\360MoveData\Users\Luna\Desktop\compiler\src\exp_1_all\exp_1_process\bin\libFront.a CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.obj CMakeFiles/Front.dir/src/front/lexical.cpp.obj CMakeFiles/Front.dir/src/front/syntax.cpp.obj CMakeFiles/Front.dir/src/front/token.cpp.obj
+G:\MinGW\bin\ranlib.exe D:\360MoveData\Users\Luna\Desktop\compiler\src\exp_1_all\exp_1_process\bin\libFront.a

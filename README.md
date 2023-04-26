@@ -12,9 +12,16 @@
 
 ### 语法分析
 
-#### (1)修改abstract_syntax_tree.h中的COMPUINT为COMPUNIT(8/47)
+#### (1)修改 abstract_syntax_tree.h 中的 COMPUINT 为 COMPUNIT(8/47)
 
-#### (2)修改parseCompUnit，明确开头是Decl还是FuncDef(9/47)
+#### (2)修改 parseCompUnit，明确开头是 Decl 还是 FuncDef(9/47)
 
-####(3)
+#### (3)删除多余的 else 条件(23/47)
 
+#### (4)修改 parseStmt，增加判断首个是否是';'(24/47)——run 部分全部成功
+
+#### (5)8 错误，去修改 ConstDef-->LBRACK 写成了 LBRACE(25/47)
+
+#### (6)21 错误，去修改 Stmt-->忘记加'('和')'(35/47)
+
+#### (7)25 错误，去修改 Stmt-->忘记加'('和')'(47/47)——全过了

@@ -638,7 +638,7 @@ bool frontend::Parser::parsePrimaryExp(frontend::PrimaryExp *root)
 // UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
 // first(PrimaryExp) = { '(', Number, Ident }
 // first(UnaryOp) = { '+', '-', '!' }
-// first(FuncRParams) = { '(', Number, Ident }
+//FirstVT(FuncRParams) = { '(', Ident, IntConst, floatConst, '+', '-', '!' }
 bool frontend::Parser::parseUnaryExp(frontend::UnaryExp *root)
 {
     log(root);
@@ -662,7 +662,7 @@ bool frontend::Parser::parseUnaryExp(frontend::UnaryExp *root)
         {
             PARSE_TOKEN(IDENFR);
 
-            if (CUR_TOKEN_IS(LPARENT) || CUR_TOKEN_IS(INTLTR) || CUR_TOKEN_IS(FLOATLTR) || CUR_TOKEN_IS(IDENFR))
+            if (CUR_TOKEN_IS(LPARENT) || CUR_TOKEN_IS(INTLTR) || CUR_TOKEN_IS(FLOATLTR) || CUR_TOKEN_IS(IDENFR)|| CUR_TOKEN_IS(PLUS)|| CUR_TOKEN_IS(MINU)|| CUR_TOKEN_IS(NOT))
             {
                 PARSE(funcrparams, FuncRParams);
             }

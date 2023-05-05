@@ -1,0 +1,17 @@
+{
+    "files.associations": {
+        "queue": "cpp",
+        "memory": "cpp",
+        "vector": "cpp",
+        "xtree": "cpp",
+        "array": "cpp",
+        "deque": "cpp",
+        "initializer_list": "cpp",
+        "stack": "cpp",
+        "type_traits": "cpp",
+        "xstring": "cpp",
+        "xutility": "cpp",
+        "string_view": "cpp",
+        "utility": "cpp"
+    }
+}

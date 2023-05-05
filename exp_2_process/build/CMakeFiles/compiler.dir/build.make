@@ -92,7 +92,9 @@ compiler_EXTERNAL_OBJECTS =
 
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/compiler.exe: CMakeFiles/compiler.dir/main.cpp.obj
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/compiler.exe: CMakeFiles/compiler.dir/build.make
+D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/compiler.exe: D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/libTools.a
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/compiler.exe: D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/libFront.a
+D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/compiler.exe: D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/libIR.a
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/compiler.exe: D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/libjsoncpp.a
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/compiler.exe: CMakeFiles/compiler.dir/linklibs.rsp
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/bin/compiler.exe: CMakeFiles/compiler.dir/objects1.rsp

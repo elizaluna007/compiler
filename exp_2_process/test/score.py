@@ -37,7 +37,7 @@ def score_compiler(arg1):
                     cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-w'])
                     if is_windows:
                         cmd = cmd.replace('/','\\')
-                    # print(cmd)
+                    print("************cmd is",cmd)
                     cp = subprocess.run(cmd, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE)
                     if cp.returncode != 0:
                         record[file] = {"retval": cp.returncode, "err_detail": "diff test failed"}

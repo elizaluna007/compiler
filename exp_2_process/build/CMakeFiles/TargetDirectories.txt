@@ -1,5 +1,7 @@
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/build/CMakeFiles/jsoncpp.dir
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/build/CMakeFiles/Front.dir
+D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/build/CMakeFiles/IR.dir
+D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/build/CMakeFiles/Tools.dir
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/build/CMakeFiles/compiler.dir
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/build/CMakeFiles/edit_cache.dir
 D:/360MoveData/Users/Luna/Desktop/compiler/exp_2_process/build/CMakeFiles/rebuild_cache.dir

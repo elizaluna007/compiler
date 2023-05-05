@@ -6,8 +6,8 @@
 
 #define TODO assert(0 && "todo")
 
-// #define DEBUG_DFA
-// #define DEBUG_SCANNER
+#define DEBUG_DFA
+#define DEBUG_SCANNER
 
 std::string frontend::toString(State s)
 {
@@ -450,8 +450,16 @@ bool frontend::DFA::next(char input, Token &buf)
         {
         case State::Empty:
         {
-            cur_str = input;
-            cur_state = State::Ident;
+            if (input == '.')
+            {
+                cur_str = cur_str + input;
+                cur_state = State::FloatLiteral;
+            }
+            else
+            {
+                cur_str = input;
+                cur_state = State::Ident;
+            }
             return false;
         }
         case State::Ident:
@@ -485,8 +493,16 @@ bool frontend::DFA::next(char input, Token &buf)
             buf.value = cur_str;
             buf.type = get_op_type(cur_str);
             reset();
-            cur_str = cur_str + input;
-            cur_state = State::Ident;
+            if (input == '.')
+            {
+                cur_str = cur_str + input;
+                cur_state = State::FloatLiteral;
+            }
+            else
+            {
+                cur_str = cur_str + input;
+                cur_state = State::Ident;
+            }
 
 #ifdef DEBUG_DFA
             // std::cout << "next state is [" << toString(cur_state) << "], next str = " << cur_str << "\t, ret = " << ret << std::endl;

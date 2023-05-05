@@ -1,0 +1,281 @@
+--- D:\360MoveData\Users\Luna\Desktop\compiler\exp_2_process\test\output\function\62_percolation.json	Fri May 05 23:00:01 2023
++++ D:\360MoveData\Users\Luna\Desktop\compiler\exp_2_process\test\ref\s1\function\62_percolation.json	Thu Apr 20 23:04:55 2023
+@@ -7255,9 +7255,64 @@
+                                                                                                                                        "value" : "("
+                                                                                                                                     },
+                                                                                                                                     {
++                                                                                                                                       "name" : "FuncRParams",
++                                                                                                                                       "subtree" : [
++                                                                                                                                          {
++                                                                                                                                             "name" : "Exp",
++                                                                                                                                             "subtree" : [
++                                                                                                                                                {
++                                                                                                                                                   "name" : "AddExp",
++                                                                                                                                                   "subtree" : [
++                                                                                                                                                      {
++                                                                                                                                                         "name" : "MulExp",
++                                                                                                                                                         "subtree" : [
++                                                                                                                                                            {
++                                                                                                                                                               "name" : "UnaryExp",
++                                                                                                                                                               "subtree" : [
++                                                                                                                                                                  {
++                                                                                                                                                                     "name" : "UnaryOp",
++                                                                                                                                                                     "subtree" : [
++                                                                                                                                                                        {
++                                                                                                                                                                           "name" : "Terminal",
++                                                                                                                                                                           "type" : "MINU",
++                                                                                                                                                                           "value" : "-"
++                                                                                                                                                                        }
++                                                                                                                                                                     ]
++                                                                                                                                                                  },
++                                                                                                                                                                  {
++                                                                                                                                                                     "name" : "UnaryExp",
++                                                                                                                                                                     "subtree" : [
++                                                                                                                                                                        {
++                                                                                                                                                                           "name" : "PrimaryExp",
++                                                                                                                                                                           "subtree" : [
++                                                                                                                                                                              {
++                                                                                                                                                                                 "name" : "Number",
++                                                                                                                                                                                 "subtree" : [
++                                                                                                                                                                                    {
++                                                                                                                                                                                       "name" : "Terminal",
++                                                                                                                                                                                       "type" : "INTLTR",
++                                                                                                                                                                                       "value" : "1"
++                                                                                                                                                                                    }
++                                                                                                                                                                                 ]
++                                                                                                                                                                              }
++                                                                                                                                                                           ]
++                                                                                                                                                                        }
++                                                                                                                                                                     ]
++                                                                                                                                                                  }
++                                                                                                                                                               ]
++                                                                                                                                                            }
++                                                                                                                                                         ]
++                                                                                                                                                      }
++                                                                                                                                                   ]
++                                                                                                                                                }
++                                                                                                                                             ]
++                                                                                                                                          }
++                                                                                                                                       ]
++                                                                                                                                    },
++                                                                                                                                    {
+                                                                                                                                        "name" : "Terminal",
+-                                                                                                                                       "type" : "MINU",
+-                                                                                                                                       "value" : "-"
++                                                                                                                                       "type" : "RPARENT",
++                                                                                                                                       "value" : ")"
+                                                                                                                                     }
+                                                                                                                                  ]
+                                                                                                                               }
+@@ -7266,6 +7321,101 @@
+                                                                                                                      ]
+                                                                                                                   }
+                                                                                                                ]
++                                                                                                            },
++                                                                                                            {
++                                                                                                               "name" : "Terminal",
++                                                                                                               "type" : "SEMICN",
++                                                                                                               "value" : ";"
++                                                                                                            }
++                                                                                                         ]
++                                                                                                      }
++                                                                                                   ]
++                                                                                                },
++                                                                                                {
++                                                                                                   "name" : "BlockItem",
++                                                                                                   "subtree" : [
++                                                                                                      {
++                                                                                                         "name" : "Stmt",
++                                                                                                         "subtree" : [
++                                                                                                            {
++                                                                                                               "name" : "Exp",
++                                                                                                               "subtree" : [
++                                                                                                                  {
++                                                                                                                     "name" : "AddExp",
++                                                                                                                     "subtree" : [
++                                                                                                                        {
++                                                                                                                           "name" : "MulExp",
++                                                                                                                           "subtree" : [
++                                                                                                                              {
++                                                                                                                                 "name" : "UnaryExp",
++                                                                                                                                 "subtree" : [
++                                                                                                                                    {
++                                                                                                                                       "name" : "Terminal",
++                                                                                                                                       "type" : "IDENFR",
++                                                                                                                                       "value" : "putch"
++                                                                                                                                    },
++                                                                                                                                    {
++                                                                                                                                       "name" : "Terminal",
++                                                                                                                                       "type" : "LPARENT",
++                                                                                                                                       "value" : "("
++                                                                                                                                    },
++                                                                                                                                    {
++                                                                                                                                       "name" : "FuncRParams",
++                                                                                                                                       "subtree" : [
++                                                                                                                                          {
++                                                                                                                                             "name" : "Exp",
++                                                                                                                                             "subtree" : [
++                                                                                                                                                {
++                                                                                                                                                   "name" : "AddExp",
++                                                                                                                                                   "subtree" : [
++                                                                                                                                                      {
++                                                                                                                                                         "name" : "MulExp",
++                                                                                                                                                         "subtree" : [
++                                                                                                                                                            {
++                                                                                                                                                               "name" : "UnaryExp",
++                                                                                                                                                               "subtree" : [
++                                                                                                                                                                  {
++                                                                                                                                                                     "name" : "PrimaryExp",
++                                                                                                                                                                     "subtree" : [
++                                                                                                                                                                        {
++                                                                                                                                                                           "name" : "Number",
++                                                                                                                                                                           "subtree" : [
++                                                                                                                                                                              {
++                                                                                                                                                                                 "name" : "Terminal",
++                                                                                                                                                                                 "type" : "INTLTR",
++                                                                                                                                                                                 "value" : "10"
++                                                                                                                                                                              }
++                                                                                                                                                                           ]
++                                                                                                                                                                        }
++                                                                                                                                                                     ]
++                                                                                                                                                                  }
++                                                                                                                                                               ]
++                                                                                                                                                            }
++                                                                                                                                                         ]
++                                                                                                                                                      }
++                                                                                                                                                   ]
++                                                                                                                                                }
++                                                                                                                                             ]
++                                                                                                                                          }
++                                                                                                                                       ]
++                                                                                                                                    },
++                                                                                                                                    {
++                                                                                                                                       "name" : "Terminal",
++                                                                                                                                       "type" : "RPARENT",
++                                                                                                                                       "value" : ")"
++                                                                                                                                    }
++                                                                                                                                 ]
++                                                                                                                              }
++                                                                                                                           ]
++                                                                                                                        }
++                                                                                                                     ]
++                                                                                                                  }
++                                                                                                               ]
++                                                                                                            },
++                                                                                                            {
++                                                                                                               "name" : "Terminal",
++                                                                                                               "type" : "SEMICN",
++                                                                                                               "value" : ";"
+                                                                                                             }
+                                                                                                          ]
+                                                                                                       }
+@@ -7273,8 +7423,8 @@
+                                                                                                 },
+                                                                                                 {
+                                                                                                    "name" : "Terminal",
+-                                                                                                   "type" : "INTLTR",
+-                                                                                                   "value" : "1"
++                                                                                                   "type" : "RBRACE",
++                                                                                                   "value" : "}"
+                                                                                                 }
+                                                                                              ]
+                                                                                           }
+@@ -7286,8 +7436,8 @@
+                                                                         },
+                                                                         {
+                                                                            "name" : "Terminal",
+-                                                                           "type" : "RPARENT",
+-                                                                           "value" : ")"
++                                                                           "type" : "RBRACE",
++                                                                           "value" : "}"
+                                                                         }
+                                                                      ]
+                                                                   }
+@@ -7305,19 +7455,9 @@
+                                                          "subtree" : [
+                                                             {
+                                                                "name" : "Terminal",
+-                                                               "type" : "SEMICN",
+-                                                               "value" : ";"
+-                                                            }
+-                                                         ]
+-                                                      }
+-                                                   ]
+-                                                },
+-                                                {
+-                                                   "name" : "BlockItem",
+-                                                   "subtree" : [
+-                                                      {
+-                                                         "name" : "Stmt",
+-                                                         "subtree" : [
++                                                               "type" : "RETURNTK",
++                                                               "value" : "return"
++                                                            },
+                                                             {
+                                                                "name" : "Exp",
+                                                                "subtree" : [
+@@ -7331,59 +7471,19 @@
+                                                                                  "name" : "UnaryExp",
+                                                                                  "subtree" : [
+                                                                                     {
+-                                                                                       "name" : "Terminal",
+-                                                                                       "type" : "IDENFR",
+-                                                                                       "value" : "putch"
+-                                                                                    },
+-                                                                                    {
+-                                                                                       "name" : "Terminal",
+-                                                                                       "type" : "LPARENT",
+-                                                                                       "value" : "("
+-                                                                                    },
+-                                                                                    {
+-                                                                                       "name" : "FuncRParams",
++                                                                                       "name" : "PrimaryExp",
+                                                                                        "subtree" : [
+                                                                                           {
+-                                                                                             "name" : "Exp",
++                                                                                             "name" : "Number",
+                                                                                              "subtree" : [
+                                                                                                 {
+-                                                                                                   "name" : "AddExp",
+-                                                                                                   "subtree" : [
+-                                                                                                      {
+-                                                                                                         "name" : "MulExp",
+-                                                                                                         "subtree" : [
+-                                                                                                            {
+-                                                                                                               "name" : "UnaryExp",
+-                                                                                                               "subtree" : [
+-                                                                                                                  {
+-                                                                                                                     "name" : "PrimaryExp",
+-                                                                                                                     "subtree" : [
+-                                                                                                                        {
+-                                                                                                                           "name" : "Number",
+-                                                                                                                           "subtree" : [
+-                                                                                                                              {
+-                                                                                                                                 "name" : "Terminal",
+-                                                                                                                                 "type" : "INTLTR",
+-                                                                                                                                 "value" : "10"
+-                                                                                                                              }
+-                                                                                                                           ]
+-                                                                                                                        }
+-                                                                                                                     ]
+-                                                                                                                  }
+-                                                                                                               ]
+-                                                                                                            }
+-                                                                                                         ]
+-                                                                                                      }
+-                                                                                                   ]
++                                                                                                   "name" : "Terminal",
++                                                                                                   "type" : "INTLTR",
++                                                                                                   "value" : "0"
+                                                                                                 }
+                                                                                              ]
+                                                                                           }
+                                                                                        ]
+-                                                                                    },
+-                                                                                    {
+-                                                                                       "name" : "Terminal",
+-                                                                                       "type" : "RPARENT",
+-                                                                                       "value" : ")"
+                                                                                     }
+                                                                                  ]
+                                                                               }

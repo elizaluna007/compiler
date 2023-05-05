@@ -106,6 +106,7 @@ namespace frontend
 
         // analysis functions
         ir::Program get_ir_program(CompUnit *);
+        void traverse(AstNode *node, ir::Program &program);
 
         // reject copy & assignment
         Analyzer(const Analyzer &) = delete;

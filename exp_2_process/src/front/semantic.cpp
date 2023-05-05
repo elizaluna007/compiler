@@ -207,9 +207,12 @@ void frontend::Analyzer::traverse(AstNode *root, ir::Program &program)
         if (node->token.type == TokenType::INTLTR)
         {
             string value = node->token.value;
-            ir::Instruction returnInst1(ir::Operand(value, ir::Type::IntLiteral),
-                                        ir::Operand(),
-                                        ir::Operand(), ir::Operator::_return);
+            ir::Instruction *returnInst1;
+            returnInst1->op1 = ir::Operand(value, ir::Type::IntLiteral);
+            returnInst1->op2 = ir::Operand();
+            returnInst1->des = ir::Operand();
+            returnInst1->op = ir::Operator::_return;
+            program.functions.back().addInst(returnInst1);
         }
     }
     // Handle other root types as needed

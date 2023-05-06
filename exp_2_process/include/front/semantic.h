@@ -106,7 +106,39 @@ namespace frontend
 
         // analysis functions
         ir::Program get_ir_program(CompUnit *);
-        void traverse(AstNode *node, ir::Program &program);
+        void traverse(AstNode *, ir::Program &);
+
+        void analysisCompUnit(CompUnit *root, ir::Program &program);
+        void analysisDecl(Decl *root, ir::Program &program);
+        void analysisConstDecl(ConstDecl *root, ir::Program &program);
+        void analysisBType(BType *root, ir::Program &program);
+        void analysisConstDef(ConstDef *root, ir::Program &program);
+        void analysisConstInitVal(ConstInitVal *root, ir::Program &program);
+        void analysisVarDecl(VarDecl *root, ir::Program &program);
+        void analysisVarDef(VarDef *root, ir::Program &program);
+        void analysisInitVal(InitVal *root, ir::Program &program);
+        void analysisFuncDef(FuncDef *root, ir::Program &program);
+        void analysisFuncType(FuncType *root, ir::Program &program);
+        void analysisFuncFParam(FuncFParam *root, ir::Program &program);
+        void analysisFuncFParams(FuncFParams *root, ir::Program &program);
+        void analysisBlock(Block *root, ir::Program &program);
+        void analysisBlockItem(BlockItem *root, ir::Program &program);
+        void analysisStmt(Stmt *root, ir::Program &program);
+        void analysisExp(Exp *root, ir::Program &program);
+        void analysisCond(Cond *root, ir::Program &program);
+        void analysisLVal(LVal *root, ir::Program &program);
+        void analysisNumber(Number *root, ir::Program &program);
+        void analysisPrimaryExp(PrimaryExp *root, ir::Program &program);
+        void analysisUnaryExp(UnaryExp *root, ir::Program &program);
+        void analysisUnaryOp(UnaryOp *root, ir::Program &program);
+        void analysisFuncRParams(FuncRParams *root, ir::Program &program);
+        void analysisMulExp(MulExp *root, ir::Program &program);
+        void analysisAddExp(AddExp *root, ir::Program &program);
+        void analysisRelExp(RelExp *root, ir::Program &program);
+        void analysisEqExp(EqExp *root, ir::Program &program);
+        void analysisLAndExp(LAndExp *root, ir::Program &program);
+        void analysisLOrExp(LOrExp *root, ir::Program &program);
+        void analysisConstExp(ConstExp *root, ir::Program &program);
 
         // reject copy & assignment
         Analyzer(const Analyzer &) = delete;

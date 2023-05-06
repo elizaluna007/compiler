@@ -12,6 +12,10 @@
         "xstring": "cpp",
         "xutility": "cpp",
         "string_view": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "typeinfo": "cpp",
+        "istream": "cpp",
+        "ostream": "cpp",
+        "tuple": "cpp"
     }
 }

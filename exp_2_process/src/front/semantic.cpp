@@ -225,3 +225,79 @@ void frontend::Analyzer::traverse(AstNode *root, ir::Program &program)
         break;
     }
 }
+// FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
+// FuncType -> 'void' | 'int' | 'float'
+// void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
+// {
+//     // 获取函数返回类型
+//     GET_CHILD_PTR(functype, FuncType, 0);
+//     Type funcReturnType = getType(functype->type);
+
+//     // 获取函数名
+//     Ident *funcName = dynamic_cast<Ident *>(node->children[1]);
+//     assert(funcName);
+//     std::string functionName = funcName->name;
+
+//     // 获取函数参数列表
+//     FuncFParams *funcParams = nullptr;
+//     if (node->children.size() > 3)
+//     {
+//         funcParams = dynamic_cast<FuncFParams *>(node->children[3]);
+//     }
+
+//     // 创建函数对象
+//     Function *function = new Function(functionName, funcReturnType);
+
+//     // 添加函数参数
+//     if (funcParams)
+//     {
+//         analyzeFuncFParams(funcParams, function);
+//     }
+
+//     // 获取函数体
+//     Block *functionBlock = dynamic_cast<Block *>(node->children.back());
+//     assert(functionBlock);
+
+//     // 进入函数作用域
+//     symbol_table.add_scope(functionBlock);
+
+//     // 分析函数体
+//     analyzeBlock(functionBlock, program, function);
+
+//     // 退出函数作用域
+//     symbol_table.exit_scope();
+
+//     // 将函数添加到程序中
+//     program.addFunction(function);
+// }
+void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program) {}
+void frontend::Analyzer::analysisDecl(Decl *root, ir::Program &program) {}
+void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program) {}
+void frontend::Analyzer::analysisBType(BType *root, ir::Program &program) {}
+void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program) {}
+void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &program) {}
+void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program) {}
+void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program) {}
+void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program) {}
+void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program) {}
+void frontend::Analyzer::analysisFuncType(FuncType *root, ir::Program &program) {}
+void frontend::Analyzer::analysisFuncFParam(FuncFParam *root, ir::Program &program) {}
+void frontend::Analyzer::analysisFuncFParams(FuncFParams *root, ir::Program &program) {}
+void frontend::Analyzer::analysisBlock(Block *root, ir::Program &program) {}
+void frontend::Analyzer::analysisBlockItem(BlockItem *root, ir::Program &program) {}
+void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program) {}
+void frontend::Analyzer::analysisExp(Exp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisCond(Cond *root, ir::Program &program) {}
+void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program) {}
+void frontend::Analyzer::analysisNumber(Number *root, ir::Program &program) {}
+void frontend::Analyzer::analysisPrimaryExp(PrimaryExp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisUnaryOp(UnaryOp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, ir::Program &program) {}
+void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program) {}
+void frontend::Analyzer::analysisConstExp(ConstExp *root, ir::Program &program) {}

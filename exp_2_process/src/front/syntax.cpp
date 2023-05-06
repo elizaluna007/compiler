@@ -113,6 +113,7 @@ bool frontend::Parser::parseDecl(frontend::Decl *root)
     return b1;
 };
 // ConstDecl -> 'const' BType ConstDef { ',' ConstDef } ';'
+// BType -> 'int' | 'float'
 bool frontend::Parser::parseConstDecl(frontend::ConstDecl *root)
 {
     log(root);
@@ -121,6 +122,14 @@ bool frontend::Parser::parseConstDecl(frontend::ConstDecl *root)
     PARSE_TOKEN(CONSTTK);
 
     PARSE(btype, BType);
+    if (btype->children[0]->token.value == "int")
+    {
+        root->t = Type::Int;
+    }
+    else
+    {
+        root->t = Type::Float;
+    }
 
     PARSE(constdef, ConstDef);
 
@@ -144,10 +153,12 @@ bool frontend::Parser::parseBType(frontend::BType *root)
     if (CUR_TOKEN_IS(INTTK))
     {
         PARSE_TOKEN(INTTK);
+        root->t = Type::Int;
     }
     else if (CUR_TOKEN_IS(FLOATTK))
     {
         PARSE_TOKEN(FLOATTK);
+        root->t = Type::Float;
     }
     else
     {
@@ -161,7 +172,7 @@ bool frontend::Parser::parseBType(frontend::BType *root)
 bool frontend::Parser::parseConstDef(frontend::ConstDef *root)
 {
     log(root);
-
+    root->arr_name = token_stream[index].value;
     PARSE_TOKEN(IDENFR);
 
     bool b1 = true;
@@ -298,7 +309,20 @@ bool frontend::Parser::parseFuncDef(frontend::FuncDef *root)
     bool b1 = true;
 
     PARSE(functype, FuncType);
+    if (functype->children[0]->token.value == "void")
+    {
+        root->t = Type::null;
+    }
+    else if (functype->children[0]->token.value == "int")
+    {
+        root->t = Type::Int;
+    }
+    else
+    {
+        root->t = Type::Float;
+    }
 
+    root->n = token_stream[index].value;
     PARSE_TOKEN(IDENFR);
 
     PARSE_TOKEN(LPARENT);
@@ -638,7 +662,7 @@ bool frontend::Parser::parsePrimaryExp(frontend::PrimaryExp *root)
 // UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
 // first(PrimaryExp) = { '(', Number, Ident }
 // first(UnaryOp) = { '+', '-', '!' }
-//FirstVT(FuncRParams) = { '(', Ident, IntConst, floatConst, '+', '-', '!' }
+// FirstVT(FuncRParams) = { '(', Ident, IntConst, floatConst, '+', '-', '!' }
 bool frontend::Parser::parseUnaryExp(frontend::UnaryExp *root)
 {
     log(root);
@@ -662,7 +686,7 @@ bool frontend::Parser::parseUnaryExp(frontend::UnaryExp *root)
         {
             PARSE_TOKEN(IDENFR);
 
-            if (CUR_TOKEN_IS(LPARENT) || CUR_TOKEN_IS(INTLTR) || CUR_TOKEN_IS(FLOATLTR) || CUR_TOKEN_IS(IDENFR)|| CUR_TOKEN_IS(PLUS)|| CUR_TOKEN_IS(MINU)|| CUR_TOKEN_IS(NOT))
+            if (CUR_TOKEN_IS(LPARENT) || CUR_TOKEN_IS(INTLTR) || CUR_TOKEN_IS(FLOATLTR) || CUR_TOKEN_IS(IDENFR) || CUR_TOKEN_IS(PLUS) || CUR_TOKEN_IS(MINU) || CUR_TOKEN_IS(NOT))
             {
                 PARSE(funcrparams, FuncRParams);
             }
@@ -778,27 +802,35 @@ bool frontend::Parser::parseRelExp(frontend::RelExp *root)
     log(root);
 
     PARSE(addexp, AddExp);
+
+    root->t = addexp->t;
+    root->v = addexp->v;
+    root->is_computable = addexp->is_computable;
+
     bool b1 = true;
     while (CUR_TOKEN_IS(LSS) || CUR_TOKEN_IS(GTR) || CUR_TOKEN_IS(LEQ) || CUR_TOKEN_IS(GEQ))
     {
         if (CUR_TOKEN_IS(LSS))
         {
             PARSE_TOKEN(LSS);
+            PARSE(addexp_right, AddExp);
         }
 
         else if (CUR_TOKEN_IS(GTR))
         {
             PARSE_TOKEN(GTR);
+            PARSE(addexp_right, AddExp);
         }
         else if (CUR_TOKEN_IS(LEQ))
         {
             PARSE_TOKEN(LEQ);
+            PARSE(addexp_right, AddExp);
         }
         else
         {
             PARSE_TOKEN(GEQ);
+            PARSE(addexp_right, AddExp);
         }
-        PARSE(addexp_right, AddExp);
     }
 
     return b1;
@@ -809,18 +841,42 @@ bool frontend::Parser::parseEqExp(frontend::EqExp *root)
     log(root);
 
     PARSE(relexp, RelExp);
+    root->t = relexp->t;
+    root->v = relexp->v;
+    root->is_computable = relexp->is_computable;
     bool b1 = true;
     while (CUR_TOKEN_IS(EQL) || CUR_TOKEN_IS(NEQ))
     {
         if (CUR_TOKEN_IS(EQL))
         {
             PARSE_TOKEN(EQL);
+            PARSE(relexp_right, RelExp);
+            string v1 = root->v;
+            string v2 = relexp_right->v;
+            if (v1 == v2)
+            {
+                root->v = "1";
+            }
+            else
+            {
+                root->v = "0";
+            }
         }
         else
         {
             PARSE_TOKEN(NEQ);
+            PARSE(relexp_right, RelExp);
+            string v1 = root->v;
+            string v2 = relexp_right->v;
+            if (v1 != v2)
+            {
+                root->v = "1";
+            }
+            else
+            {
+                root->v = "0";
+            }
         }
-        PARSE(relexp_right, RelExp);
     }
 
     return b1;
@@ -831,12 +887,24 @@ bool frontend::Parser::parseLAndExp(frontend::LAndExp *root)
     log(root);
 
     PARSE(eqexp, EqExp);
+    root->t = eqexp->t;
+    root->v = eqexp->v;
+    root->is_computable = eqexp->is_computable;
     bool b1 = true;
     if (CUR_TOKEN_IS(AND))
     {
         PARSE_TOKEN(AND);
-
         PARSE(landexp, LAndExp);
+        string v1 = root->v;
+        string v2 = landexp->v;
+        if (v1 != "0" && v2 != "0")
+        {
+            root->v = "1";
+        }
+        else
+        {
+            root->v = "0";
+        }
     }
 
     return b1;
@@ -847,23 +915,46 @@ bool frontend::Parser::parseLOrExp(frontend::LOrExp *root)
     log(root);
 
     PARSE(landexp, LAndExp);
+    root->t = landexp->t;
+    root->v = landexp->v;
+    root->is_computable = landexp->is_computable;
     bool b1 = true;
     if (CUR_TOKEN_IS(OR))
     {
         PARSE_TOKEN(OR);
 
         PARSE(lorexp, LOrExp);
+        string v1 = root->v;
+        string v2 = lorexp->v;
+        if (v1 != "0" || v2 != "0")
+        {
+            root->v = "1";
+        }
+        else
+        {
+            root->v = "0";
+        }
     }
 
     return b1;
 };
 
 // ConstExp -> AddExp
+// AddExp -> MulExp { ('+' | '-') MulExp }
+// MulExp -> UnaryExp { ('*' | '/' | '%') UnaryExp }
+// UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
+// PrimaryExp -> '(' Exp ')' | LVal | Number
+// UnaryOp -> '+' | '-' | '!'
+// LVal -> Ident {'[' Exp ']'}
+// Exp -> AddExp
 bool frontend::Parser::parseConstExp(frontend::ConstExp *root)
 {
     log(root);
     bool b1 = true;
     PARSE(addexp, AddExp);
+    root->t = addexp->t;
+    root->v = addexp->v;
+    root->is_computable = addexp->is_computable;
 
     return b1;
 };

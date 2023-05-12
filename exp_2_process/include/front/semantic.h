@@ -106,7 +106,6 @@ namespace frontend
 
         // analysis functions
         ir::Program get_ir_program(CompUnit *);
-        void traverse(AstNode *, ir::Program &);
 
         void analysisCompUnit(CompUnit *root, ir::Program &program);
         void analysisDecl(Decl *root, ir::Program &program);

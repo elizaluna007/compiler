@@ -1,60 +1,80 @@
-# 语义分析的executor分析
+# 语义分析的 executor 分析
+
 ##### // init global variables
-#####     for(const auto& gte: program->globalVal) {                                  //遍历全局变量
-#####         std::pair<std::string, Value> entry = {gte.val.name, {gte.val.type, 0}};//得到全局变量的名称和{类型,值}
-#####         if (gte.maxlen) {                                                       //如果全局变量存在并且是数组
-#####             if (gte.val.type == Type::IntPtr) {                                 //整型指针
-#####                 entry.second._val.iptr = new int[gte.maxlen];                   //值为整型数组
-##### 
-#####             }
-#####             else if (gte.val.type == Type::FloatPtr) {                          //浮点型指针
-#####                 entry.second._val.fptr = new float[gte.maxlen];                 //值为浮点形数组
-#####             }
-#####             else {
-#####                 assert(0 && "wrong global value type with maxlen > 0");
-#####             }
-#####         }
-#####         global_vars.insert(entry);                                               //全局变量的{名称,{类型,值}}添加到global_vars中
-#####     }
+
+##### for(const auto& gte: program->globalVal) { //遍历全局变量
+
+##### std::pair<std::string, Value> entry = {gte.val.name, {gte.val.type, 0}};//得到全局变量的名称和{类型,值}
+
+##### if (gte.maxlen) { //如果全局变量存在并且是数组
+
+##### if (gte.val.type == Type::IntPtr) { //整型指针
+
+##### entry.second.\_val.iptr = new int[gte.maxlen]; //值为整型数组
+
+#####
+
+##### }
+
+##### else if (gte.val.type == Type::FloatPtr) { //浮点型指针
+
+##### entry.second.\_val.fptr = new float[gte.maxlen]; //值为浮点形数组
+
+##### }
+
+##### else {
+
+##### assert(0 && "wrong global value type with maxlen > 0");
+
+##### }
+
+##### }
+
+##### global_vars.insert(entry); //全局变量的{名称,{类型,值}}添加到 global_vars 中
+
+##### }
 
 ##### // find main function and set cur_cxt
-#####     for(const auto& f: program->functions) {                                    //遍历函数块
-#####         if (f.name == "main") {                                                 //找到main函数块
-#####             cur_ctx = new Context(&f);
-#####             break;
-#####         }
-#####     }
 
+##### for(const auto& f: program->functions) { //遍历函数块
 
-ir::Program *program = new ir::Program();             // 产生一个程序体
-    ir::Function function = ir::Function();               // 产生一个函数块
-    ir::Instruction *instruction = new ir::Instruction(); // 产生一条指令
-    std::queue<AstNode *> Q;                              // 产生一个queue用来遍历语法树
-    Q.push(root);                                         // 将root放入queue
-    program->addFunction(function);                       // 程序体肯定存在一个函数块
-    function.addInst(instruction);                        // 这个函数块肯定存在一条指令
-    while (!Q.empty())
-    {
-        for (auto &child : Q.front()->children)
-        {
-            Q.push(child);
-        }
-        auto node = Q.front();
-        Q.pop();
-        switch (node->type)
-        {
-        case NodeType::COMPUNIT: // 找到了新的函数块，创建新的函数块并放入其中
-        {
-            function = ir::Function();
-            program->addFunction(function);
-        }
-        case NodeType::TERMINAL:
-        {
-        }
-        }
-    }
+##### if (f.name == "main") { //找到 main 函数块
 
+##### cur_ctx = new Context(&f);
 
+##### break;
+
+##### }
+
+##### }
+
+ir::Program *program = new ir::Program(); // 产生一个程序体
+ir::Function function = ir::Function(); // 产生一个函数块
+ir::Instruction *instruction = new ir::Instruction(); // 产生一条指令
+std::queue<AstNode \*> Q; // 产生一个 queue 用来遍历语法树
+Q.push(root); // 将 root 放入 queue
+program->addFunction(function); // 程序体肯定存在一个函数块
+function.addInst(instruction); // 这个函数块肯定存在一条指令
+while (!Q.empty())
+{
+for (auto &child : Q.front()->children)
+{
+Q.push(child);
+}
+auto node = Q.front();
+Q.pop();
+switch (node->type)
+{
+case NodeType::COMPUNIT: // 找到了新的函数块，创建新的函数块并放入其中
+{
+function = ir::Function();
+program->addFunction(function);
+}
+case NodeType::TERMINAL:
+{
+}
+}
+}
 
 宏定义：
 
@@ -62,7 +82,7 @@ TODO: 这个宏定义表示 "to do"，在代码中表示这部分代码需要进
 函数定义：
 
 map<std::string, ir::Function *> *frontend::get_lib_funcs(): 这个函数返回一个指向字符串和 IR 函数对应的 map 的指针。这个 map 存储了一些内置函数，比如 getint、putint 等等。
-void frontend::SymbolTable::add_scope(Block *node): 这个函数的作用是向符号表中添加一个新的作用域，参数 node 表示这个作用域对应的语法树节点。
+void frontend::SymbolTable::add_scope(Block \*node): 这个函数的作用是向符号表中添加一个新的作用域，参数 node 表示这个作用域对应的语法树节点。
 void frontend::SymbolTable::exit_scope(): 这个函数的作用是退出当前作用域，在符号表中删除当前作用域对应的内容。
 string frontend::SymbolTable::get_scoped_name(string id) const: 这个函数的作用是根据一个标识符 id 获取它在符号表中的作用域限定名。例如，如果 id 是 "x"，而在当前作用域中已经有了一个同名变量，则返回 "scope_x"。
 Operand frontend::SymbolTable::get_operand(string id) const: 这个函数的作用是根据一个标识符 id 获取它对应的操作数。如果这个标识符是一个变量，则返回一个寄存器或栈上的位置，如果是一个常量，则返回它的值。
@@ -78,3 +98,40 @@ frontend::STE frontend::SymbolTable::get_ste(string id) const: 这个函数的�
 错误处理：在进行语义分析的过程中，如果发现不符合语义规则的代码，如类型不匹配、未声明的变量等，需要生成错误信息并进行相应的错误处理。
 
 生成中间代码或目标代码：根据语义分析的结果，可以生成中间代码或目标代码，用于进一步的优化和执行。
+
+CompUnit -> (Decl | FuncDef) [CompUnit]
+Decl -> ConstDecl | VarDecl
+ConstDecl -> 'const' BType ConstDef { ',' ConstDef } ';'
+BType -> 'int' | 'float'
+ConstDef -> Ident { '[' ConstExp ']' } '=' ConstInitVal
+ConstInitVal -> ConstExp | '{' [ ConstInitVal { ',' ConstInitVal } ] '}'
+VarDecl -> BType VarDef { ',' VarDef } ';'
+VarDef -> Ident { '[' ConstExp ']' } [ '=' InitVal ]
+InitVal -> Exp | '{' [ InitVal { ',' InitVal } ] '}'
+FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
+FuncType -> 'void' | 'int' | 'float'
+FuncFParam -> BType Ident ['[' ']' { '[' Exp ']' }]
+FuncFParams -> FuncFParam { ',' FuncFParam }
+Block -> '{' { BlockItem } '}'
+BlockItem -> Decl | Stmt
+Stmt -> LVal '=' Exp ';' | Block | 'if' '(' Cond ')' Stmt [ 'else' Stmt ] | 'while' '(' Cond ')' Stmt | 'break' ';' | 'continue' ';' | 'return' [Exp] ';' | [Exp] ';'
+Exp -> AddExp
+Cond -> LOrExp
+LVal -> Ident {'[' Exp ']'}
+Number -> IntConst | floatConst
+PrimaryExp -> '(' Exp ')' | LVal | Number
+UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
+UnaryOp -> '+' | '-' | '!'
+FuncRParams -> Exp { ',' Exp }
+MulExp -> UnaryExp { ('\*' | '/' | '%') UnaryExp }
+AddExp -> MulExp { ('+' | '-') MulExp }
+RelExp -> AddExp { ('<' | '>' | '<=' | '>=') AddExp }
+EqExp -> RelExp { ('==' | '!=') RelExp }
+LAndExp -> EqExp [ '&&' LAndExp ]
+LOrExp -> LAndExp [ '||' LOrExp ]
+ConstExp -> AddExp
+
+ir::Program program;
+ir::Function globalFunc("global", ir::Type::null);
+全局变量赋值在 CompUnit 之后的 Decl 中发生
+全局的函数在 CompUnit 之后的 FuncDef 中发生

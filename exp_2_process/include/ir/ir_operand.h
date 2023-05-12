@@ -13,6 +13,7 @@ enum class Type {
     FloatLiteral,
     IntPtr,
     FloatPtr,
+    String,
     null
 };
 

@@ -13,9 +13,9 @@ using namespace std;
 
 #define TODO assert(0 && "TODO");
 
-#define GET_CHILD_PTR(node, type, index)                     \
-    auto node = dynamic_cast<type *>(root->children[index]); \
-    assert(node);
+#define GET_CHILD_PTR(node_ptr, type, index)                      \
+    type *node_ptr = dynamic_cast<type *>(root->children[index]); \
+    assert(node_ptr);
 #define ANALYSIS(node, type, index)                          \
     auto node = dynamic_cast<type *>(root->children[index]); \
     assert(node);                                            \
@@ -96,13 +96,22 @@ void frontend::SymbolTable::exit_scope()
 // 在翻译成 IR 的过程中我们需要解决不通过作用域中同名变量的问题, 我们的解决方案是重命名, 为变量名加上与作用域相关的后缀使得重命名之后的变量名字在一个 IR Function 中是独一无二的
 string frontend::SymbolTable::get_scoped_name(string id) const
 {
+    cout << "get scoped name    " << id << endl;
+    if (scope_stack.empty())
+    {
+        cout << "get scoped name end    " << id << endl;
+        return id;
+    }
     const auto &current_scope = scope_stack.back(); // 当前作用域
     if (current_scope.table.find(id) != current_scope.table.end())
     {
+        cout << "get scoped name end    "
+             << "scope_" + std::to_string(current_scope.cnt) + "_" + id << endl;
         return "scope_" + std::to_string(current_scope.cnt) + "_" + id;
     }
     else
     {
+        cout << "get scoped name end    " << id + "_scope_" + std::to_string(current_scope.cnt) << endl;
         return id + "_scope_" + std::to_string(current_scope.cnt); // 第一次出现时
     }
 }
@@ -155,7 +164,7 @@ Operand frontend::SymbolTable::get_operand(string id) const
         }
     }
     // 标识符未定义
-    return Operand();
+    return Operand(id);
 }
 // 这个函数的作用是根据一个标识符 id 获取它在符号表中对应的符号表项。
 // 输入一个变量名, 在符号表中寻找最近的同名变量, 返回 STE
@@ -185,8 +194,21 @@ ir::Program frontend::Analyzer::get_ir_program(CompUnit *root)
     Function globalFunc("global", Type::null);
     program.addFunction(globalFunc);
 
+    // 添加全局作用域
+    ScopeInfo scope_info;       // 生成一个新的作用域
+    scope_info.cnt = 0;         // 得到新的作用域的cnt
+    scope_info.name = "global"; // 得到新的作用域的name
+    symbol_table.scope_stack.push_back(scope_info);
+
     // 遍历节点
     analysisCompUnit(root, program);
+
+    // 添加全局变量
+    for (auto &iter : symbol_table.scope_stack[0].table)
+    {
+        if (iter.second.dimension.size() == 0)
+            program.globalVal.push_back(iter.second.operand);
+    }
 
     return program;
 }
@@ -216,6 +238,13 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
     }
     else
     {
+        if (program.functions.back().name == "global")
+        {
+            Instruction *globalreturn = new Instruction(ir::Operand(),
+                                                        ir::Operand(),
+                                                        ir::Operand(), ir::Operator::_return);
+            program.functions.back().addInst(globalreturn);
+        }
         // FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
         Function funcFunc;
         program.addFunction(funcFunc);
@@ -223,7 +252,6 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
         ANALYSIS(funcdef, FuncDef, 0);
 
         program.functions.back().name = funcdef->v;
-
         program.functions.back().returnType = funcdef->t;
 
         int len = root->children.size();
@@ -238,7 +266,16 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
         }
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // Decl -> ConstDecl | VarDecl
@@ -256,7 +293,16 @@ void frontend::Analyzer::analysisDecl(Decl *root, ir::Program &program)
         ANALYSIS(vardecl, VarDecl, 0)
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // ConstDecl -> 'const' BType ConstDef { ',' ConstDef } ';'
@@ -266,18 +312,63 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
     cout << "begin constdecl" << endl;
 #endif
     ANALYSIS(btype, BType, 1);
+    // des的type先定义好
+    Operand des("0", btype->t); // 目的未知,类型已知
+    Operand op1;
+    if (btype->t == Type::Int)
+    {
+        op1.name = "0";
+        op1.type = Type::IntLiteral;
+        des.type = Type::Int;
+    }
+    else
+    {
+        op1.name = "";
+        op1.type = Type::FloatLiteral;
+        des.type = Type::Float;
+    }
+    Instruction *assignInst = new Instruction(op1,
+                                              ir::Operand(),
+                                              des,
+                                              ir::Operator::def);
+    program.functions.back().addInst(assignInst);
+
     ANALYSIS(constdef, ConstDef, 2);
     int len = root->children.size();
     int index = 3;
 
     while (index < len && root->children[index]->token.type == TokenType::COMMA)
     {
+        Instruction *assignInst = new Instruction(op1,
+                                                  ir::Operand(),
+                                                  des,
+                                                  ir::Operator::def);
+        program.functions.back().addInst(assignInst);
         index++;
         ANALYSIS(constdef, ConstDef, index);
         index++;
+        if (index < len - 1)
+        {
+            cout << "index: " << index << endl;
+            cout << "len: " << len << endl;
+            GET_CHILD_PTR(term, Term, index);
+        }
+        else
+        {
+            break;
+        }
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // BType -> 'int' | 'float'
@@ -286,7 +377,8 @@ void frontend::Analyzer::analysisBType(BType *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin btype" << endl;
 #endif
-    if (root->children[0]->token.type == TokenType::INTTK)
+    GET_CHILD_PTR(i_or_f, Term, 0);
+    if (i_or_f->token.type == TokenType::INTTK)
     {
         root->t = Type::Int;
     }
@@ -295,7 +387,16 @@ void frontend::Analyzer::analysisBType(BType *root, ir::Program &program)
         root->t = Type::Float;
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // ConstDef -> Ident { '[' ConstExp ']' } '=' ConstInitVal
@@ -307,16 +408,143 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
     string id = symbol_table.get_scoped_name(root->children[0]->token.value);
     int len = root->children.size();
     int index = 1;
-    while (index < len && root->children[index]->token.type == TokenType::LBRACK)
+    GET_CHILD_PTR(term, Term, index);
+    program.functions.back().InstVec.back()->des.name = term->token.value;
+    // while (index < len && term->token.type == TokenType::LBRACK)
+    // {
+    //     index++;
+    //     ANALYSIS(constexp, ConstExp, index);
+    //     index = index + 2;
+    //     GET_CHILD_PTR(term, Term, index);
+    //     if (term->token.type == TokenType::ASSIGN)
+    //     {
+    //         break;
+    //     }
+    // }
+    // index++;
+    // ANALYSIS(constinitval, ConstInitVal, index);
+
+    GET_CHILD_PTR(l_or_a, Term, index);
+    // 是数组，需要改变des的type
+    if (index < len && l_or_a->token.type == TokenType::LBRACK)
+    {
+        cout << "shuzu begin" << endl;
+        Type t = program.functions.back().InstVec.back()->des.type;
+        if (t == Type::Int)
+        {
+            program.functions.back().InstVec.back()->op1.type = Type::Int;
+            program.functions.back().InstVec.back()->des.type = Type::IntPtr;
+        }
+
+        else
+        {
+            program.functions.back().InstVec.back()->op1.type = Type::Float;
+            program.functions.back().InstVec.back()->des.type = Type::FloatPtr;
+        }
+
+        program.functions.back().InstVec.back()->op = ir::Operator::alloc;
+
+        std::vector<int> dim;
+
+        int key = 1;
+        while (index < len && l_or_a->token.type == TokenType::LBRACK)
+        {
+            cout << "shuzu jisuan daxiao" << endl;
+            // op1的name和type
+            index++;
+            ANALYSIS(constexp, ConstExp, index);
+            if (!constexp->is_computable)
+            {
+                key = 0;
+            }
+            dim.push_back(std::stoi(constexp->v));
+            index = index + 2;
+            if (index < len)
+            {
+                cout << "index      " << index << endl;
+                cout << "len        " << len << endl;
+                GET_CHILD_PTR(l_or_a, Term, index);
+                if (l_or_a->token.type == TokenType::ASSIGN)
+                {
+                    key = 2;
+                    break;
+                }
+            }
+        }
+        cout << "shuzu jisuan daxiao done" << endl;
+        int all = 1;
+        for (int i = 0; i < dim.size(); i++)
+        {
+            all *= dim[i];
+        }
+        program.functions.back().InstVec.back()->op1.name = to_string(all);
+        if (key)
+        {
+            program.functions.back().InstVec.back()->op1.type = Type::IntLiteral;
+        }
+        cout << all << "           " << toString(program.functions.back().InstVec.back()->op) << endl;
+
+        Operand op = program.functions.back().InstVec.back()->des;
+        STE ste;
+        ste.operand = op;
+        ste.dimension = dim;
+        auto it = symbol_table.scope_stack.back().table.find(op.name);
+        if (it != symbol_table.scope_stack.back().table.end())
+        {
+            symbol_table.scope_stack.back().table[op.name] = ste;
+        }
+        else
+        {
+            symbol_table.scope_stack.back().table.insert({op.name, ste});
+        }
+        cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+
+        // 数组且赋值
+        // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数。
+        cout << "***********************************" << toString(l_or_a->token.type) << endl;
+        if (key == 2)
+        {
+            cout << "to fuzhi" << endl;
+            index++;
+            ANALYSIS(initval, InitVal, index);
+            index++;
+        }
+    }
+    // 不是数组，那就一定是赋值
+    else
     {
         index++;
-        ANALYSIS(constexp, ConstExp, index);
-        index = index + 2;
+        ANALYSIS(constinitval, ConstInitVal, index);
+        program.functions.back().InstVec.back()->op1.name = constinitval->v;
+        program.functions.back().InstVec.back()->op1.type = constinitval->t;
+        cout << "constinitval  " << toString(constinitval->t) << "  " << constinitval->v << endl;
+
+        Operand op = program.functions.back().InstVec.back()->des;
+        STE ste;
+        ste.operand = op;
+        auto it = symbol_table.scope_stack.back().table.find(op.name);
+        if (it != symbol_table.scope_stack.back().table.end())
+        {
+            symbol_table.scope_stack.back().table[op.name] = ste;
+        }
+        else
+        {
+            symbol_table.scope_stack.back().table.insert({op.name, ste});
+        }
+        cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
     }
-    index++;
-    ANALYSIS(constinitval, ConstInitVal, index);
+
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // ConstInitVal -> ConstExp | '{' [ ConstInitVal { ',' ConstInitVal } ] '}'
@@ -329,6 +557,7 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
     if (root->children[0]->type == NodeType::CONSTEXP)
     {
         ANALYSIS(constexp, ConstExp, 0);
+        COPY_EXP_NODE(constexp, root);
     }
     else
     {
@@ -345,7 +574,16 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
         }
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // VarDecl -> BType VarDef { ',' VarDef } ';'
@@ -354,18 +592,69 @@ void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin vardecl" << endl;
 #endif
-    int len = root->children.size();
     ANALYSIS(btype, BType, 0);
-    ANALYSIS(vardef, VarDef, 1);
-    int index = 2;
-    while (index < len && root->children[index]->token.type == TokenType::COMMA)
+    // des的type先定义好
+    Operand des("0", btype->t); // 目的未知,类型已知
+    Operand op1;
+    if (btype->t == Type::Int)
     {
-        index++;
-        ANALYSIS(vardef, VarDef, index);
-        index++;
+        op1.name = "0";
+        op1.type = Type::IntLiteral;
+        des.type = Type::Int;
     }
+    else
+    {
+        op1.name = "";
+        op1.type = Type::FloatLiteral;
+        des.type = Type::Float;
+    }
+    Instruction *assignInst = new Instruction(op1,
+                                              ir::Operand(),
+                                              des,
+                                              ir::Operator::def);
+    program.functions.back().addInst(assignInst);
+
+    ANALYSIS(vardef, VarDef, 1);
+
+    int len = root->children.size();
+    int index = 2;
+    if (index < len)
+    {
+        GET_CHILD_PTR(term, Term, index);
+        while (index < len && term->token.type == TokenType::COMMA)
+        {
+            Instruction *assignInst = new Instruction(op1,
+                                                      ir::Operand(),
+                                                      des,
+                                                      ir::Operator::def);
+            program.functions.back().addInst(assignInst);
+            index++;
+            ANALYSIS(vardef, VarDef, index);
+            index++;
+            if (index < len - 1)
+            {
+                cout << "index: " << index << endl;
+                cout << "len: " << len << endl;
+                GET_CHILD_PTR(term, Term, index);
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // VarDef -> Ident { '[' ConstExp ']' } [ '=' InitVal ]
@@ -374,22 +663,152 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin vardef" << endl;
 #endif
+    // des的name先定义好
+    GET_CHILD_PTR(ident, Term, 0);
+    program.functions.back().InstVec.back()->des.name = ident->token.value;
     int len = root->children.size();
     int index = 1;
+    if (index < len)
+    {
+        GET_CHILD_PTR(l_or_a, Term, index);
+        // 是数组，需要改变des的type
+        if (index < len && l_or_a->token.type == TokenType::LBRACK)
+        {
+            cout << "shuzu begin" << endl;
+            Type t = program.functions.back().InstVec.back()->des.type;
+            if (t == Type::Int)
+            {
+                program.functions.back().InstVec.back()->op1.type = Type::Int;
+                program.functions.back().InstVec.back()->des.type = Type::IntPtr;
+            }
 
-    while (index < len && root->children[index]->token.type == TokenType::LBRACK)
-    {
-        index++;
-        ANALYSIS(constexp, ConstExp, index);
-        index = index + 2;
+            else
+            {
+                program.functions.back().InstVec.back()->op1.type = Type::Float;
+                program.functions.back().InstVec.back()->des.type = Type::FloatPtr;
+            }
+
+            program.functions.back().InstVec.back()->op = ir::Operator::alloc;
+
+            std::vector<int> dim;
+
+            int key = 1;
+            while (index < len && l_or_a->token.type == TokenType::LBRACK)
+            {
+                cout << "shuzu jisuan daxiao" << endl;
+                // op1的name和type
+                index++;
+                ANALYSIS(constexp, ConstExp, index);
+                if (!constexp->is_computable)
+                {
+                    key = 0;
+                }
+                dim.push_back(std::stoi(constexp->v));
+                index = index + 2;
+                if (index < len)
+                {
+                    cout << "index      " << index << endl;
+                    cout << "len        " << len << endl;
+                    GET_CHILD_PTR(l_or_a, Term, index);
+                    if (l_or_a->token.type == TokenType::ASSIGN)
+                    {
+                        key = 2;
+                        break;
+                    }
+                }
+            }
+            cout << "shuzu jisuan daxiao done" << endl;
+            int all = 1;
+            for (int i = 0; i < dim.size(); i++)
+            {
+                all *= dim[i];
+            }
+            program.functions.back().InstVec.back()->op1.name = to_string(all);
+            if (key)
+            {
+                program.functions.back().InstVec.back()->op1.type = Type::IntLiteral;
+            }
+            cout << all << "           " << toString(program.functions.back().InstVec.back()->op) << endl;
+
+            Operand op = program.functions.back().InstVec.back()->des;
+            STE ste;
+            ste.operand = op;
+            ste.dimension = dim;
+            auto it = symbol_table.scope_stack.back().table.find(op.name);
+            if (it != symbol_table.scope_stack.back().table.end())
+            {
+                symbol_table.scope_stack.back().table[op.name] = ste;
+            }
+            else
+            {
+                symbol_table.scope_stack.back().table.insert({op.name, ste});
+            }
+            cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+
+            // 数组且赋值
+            // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数。
+            cout << "***********************************" << toString(l_or_a->token.type) << endl;
+            if (key == 2)
+            {
+                cout << "to fuzhi" << endl;
+                index++;
+                ANALYSIS(initval, InitVal, index);
+                index++;
+            }
+        }
+        // 不是数组，那就一定是赋值
+        else
+        {
+            index++;
+            ANALYSIS(initval, InitVal, index);
+            program.functions.back().InstVec.back()->op1.name = initval->v;
+            program.functions.back().InstVec.back()->op1.type = initval->t;
+            cout << "initval  " << toString(initval->t) << "  " << initval->v << endl;
+
+            Operand op = program.functions.back().InstVec.back()->des;
+            STE ste;
+            ste.operand = op;
+            auto it = symbol_table.scope_stack.back().table.find(op.name);
+            if (it != symbol_table.scope_stack.back().table.end())
+            {
+                symbol_table.scope_stack.back().table[op.name] = ste;
+            }
+            else
+            {
+                symbol_table.scope_stack.back().table.insert({op.name, ste});
+            }
+            cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+        }
     }
-    if (index < len && root->children[index]->token.type == TokenType::ASSIGN)
+    // 单纯一个Ident，无任何赋值
+    else
     {
-        index++;
-        ANALYSIS(initval, InitVal, index);
+        cout << "no initval in int a,b0,c" << endl;
+        STE ste;
+        Operand op = program.functions.back().InstVec.back()->des;
+        ste.operand = op;
+        auto it = symbol_table.scope_stack.back().table.find(op.name);
+        if (it != symbol_table.scope_stack.back().table.end())
+        {
+            symbol_table.scope_stack.back().table[op.name] = ste;
+        }
+        else
+        {
+            symbol_table.scope_stack.back().table.insert({op.name, ste});
+        }
+        cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // InitVal -> Exp | '{' [ InitVal { ',' InitVal } ] '}'
@@ -398,29 +817,103 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin initval" << endl;
 #endif
+
     int len = root->children.size();
     if (root->children[0]->type == NodeType::EXP)
     {
         ANALYSIS(exp, Exp, 0);
+        COPY_EXP_NODE(exp, root);
     }
     else
     {
+        cout << "i am here1" << endl;
+        Operand des = program.functions.back().InstVec.back()->des;
         if (root->children[1]->type == NodeType::INITVAL)
         {
-            int index = 2;
-            while (index < len && root->children[index]->token.type == TokenType::COMMA)
+            cout << "i am here12" << endl;
+            // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数
+            Operand op1 = des;
+            int all = 1;
+            STE ste = symbol_table.get_ste(op1.name);
+            for (int i = 0; i < ste.dimension.size(); i++)
             {
+                all *= ste.dimension[i];
+            }
+            int index = 0;
+            cout << "i am here123" << endl;
+            for (int i = 0; i < all; i++)
+            {
+                Operand op2;
+                op2.name = to_string(i);
+                op2.type = Type::IntLiteral;
+                cout << index << " begin initval" << endl;
                 index++;
                 ANALYSIS(initval, InitVal, index);
                 index++;
+
+                Operand des(initval->v, initval->t);
+
+                cout << "yao cun ru de shu is " << initval->v << endl;
+
+                if (initval->t == Type::IntLiteral)
+                    des.type = Type::Int;
+                else if (initval->t == Type::FloatLiteral)
+                    des.type = Type::Float;
+
+                cout << "------------------" << op1.name << "   " << toString(op1.type) << " " << op2.name << " " << toString(des.type) << "   " << des.name << endl;
+                Instruction *storeInst = new Instruction(op1,
+                                                         op2,
+                                                         des,
+                                                         ir::Operator::store);
+                cout << "i am here1234" << endl;
+                program.functions.back().addInst(storeInst);
+                cout << "complete" << endl;
+
+                STE ste_add;
+                Operand op_add = des;
+                ste_add.operand = op_add;
+
+                cout << "op add is            " << op_add.name << endl;
+                auto it = symbol_table.scope_stack.back().table.find(op_add.name);
+                if (it != symbol_table.scope_stack.back().table.end())
+                {
+                    symbol_table.scope_stack.back().table[op_add.name] = ste_add;
+                    cout << "///////add xiugai  " << op_add.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+                }
+                else
+                {
+                    symbol_table.scope_stack.back().table.insert({op_add.name, ste_add});
+                    cout << "//////add  insert  " << op_add.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+                }
             }
+            // int index = 2;
+            // while (index < len && root->children[index]->token.type == TokenType::COMMA)
+            // {
+            //     index++;
+            //     ANALYSIS(initval, InitVal, index);
+            //     index++;
+            // }
+        }
+        else
+        {
+            root->v = "0";
+            root->t = Type::null;
         }
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
-// FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
+// FuncDef -> FuncType Ident '(' [FuncFParams] ')' BlockcallInst
 void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
 {
 #ifdef DEBUG_SEMANTIC
@@ -428,6 +921,12 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
 #endif
     ANALYSIS(functype, FuncType, 0);
     GET_CHILD_PTR(ident, Term, 1);
+    if (ident->token.value == "main")
+    {
+        ir::CallInst *callGlobal = new ir::CallInst(ir::Operand("global", ir::Type::null),
+                                                    ir::Operand("t0", ir::Type::null));
+        program.functions.back().addInst(callGlobal);
+    }
 
     root->t = functype->t;
     root->v = ident->token.value;
@@ -435,6 +934,7 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
 
     if (root->children[3]->type == NodeType::FUNCFPARAMS)
     {
+        // 函数存在参数
         ANALYSIS(funcfparams, FuncFParams, 3);
         ANALYSIS(block, Block, 5);
     }
@@ -443,7 +943,16 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
         ANALYSIS(block, Block, 4);
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // FuncType -> 'void' | 'int' | 'float'
@@ -452,11 +961,12 @@ void frontend::Analyzer::analysisFuncType(FuncType *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin functype" << endl;
 #endif
-    if (root->token.type == TokenType::VOIDTK)
+    GET_CHILD_PTR(term, Term, 0);
+    if (term->token.type == TokenType::VOIDTK)
     {
         root->t = Type::null;
     }
-    else if (root->token.type == TokenType::INTTK)
+    else if (term->token.type == TokenType::INTTK)
     {
         root->t = Type::Int;
     }
@@ -465,7 +975,16 @@ void frontend::Analyzer::analysisFuncType(FuncType *root, ir::Program &program)
         root->t = Type::Float;
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // FuncFParam -> BType Ident ['[' ']' { '[' Exp ']' }]
@@ -475,6 +994,11 @@ void frontend::Analyzer::analysisFuncFParam(FuncFParam *root, ir::Program &progr
     cout << "begin funcfparam" << endl;
 #endif
     ANALYSIS(btype, BType, 0);
+    GET_CHILD_PTR(ident, Term, 1);
+
+    root->t = btype->t;
+    root->v = ident->token.value;
+    root->is_computable = false;
     int len = root->children.size();
     int index = 4;
     while (index < len && root->children[index]->token.type == TokenType::LBRACK)
@@ -484,7 +1008,16 @@ void frontend::Analyzer::analysisFuncFParam(FuncFParam *root, ir::Program &progr
         index = index + 2;
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // FuncFParams -> FuncFParam { ',' FuncFParam }
@@ -493,17 +1026,35 @@ void frontend::Analyzer::analysisFuncFParams(FuncFParams *root, ir::Program &pro
 #ifdef DEBUG_SEMANTIC
     cout << "begin funcfparams" << endl;
 #endif
+    vector<Operand> paraVec;
     ANALYSIS(funcfparam, FuncFParam, 0);
+    Operand op1(funcfparam->v, funcfparam->t);
+    paraVec.push_back(op1);
+
     int len = root->children.size();
     int index = 1;
     while (index < len && root->children[index]->token.type == TokenType::COMMA)
     {
         index++;
-        ANALYSIS(initval, InitVal, index);
+        ANALYSIS(funcfparam_right, FuncFParam, index);
+
+        Operand op1(funcfparam_right->v, funcfparam_right->t);
+        paraVec.push_back(op1);
+
         index++;
     }
+    program.functions.back().ParameterList = paraVec;
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // Block -> '{' { BlockItem } '}'
@@ -527,7 +1078,16 @@ void frontend::Analyzer::analysisBlock(Block *root, ir::Program &program)
     // 函数定义结束时，函数内部的作用域会退出。在函数定义结束后，函数内部的变量将不再可见。
     symbol_table.exit_scope();
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // BlockItem -> Decl | Stmt
@@ -545,7 +1105,16 @@ void frontend::Analyzer::analysisBlockItem(BlockItem *root, ir::Program &program
         ANALYSIS(stmt, Stmt, 0);
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // Stmt -> LVal '=' Exp ';'                        |
@@ -565,6 +1134,13 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
     {
         ANALYSIS(lval, LVal, 0);
         ANALYSIS(exp, Exp, 2);
+        // 第一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
+        Operand op1(exp->v, exp->t);
+        Operand des(lval->v, lval->t);
+        ir::Instruction *movInst = new Instruction(op1,
+                                                   ir::Operand(),
+                                                   des, ir::Operator::mov);
+        program.functions.back().addInst(movInst);
     }
     else if (root->children[0]->type == NodeType::BLOCK)
     {
@@ -582,6 +1158,15 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
         if (ident->token.type == TokenType::IFTK)
         {
             ANALYSIS(cond, Cond, 2);
+            Operand op1(cond->v, cond->t);
+            Instruction *gotoInst = new Instruction(op1,
+                                                    ir::Operand(),
+                                                    ir::Operand("2", ir::Type::IntLiteral), ir::Operator::_goto);
+            program.functions.back().addInst(gotoInst);
+            Instruction *gotoInst1 = new Instruction(ir::Operand(),
+                                                     ir::Operand(),
+                                                     ir::Operand("4", ir::Type::IntLiteral), ir::Operator::_goto);
+            program.functions.back().addInst(gotoInst1);
             ANALYSIS(stmt, Stmt, 4);
             int len = root->children.size();
             int index = 5;
@@ -603,24 +1188,18 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
         }
         else if (ident->token.type == TokenType::RETURNTK)
         {
-            cout << "add inst: returnInst begin" << endl;
             int len = root->children.size();
             int index = 1;
             if (index < len)
             {
-                cout << "return sth" << endl;
                 ANALYSIS(exp, Exp, 1);
                 COPY_EXP_NODE(exp, root);
-                if (exp->is_computable)
-                {
-                    Operand op1(exp->v, exp->t);
-                    Instruction *returnInst = new Instruction(op1,
-                                                              ir::Operand(),
-                                                              ir::Operand(),
-                                                              ir::Operator::_return);
-                    program.functions.back().addInst(returnInst);
-                    cout << "add inst: returnInst" << endl;
-                }
+                Operand op1(exp->v, exp->t);
+                Instruction *returnInst = new Instruction(op1,
+                                                          ir::Operand(),
+                                                          ir::Operand(),
+                                                          ir::Operator::_return);
+                program.functions.back().addInst(returnInst);
             }
             else
             {
@@ -629,7 +1208,6 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                           ir::Operand(),
                                                           ir::Operator::_return);
                 program.functions.back().addInst(returnInst);
-                cout << "add inst: returnInst 0" << endl;
             }
         }
         else
@@ -637,7 +1215,16 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
         }
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // Exp -> AddExp
@@ -649,7 +1236,16 @@ void frontend::Analyzer::analysisExp(Exp *root, ir::Program &program)
     ANALYSIS(addexp, AddExp, 0);
     COPY_EXP_NODE(addexp, root);
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // Cond -> LOrExp
@@ -659,8 +1255,18 @@ void frontend::Analyzer::analysisCond(Cond *root, ir::Program &program)
     cout << "begin cond" << endl;
 #endif
     ANALYSIS(lorexp, LOrExp, 0);
+    COPY_EXP_NODE(lorexp, root);
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // LVal -> Ident {'[' Exp ']'}
@@ -669,17 +1275,49 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin lval" << endl;
 #endif
+
+    GET_CHILD_PTR(ident, Term, 0);
+    ident->v = ident->token.value;
+    root->v = ident->v;
     int len = root->children.size();
     int index = 1;
 
-    while (index < len && root->children[index]->token.type == TokenType::LBRACK)
+    if (index < len)
     {
-        index++;
-        ANALYSIS(exp, Exp, index);
-        index = index + 2;
+        GET_CHILD_PTR(lbrack, Term, index);
+        while (index < len && lbrack->token.type == TokenType::LBRACK)
+        {
+            index++;
+            ANALYSIS(exp, Exp, index);
+            // 一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
+            cout << "add load" << endl;
+            Operand op1(ident->v, ident->t);
+            Operand op2(exp->v, ir::Type::IntLiteral);
+            string id = symbol_table.get_scoped_name("t");
+            Operand des(id, ir::Type::Int);
+            root->v = id;
+            Instruction *loadInst = new Instruction(op1,
+                                                    op2,
+                                                    des, ir::Operator::load);
+            program.functions.back().addInst(loadInst);
+            index = index + 2;
+        }
     }
+
+    root->is_computable = false;
+
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // Number -> IntConst | floatConst
@@ -702,7 +1340,16 @@ void frontend::Analyzer::analysisNumber(Number *root, ir::Program &program)
         root->is_computable = true;
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // PrimaryExp -> '(' Exp ')' | LVal | Number
@@ -714,6 +1361,7 @@ void frontend::Analyzer::analysisPrimaryExp(PrimaryExp *root, ir::Program &progr
     if (root->children[0]->type == NodeType::LVAL)
     {
         ANALYSIS(lval, LVal, 0);
+        COPY_EXP_NODE(lval, root);
     }
     else if (root->children[0]->type == NodeType::NUMBER)
     {
@@ -725,7 +1373,16 @@ void frontend::Analyzer::analysisPrimaryExp(PrimaryExp *root, ir::Program &progr
         ANALYSIS(exp, Exp, 1);
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // UnaryExp -> PrimaryExp | Ident '(' [FuncRParams] ')' | UnaryOp UnaryExp
@@ -747,15 +1404,46 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
     }
     else
     {
+        GET_CHILD_PTR(ident, Term, 0);
+        ident->v = ident->token.value;
+        COPY_EXP_NODE(ident, root);
+
         int len = root->children.size();
         int index = 2;
-        if (index < len)
+        if (index < len - 1)
         {
             ANALYSIS(funcrparams, FuncRParams, 2);
+            // 一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
+            Operand op1 = symbol_table.get_operand(ident->v);
+            string id = symbol_table.get_scoped_name("t");
+            Operand des(id, op1.type);
+            root->v = id;
+            vector<Operand> paraVec1 = program.functions.back().ParameterList;
+            ir::CallInst *callInst = new ir::CallInst(op1, paraVec1, des);
+            program.functions.back().addInst(callInst);
+        }
+        else
+        {
+            Operand op1 = symbol_table.get_operand(ident->v);
+            string id = symbol_table.get_scoped_name("t");
+            Operand des(id, op1.type);
+            root->v = id;
+            ir::CallInst *callInst = new ir::CallInst(op1,
+                                                      des);
+            program.functions.back().addInst(callInst);
         }
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // UnaryOp -> '+' | '-' | '!'
@@ -764,8 +1452,30 @@ void frontend::Analyzer::analysisUnaryOp(UnaryOp *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin unaryop" << endl;
 #endif
+    GET_CHILD_PTR(term, Term, 0);
+    if (term->token.type == TokenType::PLUS)
+    {
+        root->v = "+";
+    }
+    else if (term->token.type == TokenType::MINU)
+    {
+        root->v = "-";
+    }
+    else
+    {
+        root->v = "!";
+    }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // FuncRParams -> Exp { ',' Exp }
@@ -774,20 +1484,37 @@ void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, ir::Program &pro
 #ifdef DEBUG_SEMANTIC
     cout << "begin funcrparams" << endl;
 #endif
+
+    vector<Operand> paraVec1;
     ANALYSIS(exp, Exp, 0);
+    Operand op(exp->v, exp->t);
+    paraVec1.push_back(op);
+    COPY_EXP_NODE(exp, root);
     int len = root->children.size();
     int index = 1;
     while (index < len)
     {
         index++;
         ANALYSIS(exp, Exp, index);
+        Operand op(exp->v, exp->t);
+        paraVec1.push_back(op);
         index++;
     }
+    program.functions.back().ParameterList = paraVec1;
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
-// MulExp -> UnaryExp { ('\*' | '/' | '%') UnaryExp }
+// MulExp -> UnaryExp { ('*' | '/' | '%') UnaryExp }
 void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
 {
 #ifdef DEBUG_SEMANTIC
@@ -799,12 +1526,48 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
     int index = 1;
     while (index < len)
     {
+        GET_CHILD_PTR(term, Term, index);
         index++;
-        ANALYSIS(unaryexp, UnaryExp, index);
+        ANALYSIS(unaryexp_right, UnaryExp, index);
         index++;
+        Operand op1(unaryexp->v, ir::Type::Int);
+        Operand op2(unaryexp_right->v, ir::Type::Int);
+        string id = symbol_table.get_scoped_name("t");
+        Operand des(id, ir::Type::Int);
+        if (term->token.type == TokenType::MULT)
+        {
+            Instruction *Inst = new Instruction(op1,
+                                                op2,
+                                                des, ir::Operator::mul);
+            program.functions.back().addInst(Inst);
+        }
+        else if (term->token.type == TokenType::DIV)
+        {
+            Instruction *Inst = new Instruction(op1,
+                                                op2,
+                                                des, ir::Operator::div);
+            program.functions.back().addInst(Inst);
+        }
+        else
+        {
+            Instruction *Inst = new Instruction(op1,
+                                                op2,
+                                                des, ir::Operator::mod);
+            program.functions.back().addInst(Inst);
+        }
+        root->v = id;
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // AddExp -> MulExp { ('+' | '-') MulExp }
@@ -814,17 +1577,131 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
     cout << "begin addexp" << endl;
 #endif
     ANALYSIS(mulexp, MulExp, 0);
+    Operand op1(mulexp->v, mulexp->t);
     COPY_EXP_NODE(mulexp, root);
     int len = root->children.size();
     int index = 1;
     while (index < len)
     {
+        GET_CHILD_PTR(term, Term, index);
         index++;
-        ANALYSIS(mulexp, MulExp, index);
+        ANALYSIS(mulexp_right, MulExp, index);
         index++;
+
+        // 两个都是常量
+        if (mulexp->is_computable && mulexp_right->is_computable)
+        {
+            cout << "here1" << endl;
+            root->is_computable = true;
+            if (term->token.type == TokenType::PLUS)
+            {
+                if (mulexp->t == Type::Int && mulexp_right->t == Type::Int)
+                    root->v = to_string(std::stoi(mulexp->v) + std::stoi(mulexp_right->v));
+                else
+                    root->v = to_string(std::stof(mulexp->v) + std::stof(mulexp_right->v));
+            }
+            else
+            {
+                if (mulexp->t == Type::Int && mulexp_right->t == Type::Int)
+                    root->v = to_string(std::stoi(mulexp->v) - std::stoi(mulexp_right->v));
+                else
+                    root->v = to_string(std::stof(mulexp->v) - std::stof(mulexp_right->v));
+            }
+        }
+        // 两个都不是常量
+        else if (!mulexp->is_computable && !mulexp_right->is_computable)
+        {
+            cout << "here2" << endl;
+            Operand op1 = symbol_table.get_operand(mulexp->v);
+            Operand op2 = symbol_table.get_operand(mulexp_right->v);
+            string id = symbol_table.get_scoped_name("t");
+            Operand des(id, ir::Type::Int);
+            Instruction *Inst = new Instruction(op1, op2, des, ir::Operator::add);
+            program.functions.back().addInst(Inst);
+            root->v = id;
+            Operand op = des;
+            STE ste;
+            ste.operand = op;
+            auto it = symbol_table.scope_stack.back().table.find(op.name);
+            if (it != symbol_table.scope_stack.back().table.end())
+            {
+                symbol_table.scope_stack.back().table[op.name] = ste;
+            }
+            else
+            {
+                symbol_table.scope_stack.back().table.insert({op.name, ste});
+            }
+            cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+        }
+        else if (!mulexp->is_computable && mulexp_right->is_computable)
+        {
+            cout << "here3" << endl;
+            Operand op1(mulexp->v, mulexp->t);
+            cout << mulexp->v << endl;
+            cout << mulexp_right->v << endl;
+            Operand op2(mulexp_right->v, mulexp_right->t);
+            if (term->token.type == TokenType::PLUS)
+            {
+                cout << "here4" << endl;
+                if (mulexp->t == Type::Int && mulexp_right->t == Type::IntLiteral)
+                {
+                    string id = symbol_table.get_scoped_name("result");
+                    root->v = id;
+                    root->t = Type::Int;
+                    Operand des(id, Type::Int);
+                    Instruction *addInst = new Instruction(op1,
+                                                           op2,
+                                                           des, ir::Operator::addi);
+                    program.functions.back().addInst(addInst);
+
+                    Operand op = des;
+                    STE ste;
+                    ste.operand = op;
+                    auto it = symbol_table.scope_stack.back().table.find(op.name);
+                    if (it != symbol_table.scope_stack.back().table.end())
+                    {
+                        symbol_table.scope_stack.back().table[op.name] = ste;
+                    }
+                    else
+                    {
+                        symbol_table.scope_stack.back().table.insert({op.name, ste});
+                    }
+                    cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+                }
+            }
+            else
+            {
+                cout << "error" << endl;
+                if (mulexp->t == Type::Int && mulexp_right->t == Type::IntLiteral)
+                {
+                    string id = symbol_table.get_scoped_name("result");
+                    root->v = id;
+                    root->t = Type::Int;
+                    Operand des(id, Type::Int);
+                    Instruction *subInst = new Instruction(op1,
+                                                           op2,
+                                                           des, ir::Operator::subi);
+                    program.functions.back().addInst(subInst);
+                }
+            }
+            {
+            }
+        }
+        else
+        {
+        }
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // RelExp -> AddExp { ('<' | '>' | '<=' | '>=') AddExp }
@@ -834,16 +1711,54 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
     cout << "begin relexp" << endl;
 #endif
     ANALYSIS(addexp, AddExp, 0);
+    COPY_EXP_NODE(addexp, root);
     int len = root->children.size();
     int index = 1;
     while (index < len)
     {
+        GET_CHILD_PTR(term, Term, index);
         index++;
         ANALYSIS(addexp_right, AddExp, index);
         index++;
+        Operand op1(addexp->v, addexp->t);
+        Operand op2(addexp_right->v, addexp_right->t);
+        string id = symbol_table.get_scoped_name("t");
+        Operand des(id, Type::IntLiteral);
+        if (term->token.type == TokenType::LSS)
+        {
+            Instruction *inst = new Instruction(op1, op2, des, ir::Operator::lss);
+            program.functions.back().addInst(inst);
+        }
+        else if (term->token.type == TokenType::GTR)
+        {
+            Instruction *inst = new Instruction(op1, op2, des, ir::Operator::gtr);
+            program.functions.back().addInst(inst);
+        }
+        else if (term->token.type == TokenType::LEQ)
+        {
+            Instruction *inst = new Instruction(op1, op2, des, ir::Operator::leq);
+            program.functions.back().addInst(inst);
+        }
+        else
+        {
+            Instruction *inst = new Instruction(op1, op2, des, ir::Operator::geq);
+            program.functions.back().addInst(inst);
+        }
+        root->v = id;
+        root->t = Type::IntLiteral;
+        root->is_computable = false;
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // EqExp -> RelExp { ('==' | '!=') RelExp }
@@ -853,6 +1768,7 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
     cout << "begin eqexp" << endl;
 #endif
     ANALYSIS(relexp, RelExp, 0);
+    COPY_EXP_NODE(relexp, root);
     int len = root->children.size();
     int index = 1;
     while (index < len)
@@ -862,7 +1778,16 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
         index++;
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // LAndExp -> EqExp [ '&&' LAndExp ]
@@ -872,12 +1797,22 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
     cout << "begin landexp" << endl;
 #endif
     ANALYSIS(eqexp, EqExp, 0);
+    COPY_EXP_NODE(eqexp, root);
     if (root->children.size() == 3)
     {
         ANALYSIS(landexp, LAndExp, 2);
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // LOrExp -> LAndExp [ '||' LOrExp ]
@@ -890,6 +1825,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
     name = symbol_table.get_scoped_name(name);
     Operand des(name, Type::Int);
     ANALYSIS(landexp, LAndExp, 0);
+    COPY_EXP_NODE(landexp, root);
     Operand op1 = symbol_table.get_operand(landexp->v);
     if (root->children.size() == 3)
     {
@@ -902,7 +1838,16 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
         COPY_EXP_NODE(root->children[0], root);
     }
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }
 // ConstExp -> AddExp
@@ -912,8 +1857,17 @@ void frontend::Analyzer::analysisConstExp(ConstExp *root, ir::Program &program)
     cout << "begin constexp" << endl;
 #endif
     ANALYSIS(addexp, AddExp, 0);
-    COPY_EXP_NODE(root->children[0], root);
+    COPY_EXP_NODE(addexp, root);
 #ifdef DEBUG_RESULT
-    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << endl;
+    string sure;
+    if (root->is_computable)
+    {
+        sure = "true";
+    }
+    else
+    {
+        sure = "false";
+    }
+    cout << toString(root->type) << "    " << root->v << "    " << toString(root->t) << "    " << sure << endl;
 #endif
 }

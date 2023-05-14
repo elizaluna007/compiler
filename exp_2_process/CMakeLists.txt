@@ -48,3 +48,7 @@ add_executable(compiler main.cpp)
 # link
 # every lib should be linked with [compiler]
 target_link_libraries(compiler Tools Front IR jsoncpp)
+
+
+# set(CMAKE_C_COMPILER    "/usr/bin/x86_64-linux-gnu-gcc-7")
+# set(CMAKE_CXX_COMPILER  "/usr/bin/x86_64-linux-gnu-g++-7")

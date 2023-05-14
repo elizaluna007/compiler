@@ -135,3 +135,50 @@ ir::Program program;
 ir::Function globalFunc("global", ir::Type::null);
 全局变量赋值在 CompUnit 之后的 Decl 中发生
 全局的函数在 CompUnit 之后的 FuncDef 中发生
+
+python test.py s2
+
+..\bin\compiler.exe ../test.sy -s2 -o ../test.out
+..\bin\compiler.exe ../test.sy -e -o ../test.out
+
+..\bin\compiler.exe .\testcase\basic\01_var_defn2.sy -s2 -o .\output\basic\01_var_defn2.out
+..\bin\compiler.exe .\testcase\basic\01_var_defn2.sy -e -o .\output\basic\01_var_defn2.out
+通过2个
+..\bin\compiler.exe .\testcase\basic\02_var_defn3.sy -e -o .\output\basic\02_var_defn3.out
+通过10个
+..\bin\compiler.exe .\testcase\basic\03_arr_defn2.sy -e -o .\output\basic\03_arr_defn2.out
+通过11个
+..\bin\compiler.exe .\testcase\basic\04_arr_defn3.sy -e -o .\output\basic\04_arr_defn3.out
+
+..\bin\compiler.exe .\testcase\basic\08_const_array_defn.sy -e -o .\output\basic\08_const_array_defn.out
+
+..\bin\compiler.exe .\testcase\basic\10_var_defn_func.sy -e -o .\output\basic\10_var_defn_func.out
+
+..\bin\compiler.exe .\testcase\basic\07_const_var_defn3.sy -e -o .\output\basic\07_const_var_defn3.out
+
+
+
+
+docker pull frankd35/demo:v3
+docker run -it -v D:\360MoveData\Users\Luna\Desktop\compiler\exp_2_process:/coursegrader frankd35/demo:v3
+docker run -it -v /mnt/d/360MoveData/Users/Luna/Desktop/compiler/exp_2_process:/coursegrader frankd35/demo:v3
+cd coursegrader/test
+python3 test.py s2
+
+当你想用VMware
+bcdedit /set hypervisorlaunchtype off
+
+当你想用Docker
+bcdedit /set hypervisorlaunchtype auto
+
+
+//助教给的docker的cmake版本过低，出现问题，先升级
+apt-get update
+apt-get install -y wget
+wget https://github.com/Kitware/CMake/releases/download/v3.21.3/cmake-3.21.3-Linux-x86_64.tar.gz
+tar -xzvf cmake-3.21.3-Linux-x86_64.tar.gz
+cp -r cmake-3.21.3-Linux-x86_64/bin/* /usr/bin/
+cmake --version
+
+apt remove cmake
+ln -s /usr/share/cmake-3.21 /usr/share/cmake

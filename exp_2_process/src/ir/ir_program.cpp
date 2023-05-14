@@ -31,5 +31,6 @@ std::string ir::Program::draw()
     {
         ret += "\t" + i.val.name + " " + toString(i.val.type) + " " + std::to_string(i.maxlen) + "\n";
     }
+    ret+="end\n";
     return ret;
 }

@@ -189,9 +189,9 @@ CMakeFiles/Tools.dir/clean:
 # Target rules for target CMakeFiles/compiler.dir
 
 # All Build rule for target.
+CMakeFiles/compiler.dir/all: CMakeFiles/jsoncpp.dir/all
 CMakeFiles/compiler.dir/all: CMakeFiles/IR.dir/all
 CMakeFiles/compiler.dir/all: CMakeFiles/Tools.dir/all
-CMakeFiles/compiler.dir/all: CMakeFiles/jsoncpp.dir/all
 CMakeFiles/compiler.dir/all: CMakeFiles/Front.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\compiler.dir\build.make CMakeFiles/compiler.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\compiler.dir\build.make CMakeFiles/compiler.dir/build

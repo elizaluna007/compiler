@@ -1733,6 +1733,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
         int index = 2;
         if (index < len - 1)
         {
+            callInst_temp = new ir::CallInst(Operand(), Operand());
             ANALYSIS(funcrparam, FuncRParams, 2);
             // 一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
             Operand op1 = symbol_table.get_operand(ident->v);
@@ -1740,7 +1741,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             Operand des(id, op1.type);
             root->v = id;
 
-            vector<Operand> paraVec1 = function_temp.ParameterList;
+            vector<Operand> paraVec1 = callInst_temp->argumentList;
             ir::CallInst *callInst = new ir::CallInst(op1, paraVec1, des);
             Inst.push_back(callInst);
             pc++;
@@ -1836,7 +1837,7 @@ void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, ir::Program &pro
         paraVec1.push_back(op);
         index++;
     }
-    function_temp.ParameterList = paraVec1;
+    callInst_temp->argumentList = paraVec1;
 #ifdef DEBUG_RESULT
     string sure;
     if (root->is_computable)
@@ -2002,9 +2003,14 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
         // 两个都不是常量
         else if (!mulexp->is_computable && !mulexp_right->is_computable)
         {
-            Operand op1 = symbol_table.get_operand(mulexp->v);
-            Operand op2 = symbol_table.get_operand(mulexp_right->v);
+            // Operand op1 = symbol_table.get_operand(mulexp->v);
+            // Operand op2 = symbol_table.get_operand(mulexp_right->v);
+            Operand op1 = Operand(mulexp->v, mulexp->t);
+            Operand op2 = Operand(mulexp_right->v, mulexp_right->t);
             string id = "t" + to_string(counter++);
+            Type t;
+            if (mulexp->t == Type::Int)
+                t = Type::Int;
             Operand des(id, op1.type);
             if (term->token.type == TokenType::PLUS)
             {
@@ -2115,7 +2121,7 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
         Operand op1(addexp->v, addexp->t);
         Operand op2(addexp_right->v, addexp_right->t);
         string id = "t" + to_string(counter++);
-        Operand des(id, Type::IntLiteral);
+        Operand des(id, Type::Int);
         if (term->token.type == TokenType::LSS)
         {
             Instruction *lssinst = new Instruction(op1, op2, des, ir::Operator::lss);
@@ -2149,7 +2155,7 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
             cout << "add geq" << endl;
         }
         root->v = id;
-        root->t = Type::IntLiteral;
+        root->t = Type::Int;
         root->is_computable = false;
     }
 #ifdef DEBUG_RESULT

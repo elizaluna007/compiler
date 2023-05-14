@@ -101,8 +101,9 @@ python test.py s2
 ..\bin\compiler.exe .\testcase\basic\22_if_test3.sy -e -o .\output\basic\22_if_test3.out
 通过24个/primaryexp未复制
 ..\bin\compiler.exe .\testcase\basic\25_while_if.sy -e -o .\output\basic\25_while_if.out
-通过27个
-..\bin\compiler.exe ..\test.sy -e -o ..\test.out
+通过27个/while问题
+通过38个/数据类型问题
+
 
 
 

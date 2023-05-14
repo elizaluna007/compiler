@@ -10,7 +10,7 @@
 
 #### (4)区分 op 时修改为识别到两个相邻 op 可以组成 op，直接输出然后 reset()以下，如果只识别一个 op，则待定，等待第二个读入，做一个判断（当然这里也可以直接识别第一个 op 是不是仅单符号操作数，直接考虑是否输出）
 
-### 语法分析——abstract_syntax_tree.h/syntax.h/syntax.cpp
+### 语法分析——abstract_syntax_tree.h/abstract_syntax_tree.cpp/syntax.h/syntax.cpp
 
 #### (1)修改 abstract_syntax_tree.h 中的 COMPUINT 为 COMPUNIT(8/47)
 
@@ -27,7 +27,13 @@
 #### (7)25 错误，去修改 Stmt-->忘记加'('和')'(47/47)——全过了
 
 ### 语义分析——semantic.cpp
-#### 通过58个测试点：修改原本词法和语法分析
+
+#### 通过 58 个测试点：修改原本词法和语法分析
+
 #### diff -u file1.txt file2.txt > diff.txt
-#### 词法分析95错，修改op后是'.'
-#### 语法分析62错，修改UnaryExp
+
+#### 词法分析 95 错，修改 op 后是'.'
+
+#### 语法分析 62 错，修改 UnaryExp
+
+

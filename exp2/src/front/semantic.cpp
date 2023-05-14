@@ -1,8 +1,8 @@
 #include "front/semantic.h"
 
 #include <cassert>
-// #define DEBUG_SEMANTIC 1
-// #define DEBUG_RESULT 1
+#define DEBUG_SEMANTIC 1
+#define DEBUG_RESULT 1
 using ir::Function;
 using ir::Instruction;
 using ir::Operand;
@@ -35,6 +35,11 @@ int pc = 0;
 vector<Instruction *> Inst;
 // 用来暂存function
 Function function_temp;
+ir::CallInst *callInst_temp;
+// 用来存放需要中断的语句进行更新
+vector<int> break_or_return;
+int origin;
+int destination;
 
 #define TODO assert(0 && "TODO");
 
@@ -121,7 +126,6 @@ void frontend::SymbolTable::exit_scope()
 // 在翻译成 IR 的过程中我们需要解决不通过作用域中同名变量的问题, 我们的解决方案是重命名, 为变量名加上与作用域相关的后缀使得重命名之后的变量名字在一个 IR Function 中是独一无二的
 string frontend::SymbolTable::get_scoped_name(string id) const
 {
-    cout << "get scoped name    " << id << endl;
     if (scope_stack.empty())
     {
         cout << "get scoped name end    " << id << endl;
@@ -130,13 +134,10 @@ string frontend::SymbolTable::get_scoped_name(string id) const
     const auto &current_scope = scope_stack.back(); // 当前作用域
     if (current_scope.table.find(id) != current_scope.table.end())
     {
-        cout << "get scoped name end    "
-             << "scope_" + std::to_string(current_scope.cnt) + "_" + id << endl;
         return "scope_" + std::to_string(current_scope.cnt) + "_" + id;
     }
     else
     {
-        cout << "get scoped name end    " << id + "_scope_" + std::to_string(current_scope.cnt) << endl;
         return id + "_scope_" + std::to_string(current_scope.cnt); // 第一次出现时
     }
 }
@@ -277,6 +278,7 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
             pc++;
 
             program.addFunction(function_temp);
+            function_temp = Function();
             cout << "add func "
                  << "global"
                  << " " << toString(Type::null) << "  in program" << endl;
@@ -293,13 +295,28 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
         // FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
         function_temp = Function(); // 清零
         int pc_old = pc;
+        cout << "***************************1*********************" << endl;
+        for (int i = 0; i < function_temp.ParameterList.size(); i++)
+        {
+            cout << "param is " << toString(function_temp.ParameterList[i].type) << "  " << function_temp.ParameterList[i].name << endl;
+        }
         ANALYSIS(funcdef, FuncDef, 0);
         int pc_new = pc;
+        cout << "***************************2*********************" << endl;
+        for (int i = 0; i < function_temp.ParameterList.size(); i++)
+        {
+            cout << "param is " << toString(function_temp.ParameterList[i].type) << "  " << function_temp.ParameterList[i].name << endl;
+        }
 
         function_temp.name = funcdef->v;
         function_temp.returnType = funcdef->t;
         program.addFunction(function_temp);
-        cout << "add func " << funcdef->v << " " << toString(funcdef->t) << "  in program" << endl;
+        cout << "***************************3*********************" << endl;
+        cout << "add func " << toString(funcdef->t) << " " << funcdef->v << "  in program" << endl;
+        for (int i = 0; i < function_temp.ParameterList.size(); i++)
+        {
+            cout << function_temp.name << " param is " << toString(function_temp.ParameterList[i].type) << "  " << function_temp.ParameterList[i].name << endl;
+        }
 
         for (int q = pc_old; q < pc_new; q++)
         {
@@ -307,6 +324,7 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
 
             cout << "pc is " << q << " , add Instruction " << toString(Inst[q]->op) << " in program " << function_temp.name << endl;
         }
+        function_temp = Function();
 
         int len = root->children.size();
         int index = 1;
@@ -623,7 +641,6 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
             //     ANALYSIS(constinitval, ConstInitVal, index);
             //     index++;
             // }
-            cout << "i am here12" << endl;
             // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数
             Operand op1 = des;
             int all = 1;
@@ -633,7 +650,6 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
                 all *= ste.dimension[i];
             }
             int index = 0;
-            cout << "i am here123" << endl;
             for (int i = 0; i < all; i++)
             {
                 Operand op2;
@@ -660,10 +676,8 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
                                                          ir::Operator::store);
 
                 cout << "add store" << endl;
-                cout << "i am here1234" << endl;
                 Inst.push_back(storeInst);
                 pc++;
-                cout << "complete" << endl;
 
                 if (!constinitval->is_computable)
                 {
@@ -905,7 +919,6 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
     // 单纯一个Ident，无任何赋值
     else
     {
-        cout << "no initval in int a,b0,c" << endl;
         STE ste;
         Operand op = Inst.back()->des;
         ste.operand = op;
@@ -941,11 +954,9 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
     }
     else
     {
-        cout << "i am here1" << endl;
         Operand des = Inst.back()->des;
         if (root->children[1]->type == NodeType::INITVAL)
         {
-            cout << "i am here12" << endl;
             // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数
             Operand op1 = des;
             int all = 1;
@@ -955,7 +966,6 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
                 all *= ste.dimension[i];
             }
             int index = 0;
-            cout << "i am here123" << endl;
             for (int i = 0; i < all; i++)
             {
                 Operand op2;
@@ -981,12 +991,8 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
                                                          des,
                                                          ir::Operator::store);
 
-                cout << "i am here1234" << endl;
                 Inst.push_back(storeInst);
                 pc++;
-
-                cout << "add store" << endl;
-                cout << "complete" << endl;
 
                 if (!initval->is_computable)
                 {
@@ -1164,19 +1170,27 @@ void frontend::Analyzer::analysisFuncFParams(FuncFParams *root, ir::Program &pro
     ANALYSIS(funcfparam, FuncFParam, 0);
     Operand op1(funcfparam->v, funcfparam->t);
     paraVec.push_back(op1);
+    cout << "add funcfparam" << toString(op1.type) << " " << op1.name << " in " << endl;
 
     int len = root->children.size();
     int index = 1;
-    while (index < len && root->children[index]->token.type == TokenType::COMMA)
+    if (index < len)
     {
-        index++;
-        ANALYSIS(funcfparam_right, FuncFParam, index);
+        GET_CHILD_PTR(term, Term, index);
+        while (index < len - 1 && term->token.type == TokenType::COMMA)
+        {
+            index++;
+            ANALYSIS(funcfparam_right, FuncFParam, index);
 
-        Operand op1(funcfparam_right->v, funcfparam_right->t);
-        paraVec.push_back(op1);
+            Operand op1(funcfparam_right->v, funcfparam_right->t);
+            paraVec.push_back(op1);
 
-        index++;
+            cout << "add funcfparam " << toString(op1.type) << " " << op1.name << " in " << endl;
+
+            index++;
+        }
     }
+
     function_temp.ParameterList = paraVec;
 
 #ifdef DEBUG_RESULT
@@ -1237,7 +1251,16 @@ void frontend::Analyzer::analysisBlockItem(BlockItem *root, ir::Program &program
     }
     else
     {
+        origin = pc;
+        destination = pc;
+        break_or_return.clear();
         ANALYSIS(stmt, Stmt, 0);
+        destination = pc;
+        // 对需要的指令进行更新
+        for (int i = 0; i < break_or_return.size(); i++)
+        {
+            Inst[break_or_return[i]]->des.name = to_string(destination);
+        }
     }
 #ifdef DEBUG_RESULT
     string sure;
@@ -1265,7 +1288,6 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin stmt" << endl;
 #endif
-
     if (root->children[0]->type == NodeType::LVAL)
     {
         ANALYSIS(lval, LVal, 0);
@@ -1296,18 +1318,29 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
         GET_CHILD_PTR(ident, Term, 0);
         if (ident->token.type == TokenType::IFTK)
         {
-            int pc_1 = pc; // 条件生成之前的pc备份
+            // cond
+            //  if cond goto 2
+            //  goto next else(analysis)
+            //  stmt
+            //  goto end
+            //  cond
+            //  else if cond goto 2
+            //  stmt
+            //  goto end
+            //  else
+            //  stmt
             ANALYSIS(cond, Cond, 2);
-            int pc_2 = pc; // 条件生成之前的pc备份
-
             Operand op1(cond->v, cond->t);
+            // 第一个goto,指向条件中执行
             Instruction *gotoInst1 = new Instruction(op1,
                                                      ir::Operand(),
                                                      ir::Operand("2", ir::Type::IntLiteral), ir::Operator::_goto);
             Inst.push_back(gotoInst1);
             pc++;
 
+            int pc_to_change1 = pc; // 需要修改的指令的位置，指向下一个else if 语句开始前
             cout << "add goto" << endl;
+            // 第二个goto,指向下一个判断语句,需要更新
             Instruction *gotoInst2 = new Instruction(ir::Operand(),
                                                      ir::Operand(),
                                                      ir::Operand("1", ir::Type::IntLiteral), ir::Operator::_goto);
@@ -1315,12 +1348,23 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             pc++;
 
             cout << "add goto" << endl;
-
-            int pc_3 = pc;
+            int pc_1 = pc;
             ANALYSIS(stmt, Stmt, 4);
-            int pc_4 = pc;
+            int pc_to_change2 = pc;
+            // 第三个goto,指向终点,需要更新
+            Instruction *gotoInst = new Instruction(ir::Operand(),
+                                                    ir::Operand(),
+                                                    ir::Operand("1", Type::IntLiteral),
+                                                    ir::Operator::_goto);
+            Inst.push_back(gotoInst);
+            pc++;
 
-            int pc_stmt_pre = pc_4 - pc_3;
+            int pc_2 = pc;
+            cout << "add goto" << endl;
+
+            Inst[pc_to_change1]->des.name = to_string(pc_2 - pc_1 + 1);
+
+            cout << "1 where is pc: " << pc_to_change1 << " change inst goto's des's name = " << to_string(pc_2 - pc_1 + 1) << endl;
 
             int len = root->children.size();
             int index = 5;
@@ -1328,26 +1372,74 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             {
                 ANALYSIS(stmt_right, Stmt, 6);
             }
+            int pc_des = pc;
+            Inst[pc_to_change2]->des.name = to_string(pc_des - pc_2 + 1);
+
+            cout << "2 where is pc: " << pc_to_change2 << " change inst goto's des's name = " << to_string(pc_des - pc_2 + 1) << endl;
         }
         else if (ident->token.type == TokenType::WHILETK)
         {
+            int while_begin = pc;
             ANALYSIS(cond, Cond, 2);
+            Operand op1(cond->v, cond->t);
+            // 第一个goto,指向条件中执行
+            Instruction *gotoInst1 = new Instruction(op1,
+                                                     ir::Operand(),
+                                                     ir::Operand("2", ir::Type::IntLiteral), ir::Operator::_goto);
+            Inst.push_back(gotoInst1);
+            pc++;
+
+            int pc_to_change1 = pc;
+            cout << "add goto" << endl;
+            // 第二个goto,指向终点
+            Instruction *gotoInst2 = new Instruction(ir::Operand(),
+                                                     ir::Operand(),
+                                                     ir::Operand("1", ir::Type::IntLiteral), ir::Operator::_goto);
+            Inst.push_back(gotoInst2);
+            pc++;
+
             ANALYSIS(stmt, Stmt, 4);
+
+            string pc_again = to_string(while_begin - pc);
+            // 第三个goto,指向起点
+            Instruction *gotoInst = new Instruction(ir::Operand(),
+                                                    ir::Operand(),
+                                                    ir::Operand(pc_again, Type::IntLiteral),
+                                                    ir::Operator::_goto);
+            Inst.push_back(gotoInst);
+            pc++;
+            cout << "add goto" << endl;
+            cout << "1 where is pc: return back to " << pc_again << endl;
+
+            int pc_des = pc;
+            Inst[pc_to_change1]->des.name = to_string(pc_des - pc_to_change1);
+
+            cout << "2 where is pc: " << pc_to_change1 << " change inst goto's des's name = " << to_string(pc_des - pc_to_change1) << endl;
         }
         else if (ident->token.type == TokenType::BREAKTK)
         {
+            break_or_return.push_back(pc);
+            Instruction *gotoInst = new Instruction(ir::Operand("", Type::null),
+                                                    ir::Operand(),
+                                                    ir::Operand("1", Type::IntLiteral),
+                                                    ir::Operator::_goto);
+            Inst.push_back(gotoInst);
+            pc++;
+            cout << "add goto" << endl;
         }
         else if (ident->token.type == TokenType::CONTINUETK)
         {
         }
         else if (ident->token.type == TokenType::RETURNTK)
         {
+            int pc_to_change;
             int len = root->children.size();
             int index = 1;
             if (index < len)
             {
                 ANALYSIS(exp, Exp, 1);
                 COPY_EXP_NODE(exp, root);
+
                 Operand op1(exp->v, exp->t);
                 Instruction *returnInst = new Instruction(op1,
                                                           ir::Operand(),
@@ -1373,6 +1465,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
         {
         }
     }
+
 #ifdef DEBUG_RESULT
     string sure;
     if (root->is_computable)
@@ -1557,6 +1650,7 @@ void frontend::Analyzer::analysisPrimaryExp(PrimaryExp *root, ir::Program &progr
     else
     {
         ANALYSIS(exp, Exp, 1);
+        COPY_EXP_NODE(exp, root);
     }
 #ifdef DEBUG_RESULT
     string sure;
@@ -1587,6 +1681,47 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
     {
         ANALYSIS(unaryop, UnaryOp, 0);
         ANALYSIS(unaryexp, UnaryExp, 1);
+
+        if (unaryop->v == "+")
+        {
+            COPY_EXP_NODE(unaryexp, root);
+        }
+        else if (unaryop->v == "-")
+        {
+            // a=-a->0-a
+            // def一个0
+            Operand op1("0", Type::IntLiteral);
+            string id = "t" + to_string(counter++);
+            Operand des(id, Type::Int);
+            Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
+            Inst.push_back(defInst);
+            pc++;
+
+            STE ste;
+            ste.operand = des;
+            symbol_table.scope_stack.back().table.insert({des.name, ste});
+            cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+
+            // 减法
+            //  def一个0
+            op1 = des;
+            Operand op2(unaryexp->v, unaryexp->t);
+            id = "t" + to_string(counter++);
+            des = Operand(id, Type::Int);
+            Instruction *subInst = new Instruction(op1, op2, des, ir::Operator::sub);
+            Inst.push_back(subInst);
+            pc++;
+
+            ste.operand = des;
+            symbol_table.scope_stack.back().table.insert({des.name, ste});
+            cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+
+            cout << "something happend" << endl;
+            root->v = id;
+        }
+        else
+        {
+        }
     }
     else
     {
@@ -1598,16 +1733,13 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
         int index = 2;
         if (index < len - 1)
         {
-            ANALYSIS(funcrparams, FuncRParams, 2);
+            ANALYSIS(funcrparam, FuncRParams, 2);
             // 一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
-
             Operand op1 = symbol_table.get_operand(ident->v);
-            cout << "***finding " << ident->v << "  is" << toString(op1.type) << endl;
             string id = "t" + to_string(counter++);
             Operand des(id, op1.type);
             root->v = id;
 
-            cout << "**********des type" << toString(des.type) << endl;
             vector<Operand> paraVec1 = function_temp.ParameterList;
             ir::CallInst *callInst = new ir::CallInst(op1, paraVec1, des);
             Inst.push_back(callInst);
@@ -1621,12 +1753,9 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
         }
         else
         {
-            cout << " no canshu" << endl;
             Operand op1 = symbol_table.get_operand(ident->v);
-            cout << "***finding " << ident->v << "  is " << toString(op1.type) << endl;
             string id = "t" + to_string(counter++);
             Operand des(id, op1.type);
-            cout << "**********des type" << toString(des.type) << endl;
             root->v = id;
             ir::CallInst *callInst = new ir::CallInst(op1,
                                                       des);
@@ -1702,8 +1831,8 @@ void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, ir::Program &pro
     while (index < len)
     {
         index++;
-        ANALYSIS(exp, Exp, index);
-        Operand op(exp->v, exp->t);
+        ANALYSIS(exp_right, Exp, index);
+        Operand op(exp_right->v, exp->t);
         paraVec1.push_back(op);
         index++;
     }
@@ -1854,7 +1983,6 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
         // 两个都是常量
         if (mulexp->is_computable && mulexp_right->is_computable)
         {
-            cout << "here1" << endl;
             root->is_computable = true;
             if (term->token.type == TokenType::PLUS)
             {
@@ -1874,7 +2002,6 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
         // 两个都不是常量
         else if (!mulexp->is_computable && !mulexp_right->is_computable)
         {
-            cout << "here2" << endl;
             Operand op1 = symbol_table.get_operand(mulexp->v);
             Operand op2 = symbol_table.get_operand(mulexp_right->v);
             string id = "t" + to_string(counter++);
@@ -1906,14 +2033,10 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
         }
         else if (!mulexp->is_computable && mulexp_right->is_computable)
         {
-            cout << "here3" << endl;
             Operand op1(mulexp->v, mulexp->t);
-            cout << mulexp->v << endl;
-            cout << mulexp_right->v << endl;
             Operand op2(mulexp_right->v, mulexp_right->t);
             if (term->token.type == TokenType::PLUS)
             {
-                cout << "here4" << endl;
                 if (mulexp->t == Type::Int && mulexp_right->t == Type::IntLiteral)
                 {
                     string id = "t" + to_string(counter++);
@@ -1937,7 +2060,6 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
             }
             else
             {
-                cout << "error" << endl;
                 if (mulexp->t == Type::Int && mulexp_right->t == Type::IntLiteral)
                 {
                     string id = "t" + to_string(counter++);
@@ -2148,6 +2270,22 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
     if (root->children.size() == 3)
     {
         ANALYSIS(landexp, LAndExp, 2);
+
+        Operand op1(eqexp->v, eqexp->t);
+        Operand op2(landexp->v, landexp->t);
+        string id = "t" + to_string(counter++);
+        Operand des(id, Type::Int);
+
+        Instruction *andInst = new Instruction(op1, op2, des, ir::Operator::_and);
+        Inst.push_back(andInst);
+        pc++;
+
+        cout << "add and" << endl;
+        STE ste;
+        ste.operand = des;
+        symbol_table.scope_stack.back().table.insert({des.name, ste});
+        cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+        root->v = id;
     }
 #ifdef DEBUG_RESULT
     string sure;
@@ -2214,8 +2352,6 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
             lorexp->is_computable = false;
             cout << "complete 2" << endl;
         }
-
-        cout << "****************************************" << endl;
 
         Operand op1 = symbol_table.get_operand(landexp->v);
         Operand op2 = symbol_table.get_operand(lorexp->v);

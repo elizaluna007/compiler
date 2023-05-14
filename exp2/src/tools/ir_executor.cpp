@@ -310,6 +310,8 @@ bool ir::Executor::exec_ir(size_t n)
 
             std::cout << toString(inst->des.type) << std::endl;
             assert(cxt->pfunc->returnType == Type::null || inst->des.type == cxt->pfunc->returnType);
+
+            std::cout << "begin cxt->pfunc->returnType" << std::endl;
             if (cxt->pfunc->returnType != Type::null)
             {
                 cxt->retval_addr = get_des_operand(inst->des);

@@ -94,6 +94,19 @@ python test.py s2
 修改指令放入顺序
 第一个就出现问题cur_ctx->pc < cur_ctx->pfunc->InstVec.size()
 ..\bin\compiler.exe .\testcase\basic\00_main.sy -e -o .\output\basic\00_main.out
+成功解决(……)
+
+..\bin\compiler.exe .\testcase\basic\21_if_test2.sy -e -o .\output\basic\21_if_test2.out
+通过22个/==以及||有问题/or结果未放入table/goto跳转问题
+..\bin\compiler.exe .\testcase\basic\22_if_test3.sy -e -o .\output\basic\22_if_test3.out
+通过24个/primaryexp未复制
+..\bin\compiler.exe .\testcase\basic\25_while_if.sy -e -o .\output\basic\25_while_if.out
+通过27个
+..\bin\compiler.exe ..\test.sy -e -o ..\test.out
+
+
+
+
 
 
 docker pull frankd35/demo:v3

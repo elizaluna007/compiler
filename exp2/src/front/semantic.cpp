@@ -1,8 +1,8 @@
 #include "front/semantic.h"
 
 #include <cassert>
-#define DEBUG_SEMANTIC 1
-#define DEBUG_RESULT 1
+// #define DEBUG_SEMANTIC 1
+// #define DEBUG_RESULT 1
 using ir::Function;
 using ir::Instruction;
 using ir::Operand;
@@ -32,7 +32,9 @@ int counter = 0;
 // pc位置
 int pc = 0;
 // 用来存放所有的指令
-vector<Instruction *> Ins;
+vector<Instruction *> Inst;
+// 用来暂存function
+Function function_temp;
 
 #define TODO assert(0 && "TODO");
 
@@ -214,14 +216,19 @@ ir::Program frontend::Analyzer::get_ir_program(CompUnit *root)
     ir::Program program;
 
     // 添加全局函数
-    Function globalFunc("global", Type::null);
-    program.addFunction(globalFunc);
+    // Function globalFunc("global", Type::null);
+    // program.addFunction(globalFunc);
+    // cout << "add func "
+    //      << "global"
+    //      << " " << toString(Type::null) << "  in program" << endl;
+    function_temp = Function("global", Type::null);
 
     // 添加全局作用域
     ScopeInfo scope_info;       // 生成一个新的作用域
     scope_info.cnt = 0;         // 得到新的作用域的cnt
     scope_info.name = "global"; // 得到新的作用域的name
     symbol_table.scope_stack.push_back(scope_info);
+    cout << "add scope_info " << symbol_table.scope_stack.back().name << " in symbol table" << endl;
 
     // 遍历节点
     analysisCompUnit(root, program);
@@ -260,26 +267,46 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
     }
     else
     {
-        if (program.functions.back().name == "global")
+        // 在新的函数定义之前
+        if (function_temp.name == "global")
         {
             Instruction *globalreturn = new Instruction(ir::Operand(),
                                                         ir::Operand(),
                                                         ir::Operand(), ir::Operator::_return);
-            program.functions.back().addInst(globalreturn);
+            Inst.push_back(globalreturn);
             pc++;
+
+            program.addFunction(function_temp);
+            cout << "add func "
+                 << "global"
+                 << " " << toString(Type::null) << "  in program" << endl;
+
+            for (int q = 0; q < pc; q++)
+            {
+                program.functions.back().addInst(Inst[q]);
+
+                cout << "pc is " << q << " , add Instruction " << toString(Inst[q]->op) << " in program " << function_temp.name << endl;
+            }
 
             cout << "add return" << endl;
         }
         // FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
-        Function funcFunc;
-        program.addFunction(funcFunc);
-
+        function_temp = Function(); // 清零
+        int pc_old = pc;
         ANALYSIS(funcdef, FuncDef, 0);
+        int pc_new = pc;
 
-        program.functions.back().name = funcdef->v;
-        program.functions.back().returnType = funcdef->t;
+        function_temp.name = funcdef->v;
+        function_temp.returnType = funcdef->t;
+        program.addFunction(function_temp);
         cout << "add func " << funcdef->v << " " << toString(funcdef->t) << "  in program" << endl;
-        STE ste;
+
+        for (int q = pc_old; q < pc_new; q++)
+        {
+            program.functions.back().addInst(Inst[q]);
+
+            cout << "pc is " << q << " , add Instruction " << toString(Inst[q]->op) << " in program " << function_temp.name << endl;
+        }
 
         int len = root->children.size();
         int index = 1;
@@ -358,7 +385,7 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
                                               ir::Operand(),
                                               des,
                                               ir::Operator::def);
-    program.functions.back().addInst(assignInst);
+    Inst.push_back(assignInst);
     pc++;
 
     cout << "add def" << endl;
@@ -373,7 +400,7 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
                                                   ir::Operand(),
                                                   des,
                                                   ir::Operator::def);
-        program.functions.back().addInst(assignInst);
+        Inst.push_back(assignInst);
         pc++;
 
         cout << "add def" << endl;
@@ -444,7 +471,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
     int len = root->children.size();
     int index = 0;
     GET_CHILD_PTR(ident, Term, index);
-    program.functions.back().InstVec.back()->des.name = ident->token.value;
+    Inst.back()->des.name = ident->token.value;
     // while (index < len && term->token.type == TokenType::LBRACK)
     // {
     //     index++;
@@ -465,20 +492,20 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
     if (index < len - 2 && l_or_a->token.type == TokenType::LBRACK)
     {
         cout << "shuzu begin" << endl;
-        Type t = program.functions.back().InstVec.back()->des.type;
+        Type t = Inst.back()->des.type;
         if (t == Type::Int)
         {
-            program.functions.back().InstVec.back()->op1.type = Type::Int;
-            program.functions.back().InstVec.back()->des.type = Type::IntPtr;
+            Inst.back()->op1.type = Type::Int;
+            Inst.back()->des.type = Type::IntPtr;
         }
 
         else
         {
-            program.functions.back().InstVec.back()->op1.type = Type::Float;
-            program.functions.back().InstVec.back()->des.type = Type::FloatPtr;
+            Inst.back()->op1.type = Type::Float;
+            Inst.back()->des.type = Type::FloatPtr;
         }
 
-        program.functions.back().InstVec.back()->op = ir::Operator::alloc;
+        Inst.back()->op = ir::Operator::alloc;
 
         cout << "add alloc" << endl;
 
@@ -515,14 +542,14 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         {
             all *= dim[i];
         }
-        program.functions.back().InstVec.back()->op1.name = to_string(all);
+        Inst.back()->op1.name = to_string(all);
         if (key)
         {
-            program.functions.back().InstVec.back()->op1.type = Type::IntLiteral;
+            Inst.back()->op1.type = Type::IntLiteral;
         }
-        cout << all << "           " << toString(program.functions.back().InstVec.back()->op) << endl;
+        cout << all << "           " << toString(Inst.back()->op) << endl;
 
-        Operand op = program.functions.back().InstVec.back()->des;
+        Operand op = Inst.back()->des;
         STE ste;
         ste.operand = op;
         ste.dimension = dim;
@@ -547,11 +574,11 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
     {
         index++;
         ANALYSIS(constinitval, ConstInitVal, index);
-        program.functions.back().InstVec.back()->op1.name = constinitval->v;
-        program.functions.back().InstVec.back()->op1.type = constinitval->t;
+        Inst.back()->op1.name = constinitval->v;
+        Inst.back()->op1.type = constinitval->t;
         cout << "constinitval  " << toString(constinitval->t) << "  " << constinitval->v << endl;
 
-        Operand op = program.functions.back().InstVec.back()->des;
+        Operand op = Inst.back()->des;
         STE ste;
         ste.operand = op;
         symbol_table.scope_stack.back().table[op.name] = ste;
@@ -585,7 +612,7 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
     }
     else
     {
-        Operand des = program.functions.back().InstVec.back()->des;
+        Operand des = Inst.back()->des;
         if (root->children[1]->type == NodeType::CONSTINITVAL)
         {
             // ANALYSIS(constinitval, ConstInitVal, 1);
@@ -634,7 +661,7 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
 
                 cout << "add store" << endl;
                 cout << "i am here1234" << endl;
-                program.functions.back().addInst(storeInst);
+                Inst.push_back(storeInst);
                 pc++;
                 cout << "complete" << endl;
 
@@ -704,7 +731,7 @@ void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program)
                                               ir::Operand(),
                                               des,
                                               ir::Operator::def);
-    program.functions.back().addInst(assignInst);
+    Inst.push_back(assignInst);
     pc++;
 
     cout << "add def" << endl;
@@ -722,7 +749,7 @@ void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program)
                                                       ir::Operand(),
                                                       des,
                                                       ir::Operator::def);
-            program.functions.back().addInst(assignInst);
+            Inst.push_back(assignInst);
             pc++;
 
             cout << "add def" << endl;
@@ -764,7 +791,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 #endif
     // des的name先定义好
     GET_CHILD_PTR(ident, Term, 0);
-    program.functions.back().InstVec.back()->des.name = ident->token.value;
+    Inst.back()->des.name = ident->token.value;
     int len = root->children.size();
     int index = 1;
     if (index < len)
@@ -774,20 +801,20 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
         if (index < len && l_or_a->token.type == TokenType::LBRACK)
         {
             cout << "shuzu begin" << endl;
-            Type t = program.functions.back().InstVec.back()->des.type;
+            Type t = Inst.back()->des.type;
             if (t == Type::Int)
             {
-                program.functions.back().InstVec.back()->op1.type = Type::Int;
-                program.functions.back().InstVec.back()->des.type = Type::IntPtr;
+                Inst.back()->op1.type = Type::Int;
+                Inst.back()->des.type = Type::IntPtr;
             }
 
             else
             {
-                program.functions.back().InstVec.back()->op1.type = Type::Float;
-                program.functions.back().InstVec.back()->des.type = Type::FloatPtr;
+                Inst.back()->op1.type = Type::Float;
+                Inst.back()->des.type = Type::FloatPtr;
             }
 
-            program.functions.back().InstVec.back()->op = ir::Operator::alloc;
+            Inst.back()->op = ir::Operator::alloc;
 
             cout << "add alloc" << endl;
 
@@ -824,14 +851,14 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             {
                 all *= dim[i];
             }
-            program.functions.back().InstVec.back()->op1.name = to_string(all);
+            Inst.back()->op1.name = to_string(all);
             if (key)
             {
-                program.functions.back().InstVec.back()->op1.type = Type::IntLiteral;
+                Inst.back()->op1.type = Type::IntLiteral;
             }
-            cout << all << "           " << toString(program.functions.back().InstVec.back()->op) << endl;
+            cout << all << "           " << toString(Inst.back()->op) << endl;
 
-            Operand op = program.functions.back().InstVec.back()->des;
+            Operand op = Inst.back()->des;
             STE ste;
             ste.operand = op;
             ste.dimension = dim;
@@ -854,8 +881,8 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
         else
         {
             // 这里考虑到赋值的时候后面可能是先存在的值，故对原本指令备份，重新填入
-            Instruction *old_inst = program.functions.back().InstVec.back();
-            program.functions.back().InstVec.pop_back();
+            Instruction *old_inst = Inst.back();
+            Inst.pop_back();
             pc--;
 
             index++;
@@ -865,10 +892,10 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             old_inst->op1.type = initval->t;
             cout << "initval  " << toString(initval->t) << "  " << initval->v << endl;
 
-            program.functions.back().addInst(old_inst);
+            Inst.push_back(old_inst);
             pc++;
 
-            Operand op = program.functions.back().InstVec.back()->des;
+            Operand op = Inst.back()->des;
             STE ste;
             ste.operand = op;
             symbol_table.scope_stack.back().table.insert({op.name, ste});
@@ -880,7 +907,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
     {
         cout << "no initval in int a,b0,c" << endl;
         STE ste;
-        Operand op = program.functions.back().InstVec.back()->des;
+        Operand op = Inst.back()->des;
         ste.operand = op;
         symbol_table.scope_stack.back().table.insert({op.name, ste});
 
@@ -915,7 +942,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
     else
     {
         cout << "i am here1" << endl;
-        Operand des = program.functions.back().InstVec.back()->des;
+        Operand des = Inst.back()->des;
         if (root->children[1]->type == NodeType::INITVAL)
         {
             cout << "i am here12" << endl;
@@ -955,7 +982,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
                                                          ir::Operator::store);
 
                 cout << "i am here1234" << endl;
-                program.functions.back().addInst(storeInst);
+                Inst.push_back(storeInst);
                 pc++;
 
                 cout << "add store" << endl;
@@ -1020,7 +1047,7 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
     {
         ir::CallInst *callGlobal = new ir::CallInst(ir::Operand("global", ir::Type::null),
                                                     ir::Operand("t0", ir::Type::null));
-        program.functions.back().addInst(callGlobal);
+        Inst.push_back(callGlobal);
         pc++;
     }
 
@@ -1036,7 +1063,7 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
         STE ste;
         Operand op(root->v, root->t);
         ste.operand = op;
-        symbol_table.scope_stack.back().table.insert({op.name, ste});
+        symbol_table.scope_stack[0].table.insert({op.name, ste});
 
         ANALYSIS(block, Block, 5);
     }
@@ -1045,7 +1072,7 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
         STE ste;
         Operand op(root->v, root->t);
         ste.operand = op;
-        symbol_table.scope_stack.back().table.insert({op.name, ste});
+        symbol_table.scope_stack[0].table.insert({op.name, ste});
         ANALYSIS(block, Block, 4);
     }
 
@@ -1150,7 +1177,7 @@ void frontend::Analyzer::analysisFuncFParams(FuncFParams *root, ir::Program &pro
 
         index++;
     }
-    program.functions.back().ParameterList = paraVec;
+    function_temp.ParameterList = paraVec;
 
 #ifdef DEBUG_RESULT
     string sure;
@@ -1249,7 +1276,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
         ir::Instruction *movInst = new Instruction(op1,
                                                    ir::Operand(),
                                                    des, ir::Operator::mov);
-        program.functions.back().addInst(movInst);
+        Inst.push_back(movInst);
         pc++;
 
         cout << "add mov" << endl;
@@ -1277,14 +1304,14 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             Instruction *gotoInst1 = new Instruction(op1,
                                                      ir::Operand(),
                                                      ir::Operand("2", ir::Type::IntLiteral), ir::Operator::_goto);
-            program.functions.back().addInst(gotoInst1);
+            Inst.push_back(gotoInst1);
             pc++;
 
             cout << "add goto" << endl;
             Instruction *gotoInst2 = new Instruction(ir::Operand(),
                                                      ir::Operand(),
                                                      ir::Operand("1", ir::Type::IntLiteral), ir::Operator::_goto);
-            program.functions.back().addInst(gotoInst2);
+            Inst.push_back(gotoInst2);
             pc++;
 
             cout << "add goto" << endl;
@@ -1326,7 +1353,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                           ir::Operand(),
                                                           ir::Operand(),
                                                           ir::Operator::_return);
-                program.functions.back().addInst(returnInst);
+                Inst.push_back(returnInst);
                 pc++;
 
                 cout << "add return" << endl;
@@ -1337,7 +1364,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                           ir::Operand(),
                                                           ir::Operand(),
                                                           ir::Operator::_return);
-                program.functions.back().addInst(returnInst);
+                Inst.push_back(returnInst);
                 pc++;
                 cout << "add return" << endl;
             }
@@ -1451,7 +1478,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
         // 第一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
         Instruction *loadInst = new Instruction(op1,
                                                 op2, des, ir::Operator::load);
-        program.functions.back().addInst(loadInst);
+        Inst.push_back(loadInst);
         pc++;
 
         cout << "add load" << endl;
@@ -1581,9 +1608,9 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             root->v = id;
 
             cout << "**********des type" << toString(des.type) << endl;
-            vector<Operand> paraVec1 = program.functions.back().ParameterList;
+            vector<Operand> paraVec1 = function_temp.ParameterList;
             ir::CallInst *callInst = new ir::CallInst(op1, paraVec1, des);
-            program.functions.back().addInst(callInst);
+            Inst.push_back(callInst);
             pc++;
 
             STE ste;
@@ -1603,7 +1630,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             root->v = id;
             ir::CallInst *callInst = new ir::CallInst(op1,
                                                       des);
-            program.functions.back().addInst(callInst);
+            Inst.push_back(callInst);
             pc++;
 
             STE ste;
@@ -1680,7 +1707,7 @@ void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, ir::Program &pro
         paraVec1.push_back(op);
         index++;
     }
-    program.functions.back().ParameterList = paraVec1;
+    function_temp.ParameterList = paraVec1;
 #ifdef DEBUG_RESULT
     string sure;
     if (root->is_computable)
@@ -1723,7 +1750,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
                 t = Type::Float;
             Operand des(id, t);
             Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
-            program.functions.back().addInst(defInst);
+            Inst.push_back(defInst);
             pc++;
 
             cout << "add def" << endl;
@@ -1746,7 +1773,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
                 t = Type::Float;
             Operand des(id, t);
             Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
-            program.functions.back().addInst(defInst);
+            Inst.push_back(defInst);
             pc++;
 
             cout << "add def" << endl;
@@ -1762,30 +1789,30 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
         Operand des(id, ir::Type::Int);
         if (term->token.type == TokenType::MULT)
         {
-            Instruction *Inst = new Instruction(op1,
-                                                op2,
-                                                des, ir::Operator::mul);
-            program.functions.back().addInst(Inst);
+            Instruction *mulInst = new Instruction(op1,
+                                                   op2,
+                                                   des, ir::Operator::mul);
+            Inst.push_back(mulInst);
             pc++;
 
             cout << "add mul" << endl;
         }
         else if (term->token.type == TokenType::DIV)
         {
-            Instruction *Inst = new Instruction(op1,
-                                                op2,
-                                                des, ir::Operator::div);
-            program.functions.back().addInst(Inst);
+            Instruction *divInst = new Instruction(op1,
+                                                   op2,
+                                                   des, ir::Operator::div);
+            Inst.push_back(divInst);
             pc++;
 
             cout << "add div" << endl;
         }
         else
         {
-            Instruction *Inst = new Instruction(op1,
-                                                op2,
-                                                des, ir::Operator::mod);
-            program.functions.back().addInst(Inst);
+            Instruction *modInst = new Instruction(op1,
+                                                   op2,
+                                                   des, ir::Operator::mod);
+            Inst.push_back(modInst);
             pc++;
 
             cout << "add mod" << endl;
@@ -1854,16 +1881,16 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
             Operand des(id, op1.type);
             if (term->token.type == TokenType::PLUS)
             {
-                Instruction *Inst = new Instruction(op1, op2, des, ir::Operator::add);
-                program.functions.back().addInst(Inst);
+                Instruction *addInst = new Instruction(op1, op2, des, ir::Operator::add);
+                Inst.push_back(addInst);
                 pc++;
 
                 cout << "add add" << endl;
             }
             else
             {
-                Instruction *Inst = new Instruction(op1, op2, des, ir::Operator::sub);
-                program.functions.back().addInst(Inst);
+                Instruction *subInst = new Instruction(op1, op2, des, ir::Operator::sub);
+                Inst.push_back(subInst);
                 pc++;
 
                 cout << "add sub" << endl;
@@ -1896,7 +1923,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
                     Instruction *addInst = new Instruction(op1,
                                                            op2,
                                                            des, ir::Operator::addi);
-                    program.functions.back().addInst(addInst);
+                    Inst.push_back(addInst);
                     pc++;
 
                     cout << "add addi" << endl;
@@ -1920,7 +1947,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
                     Instruction *subInst = new Instruction(op1,
                                                            op2,
                                                            des, ir::Operator::subi);
-                    program.functions.back().addInst(subInst);
+                    Inst.push_back(subInst);
                     pc++;
 
                     cout << "add subi" << endl;
@@ -1969,32 +1996,32 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
         Operand des(id, Type::IntLiteral);
         if (term->token.type == TokenType::LSS)
         {
-            Instruction *inst = new Instruction(op1, op2, des, ir::Operator::lss);
-            program.functions.back().addInst(inst);
+            Instruction *lssinst = new Instruction(op1, op2, des, ir::Operator::lss);
+            Inst.push_back(lssinst);
             pc++;
 
             cout << "add lss" << endl;
         }
         else if (term->token.type == TokenType::GTR)
         {
-            Instruction *inst = new Instruction(op1, op2, des, ir::Operator::gtr);
-            program.functions.back().addInst(inst);
+            Instruction *gtrInst = new Instruction(op1, op2, des, ir::Operator::gtr);
+            Inst.push_back(gtrInst);
             pc++;
 
             cout << "add gtr" << endl;
         }
         else if (term->token.type == TokenType::LEQ)
         {
-            Instruction *inst = new Instruction(op1, op2, des, ir::Operator::leq);
-            program.functions.back().addInst(inst);
+            Instruction *leqInst = new Instruction(op1, op2, des, ir::Operator::leq);
+            Inst.push_back(leqInst);
             pc++;
 
             cout << "add leq" << endl;
         }
         else
         {
-            Instruction *inst = new Instruction(op1, op2, des, ir::Operator::geq);
-            program.functions.back().addInst(inst);
+            Instruction *geqInst = new Instruction(op1, op2, des, ir::Operator::geq);
+            Inst.push_back(geqInst);
             pc++;
 
             cout << "add geq" << endl;
@@ -2038,7 +2065,7 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
             string id = "t" + to_string(counter++);
             Operand des(id, Type::Int);
             Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
-            program.functions.back().addInst(defInst);
+            Inst.push_back(defInst);
             pc++;
 
             cout << "add def" << endl;
@@ -2058,7 +2085,7 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
             string id = "t" + to_string(counter++);
             Operand des(id, Type::Int);
             Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
-            program.functions.back().addInst(defInst);
+            Inst.push_back(defInst);
             pc++;
 
             cout << "add def" << endl;
@@ -2078,7 +2105,7 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
             Operand op2(relexp_right->v, relexp_right->t);
             Operand des(id, Type::Int);
             Instruction *eqInst = new Instruction(op1, op2, des, ir::Operator::eq);
-            program.functions.back().addInst(eqInst);
+            Inst.push_back(eqInst);
             pc++;
 
             cout << "add eq" << endl;
@@ -2152,7 +2179,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
             string id = "t" + to_string(counter++);
             Operand des(id, Type::Int);
             Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
-            program.functions.back().addInst(defInst);
+            Inst.push_back(defInst);
             pc++;
 
             cout << "add def" << endl;
@@ -2174,7 +2201,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
             string id = "t" + to_string(counter++);
             Operand des(id, Type::Int);
             Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
-            program.functions.back().addInst(defInst);
+            Inst.push_back(defInst);
             pc++;
 
             cout << "add def" << endl;
@@ -2195,7 +2222,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
         string id = "t" + to_string(counter++);
         Operand des(id, Type::Int);
         Instruction *orInst = new Instruction(op1, op2, des, Operator::_or);
-        program.functions.back().addInst(orInst);
+        Inst.push_back(orInst);
         pc++;
 
         cout << "add or" << endl;

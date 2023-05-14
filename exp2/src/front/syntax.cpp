@@ -5,7 +5,7 @@
 
 using frontend::Parser;
 
-// #define DEBUG_PARSER
+// #define DEBUG_PARSER 
 #define TODO assert(0 && "todo")
 #define CUR_TOKEN_IS(tk_type) (token_stream[index].type == TokenType::tk_type)
 #define PARSE_TOKEN(tk_type) root->children.push_back(parseTerm(root, TokenType::tk_type))
@@ -531,7 +531,6 @@ bool frontend::Parser::parseStmt(frontend::Stmt *root)
     }
     else if (CUR_TOKEN_IS(PLUS) || CUR_TOKEN_IS(MINU) || CUR_TOKEN_IS(NOT) || CUR_TOKEN_IS(LPARENT) || CUR_TOKEN_IS(IDENFR) || CUR_TOKEN_IS(INTLTR) || CUR_TOKEN_IS(FLOATLTR))
     {
-        std::cout << "i am here now" << std::endl;
         PARSE(exp, Exp);
 
         PARSE_TOKEN(SEMICN);

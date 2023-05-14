@@ -24,6 +24,7 @@ add_library(jsoncpp ./src/third_party/jsoncpp/jsoncpp.cpp)
 # --------------------- from lib ---------------------
 # link libxx.a
 # u should rename libxx-x86-win.a or libxx-x86-linux.a to libxx.a according to ur own platform
+#libIR-x86-win.a  &&  libTools-x86-win.a
 link_directories(./lib)
 # --------------------- from lib ---------------------
 

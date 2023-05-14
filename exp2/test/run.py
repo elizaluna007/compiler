@@ -41,9 +41,9 @@ def run_compiler(arg1):
             for src in src_files:
                 fname, ftype = src.split('.')
                 cmd = ' '.join([compiler_path, testcase_dir + src, step, "-o", output_dir + fname + "." + oftype])
-                print(cmd)
                 if is_windows:
                     cmd = cmd.replace('/','\\')
+                print("******cmd is ",cmd)
                 cp = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL)
                 if cp.returncode != 0:
                     record[src] = {"retval": cp.returncode, "err_detail": cp.stderr}

@@ -102,7 +102,15 @@ python test.py s2
 通过24个/primaryexp未复制
 ..\bin\compiler.exe .\testcase\basic\25_while_if.sy -e -o .\output\basic\25_while_if.out
 通过27个/while问题
+..\bin\compiler.exe .\testcase\basic\29_break.sy -e -o .\output\basic\29_break.out
 通过38个/数据类型问题
+..\bin\compiler.exe .\testcase\basic\40_unary_op.sy -e -o .\output\basic\40_unary_op.out
+通过39个/not
+..\bin\compiler.exe .\testcase\basic\41_unary_op2.sy -e -o .\output\basic\41_unary_op2.out
+通过40个/前一个为常数的sub
+..\bin\compiler.exe .\testcase\function\34_arr_expr_len.sy -e -o .\output\function\34_arr_expr_len.out
+通过41个
+
 
 
 

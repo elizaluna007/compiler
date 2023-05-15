@@ -75,11 +75,12 @@ namespace frontend
         AstNode *parent;            // the parent node
         vector<AstNode *> children; // children of node
 
-        string v;                   // 一个字符串, 或者是重命名后的变量名, 或者是临时变量名称, 也可以是常数字符串
-        Type t;                     // Type, 表示该表达式计算得到的类型
-        bool is_computable = true;  // 节点以下子树是否可以化简为常数, 通过该变量, 大部分常数合并可以直接在语法树中自底向上进行传递
+        string v;                  // 一个字符串, 或者是重命名后的变量名, 或者是临时变量名称, 也可以是常数字符串
+        Type t;                    // Type, 表示该表达式计算得到的类型
+        bool is_computable = true; // 节点以下子树是否可以化简为常数, 通过该变量, 大部分常数合并可以直接在语法树中自底向上进行传递
         Token token;
-        
+        int result; // 一些简单整数计算的结果
+
         /**
          * @brief constructor
          */

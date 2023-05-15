@@ -528,7 +528,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         cout << "add alloc" << endl;
 
         vector<int> dim;
-        string arr_len;
+        string arr_len_name;
 
         int key = 1;
         while (index < len - 2 && l_or_a->token.type == TokenType::LBRACK)
@@ -539,7 +539,8 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
             if (!constexp->is_computable)
             {
                 key = 0;
-                arr_len = constexp->v;
+                arr_len_name = constexp->v;
+                // dim.push_back(1); // 先暂时这样
             }
             else
             {
@@ -556,42 +557,26 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
                 }
             }
         }
-        if (key)
+
+        int all = 1;
+        for (int i = 0; i < dim.size(); i++)
         {
-            int all = 1;
-            for (int i = 0; i < dim.size(); i++)
-            {
-                all *= dim[i];
-            }
-            Inst.back()->op1.name = to_string(all);
+            all *= dim[i];
+        }
+        Inst.back()->op1.name = to_string(all);
+        if (key != 0)
             Inst.back()->op1.type = Type::IntLiteral;
 
-            cout << all << "           " << toString(Inst.back()->op) << endl;
+        cout << all << "           " << toString(Inst.back()->op) << endl;
 
-            Operand op = Inst.back()->des;
-            STE ste;
-            ste.operand = op;
-            ste.dimension = dim;
+        Operand op = Inst.back()->des;
+        STE ste;
+        ste.operand = op;
+        ste.dimension = dim;
 
-            symbol_table.scope_stack.back().table[op.name] = ste;
+        symbol_table.scope_stack.back().table[op.name] = ste;
 
-            cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-        }
-        else
-        {
-            Inst.back()->op1.name = arr_len;
-
-            cout << arr_len << "           " << toString(Inst.back()->op) << endl;
-
-            Operand op = Inst.back()->des;
-            STE ste;
-            ste.operand = op;
-            ste.dimension = dim;
-
-            symbol_table.scope_stack.back().table[op.name] = ste;
-
-            cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-        }
+        cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
 
         // 数组且赋值
         // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数。
@@ -1178,7 +1163,7 @@ void frontend::Analyzer::analysisFuncFParams(FuncFParams *root, ir::Program &pro
     ANALYSIS(funcfparam, FuncFParam, 0);
     Operand op1(funcfparam->v, funcfparam->t);
     paraVec.push_back(op1);
-    cout << "add funcfparam" << toString(op1.type) << " " << op1.name << " in " << endl;
+    cout << "add funcfparam " << toString(op1.type) << " " << op1.name << " in " << endl;
 
     int len = root->children.size();
     int index = 1;
@@ -2066,7 +2051,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
                 root->t = Type::Int;
             else
                 root->t = Type::Float;
-            Operand des(id, op1.type);
+            Operand des(id, Type::Int);
             if (term->token.type == TokenType::PLUS)
             {
                 Instruction *addInst = new Instruction(op1, op2, des, ir::Operator::add);

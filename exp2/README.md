@@ -110,10 +110,15 @@ python test.py s2
 通过40个/前一个为常数的sub
 ..\bin\compiler.exe .\testcase\function\34_arr_expr_len.sy -e -o .\output\function\34_arr_expr_len.out
 通过41个
+..\bin\compiler.exe .\testcase\function\38_op_priority4.sy -e -o .\output\function\38_op_priority4.out
+通过42个/neq
 
+09和33一会可以一会不可以？？
+..\bin\compiler.exe .\testcase\basic\09_func_defn.sy -e -o .\output\basic\09_func_defn.out
+..\bin\compiler.exe .\testcase\basic\33_while_if_test3.sy -e -o .\output\basic\33_while_if_test3.out
 
-
-
+ ..\bin\compiler.exe .\testcase\function\50_short_circuit.sy -e -o .\output\function\50_short_circuit.out
+通过47个/
 
 
 

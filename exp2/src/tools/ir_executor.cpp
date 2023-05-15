@@ -7,8 +7,8 @@
 #include <iostream>
 
 #define TODO assert(0 && "TODO");
-// #define DEBUG_EXEC_BRIEF 1
-// #define DEBUG_EXEC_DETAIL 1
+#define DEBUG_EXEC_BRIEF 1
+#define DEBUG_EXEC_DETAIL 1
 #define IS_INT_OPERAND(operand) (operand.type == Type::Int || operand.type == Type::IntLiteral)
 #define IS_FLOAT_OPERAND(operand) (operand.type == Type::Float || operand.type == Type::FloatLiteral)
 
@@ -203,7 +203,7 @@ bool ir::Executor::exec_ir(size_t n)
 {
     while (n--)
     {
-        std::cout<<"********"<<cur_ctx->pc<<"             "<<cur_ctx->pfunc->InstVec.size()<<std::endl;
+        std::cout << "********" << cur_ctx->pc << "             " << cur_ctx->pfunc->InstVec.size() << std::endl;
         assert(cur_ctx->pc < cur_ctx->pfunc->InstVec.size());
         auto inst = cur_ctx->pfunc->InstVec[cur_ctx->pc];
 #if (DEBUG_EXEC_BRIEF || DEBUG_EXEC_DETAIL)
@@ -283,11 +283,14 @@ bool ir::Executor::exec_ir(size_t n)
             Value libfunc_retval;
             if (exec_lib_function(callinst, &libfunc_retval))
             {
-                std::cout << "begin call ana" << std::endl;
+                std::cout << "begin call ana1" << std::endl;
                 if (callinst->des.type != Type::null)
                 {
+                    std::cout << "begin call ana2" << std::endl;
                     *get_des_operand(inst->des) = libfunc_retval;
+                    std::cout << "begin call ana3" << std::endl;
                 }
+                std::cout << "begin call ana4" << std::endl;
                 cur_ctx->pc++;
                 break;
             }
@@ -302,7 +305,7 @@ bool ir::Executor::exec_ir(size_t n)
                     cxt = new Context(&f);
                 }
             }
-            std::cout<<"end ir::function" << std::endl;
+            std::cout << "end ir::function" << std::endl;
 
             // return type checking
             std::cout << cxt->pfunc->name << std::endl;
@@ -738,15 +741,18 @@ bool ir::Executor::exec_ir(size_t n)
 using frontend::get_lib_funcs;
 bool ir::Executor::exec_lib_function(const ir::CallInst *callinst, Value *p_retval)
 {
+    std::cout << "in exec_lib_function" << std::endl;
     auto fn = callinst->op1.name;
     if (get_lib_funcs()->find(fn) == get_lib_funcs()->end())
     {
+        std::cout<<"111111111111111111111"<<std::endl;
         return false;
     }
     switch (callinst->des.type)
     {
     case Type::Int:
     {
+         std::cout<<"222222222222222222222222"<<std::endl;
         p_retval->t = Type::Int;
         if (fn == "getint")
         {

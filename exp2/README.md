@@ -128,6 +128,16 @@ python test.py s2
 
 
 
+..\bin\compiler.exe .\testcase\function\95_float.sy -e -o .\output\function\95_float.out
+
+
+
+
+
+
+
+
+
 docker pull frankd35/demo:v3
 docker run -it -v D:\360MoveData\Users\Luna\Desktop\compiler\exp_2_process:/coursegrader frankd35/demo:v3
 docker run -it -v /mnt/d/360MoveData/Users/Luna/Desktop/compiler/exp_2_process:/coursegrader frankd35/demo:v3

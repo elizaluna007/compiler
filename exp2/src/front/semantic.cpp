@@ -320,6 +320,10 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
 
         function_temp.name = funcdef->v;
         function_temp.returnType = funcdef->t;
+        STE ste;
+        ste.operand = Operand(funcdef->v, funcdef->t);
+        symbol_table.scope_stack.back().table.insert({funcdef->v, ste});
+        cout << "add func in table" << endl;
         program.addFunction(function_temp);
         cout << "***************************3*********************" << endl;
         cout << "add func " << toString(funcdef->t) << " " << funcdef->v << "  in program" << endl;
@@ -402,26 +406,29 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
     // des的type先定义好
     Operand des("0", btype->t); // 目的未知,类型已知
     Operand op1;
+    Operator op;
     if (btype->t == Type::Int)
     {
         op1.name = "0";
-        op1.type = Type::IntLiteral;
+        op1.type = Type::Int;
         des.type = Type::Int;
+        op = Operator::def;
     }
     else
     {
         op1.name = "";
-        op1.type = Type::FloatLiteral;
+        op1.type = Type::Float;
         des.type = Type::Float;
+        op = Operator::fdef;
     }
     Instruction *assignInst = new Instruction(op1,
-                                              ir::Operand(),
+                                              Operand(),
                                               des,
-                                              ir::Operator::def);
+                                              op);
     Inst.push_back(assignInst);
     pc++;
 
-    cout << "add def" << endl;
+    cout << "add def/fdef" << endl;
 
     ANALYSIS(constdef, ConstDef, 2);
 
@@ -431,13 +438,13 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
     while (index < len && c_or_s->token.type == TokenType::COMMA)
     {
         Instruction *assignInst = new Instruction(op1,
-                                                  ir::Operand(),
+                                                  Operand(),
                                                   des,
-                                                  ir::Operator::def);
+                                                  op);
         Inst.push_back(assignInst);
         pc++;
 
-        cout << "add def" << endl;
+        cout << "add def/fdef" << endl;
 
         index++;
         ANALYSIS(constdef, ConstDef, index);
@@ -505,27 +512,12 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
     int len = root->children.size();
     int index = 0;
     GET_CHILD_PTR(ident, Term, index);
-    cout << pc << "  " << Inst.back()->des.name << " changed" << endl;
     Inst.back()->des.name = ident->token.value;
-    // while (index < len && term->token.type == TokenType::LBRACK)
-    // {
-    //     index++;
-    //     ANALYSIS(constexp, ConstExp, index);
-    //     index = index + 2;
-    //     GET_CHILD_PTR(term, Term, index);
-    //     if (term->token.type == TokenType::ASSIGN)
-    //     {
-    //         break;
-    //     }
-    // }
-    // index++;
-    // ANALYSIS(constinitval, ConstInitVal, index);
     index = 1;
     GET_CHILD_PTR(l_or_a, Term, index);
     // 是数组，需要改变des的type
     if (index < len - 2 && l_or_a->token.type == TokenType::LBRACK)
     {
-        cout << "is array def to alloc" << endl;
         // 这里考虑到赋值的时候后面可能是先存在的值，故对原本指令备份，重新填入
         Instruction *old_inst = Inst.back();
         Inst.pop_back();
@@ -622,9 +614,38 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
 
         index++;
         ANALYSIS(constinitval, ConstInitVal, index);
+        if ((constinitval->t == Type::Int || constinitval->t == Type::IntLiteral) && old_inst->op1.type == Type::Float)
+        {
+            string id = "t" + to_string(counter++);
+            Instruction *inst = new Instruction(Operand(constinitval->v, constinitval->t),
+                                                Operand(),
+                                                Operand(id, Type::Float),
+                                                Operator::cvt_i2f);
+            Inst.push_back(inst);
+            pc++;
+
+            cout << "add cvt_i2f inst" << endl;
+            constinitval->t = Type::Float;
+            constinitval->v = id;
+            constinitval->is_computable = false;
+        }
+        else if ((constinitval->t == Type::Float || constinitval->t == Type::FloatLiteral) && old_inst->op1.type == Type::Int)
+        {
+            string id = "t" + to_string(counter++);
+            Instruction *inst = new Instruction(Operand(constinitval->v, constinitval->t),
+                                                Operand(),
+                                                Operand(id, Type::Int),
+                                                Operator::cvt_f2i);
+            Inst.push_back(inst);
+            pc++;
+
+            cout << "add cvt_f2i inst" << endl;
+            constinitval->t = Type::Int;
+            constinitval->v = id;
+            constinitval->is_computable = false;
+        }
         old_inst->op1.name = constinitval->v;
         old_inst->op1.type = constinitval->t;
-        cout << "constinitval  " << toString(constinitval->t) << "  " << constinitval->v << endl;
 
         Inst.push_back(old_inst);
         pc++;
@@ -639,17 +660,20 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
 
         string name = old_inst->op1.name;
         cout << "op1 is " << name << endl;
-        map<std::string, int>::iterator it = result.find(name);
-        if (it != result.end())
+        if (old_inst->op1.type == Type::Int || old_inst->op1.type == Type::IntLiteral)
         {
-            result.insert({old_inst->des.name, it->second});
-            cout << "result中将 " << old_inst->des.name << " 和 " << it->second << " 绑定" << endl;
-        }
+            map<std::string, int>::iterator it = result.find(name);
+            if (it != result.end())
+            {
+                result.insert({old_inst->des.name, it->second});
+                cout << "result中将 " << old_inst->des.name << " 和 " << it->second << " 绑定" << endl;
+            }
 
-        if (constinitval->is_computable)
-        {
-            result.insert({Inst.back()->des.name, stoi(constinitval->v)});
-            cout << "result中将 " << Inst.back()->des.name << " 和 " << stoi(constinitval->v) << " 绑定" << endl;
+            if (constinitval->is_computable)
+            {
+                result.insert({Inst.back()->des.name, stoi(constinitval->v)});
+                cout << "result中将 " << Inst.back()->des.name << " 和 " << stoi(constinitval->v) << " 绑定" << endl;
+            }
         }
     }
 
@@ -770,22 +794,25 @@ void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program)
     // des的type先定义好
     Operand des("0", btype->t); // 目的未知,类型已知
     Operand op1;
+    Operator op;
     if (btype->t == Type::Int)
     {
         op1.name = "0";
         op1.type = Type::IntLiteral;
         des.type = Type::Int;
+        op = Operator::def;
     }
     else
     {
         op1.name = "";
         op1.type = Type::FloatLiteral;
         des.type = Type::Float;
+        op = Operator::fdef;
     }
     Instruction *assignInst = new Instruction(op1,
                                               ir::Operand(),
                                               des,
-                                              ir::Operator::def);
+                                              op);
     Inst.push_back(assignInst);
     pc++;
 
@@ -958,6 +985,36 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 
             index++;
             ANALYSIS(initval, InitVal, index);
+            if ((initval->t == Type::Int || initval->t == Type::IntLiteral) && old_inst->op1.type == Type::Float)
+            {
+                string id = "t" + to_string(counter++);
+                Instruction *inst = new Instruction(Operand(initval->v, initval->t),
+                                                    Operand(),
+                                                    Operand(id, Type::Float),
+                                                    Operator::cvt_i2f);
+                Inst.push_back(inst);
+                pc++;
+
+                cout << "add cvt_i2f inst" << endl;
+                initval->t = Type::Float;
+                initval->v = id;
+                initval->is_computable = false;
+            }
+            else if ((initval->t == Type::Float || initval->t == Type::FloatLiteral) && old_inst->op1.type == Type::Int)
+            {
+                string id = "t" + to_string(counter++);
+                Instruction *inst = new Instruction(Operand(initval->v, initval->t),
+                                                    Operand(),
+                                                    Operand(id, Type::Int),
+                                                    Operator::cvt_f2i);
+                Inst.push_back(inst);
+                pc++;
+
+                cout << "add cvt_f2i inst" << endl;
+                initval->t = Type::Int;
+                initval->v = id;
+                initval->is_computable = false;
+            }
 
             old_inst->op1.name = initval->v;
             old_inst->op1.type = initval->t;
@@ -1091,6 +1148,10 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
                         symbol_table.scope_stack.back().table.insert({op_add.name, ste_add});
                         cout << "//////add  insert  " << op_add.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
                     }
+                }
+                if (index == len - 1)
+                {
+                    break;
                 }
             }
             // int index = 2;
@@ -1954,16 +2015,45 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
         }
         else if (unaryop->v == "-")
         {
+            Type t;
+            Type t_des;
+            Operator def_or_fdef;
+            Operator sub;
+            if (unaryexp->t == Type::Int || unaryexp->t == Type::IntLiteral)
+            {
+                t = Type::IntLiteral;
+                t_des = Type::Int;
+                def_or_fdef = ir::Operator::def;
+                if (unaryexp->is_computable)
+                {
+                    sub = ir::Operator::subi;
+                }
+                else
+                {
+                    sub = ir::Operator::sub;
+                }
+            }
+            else
+            {
+                t = Type::FloatLiteral;
+                t_des = Type::Float;
+                def_or_fdef = ir::Operator::fdef;
+                sub = ir::Operator::fsub;
+                if (unaryexp->is_computable)
+                {
+                    unaryexp->t = Type::FloatLiteral;
+                }
+            }
             // a=-a->0-a
             // def一个0
-            Operand op1("0", Type::IntLiteral);
+            Operand op1("0", t);
             string id = "t" + to_string(counter++);
-            Operand des(id, Type::Int);
-            Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
+            Operand des(id, t_des);
+            Instruction *defInst = new Instruction(op1, Operand(), des, def_or_fdef);
             Inst.push_back(defInst);
             pc++;
 
-            cout << "add def" << endl;
+            cout << "add def/fdef" << endl;
 
             STE ste;
             ste.operand = des;
@@ -1975,34 +2065,26 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             op1 = des;
             Operand op2(unaryexp->v, unaryexp->t);
             id = "t" + to_string(counter++);
-            des = Operand(id, Type::Int);
-            if (unaryexp->is_computable)
-            {
+            des = Operand(id, t_des);
 
-                Instruction *subInst = new Instruction(op1, op2, des, ir::Operator::subi);
-                Inst.push_back(subInst);
-                cout << "add sub" << endl;
-            }
-            else
-            {
-                Instruction *subInst = new Instruction(op1, op2, des, ir::Operator::sub);
-                Inst.push_back(subInst);
-                cout << "add sub" << endl;
-            }
-
+            Instruction *subInst = new Instruction(op1, op2, des, sub);
+            Inst.push_back(subInst);
             pc++;
+            cout << "add sub" << endl;
 
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
             cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-
-            root->v = id;
 
             if (unaryexp->is_computable)
             {
                 result.insert({id, -stoi(unaryexp->v)});
                 cout << "result中将 " << id << " 和 " << -stoi(unaryexp->v) << " 绑定" << endl;
             }
+
+            root->v = id;
+            root->t = t_des;
+            root->is_computable = false;
         }
         else
         {
@@ -2023,6 +2105,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             root->v = id;
         }
     }
+    // Ident '(' [FuncRParams] ')'
     else
     {
         GET_CHILD_PTR(ident, Term, 0);
@@ -2034,20 +2117,17 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             cout << "not find lib func" << endl;
             int len = root->children.size();
             int index = 2;
+            Operand op1 = symbol_table.get_operand(ident->v);
+            string id = "t" + to_string(counter++);
+            Operand des(id, op1.type);
             if (index < len - 1)
             {
                 vector<Operand> paraList = {};
                 callInst_temp = new ir::CallInst(Operand(), paraList, Operand());
                 ANALYSIS(funcrparam, FuncRParams, 2);
                 // 一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
-                Operand op1 = symbol_table.get_operand(ident->v);
-                string id = "t" + to_string(counter++);
-                Operand des(id, op1.type);
-                root->v = id;
-
                 vector<Operand> paraVec1 = callInst_temp->argumentList;
                 ir::CallInst *callInst = new ir::CallInst(op1, paraVec1, des);
-                cout << "call func param is——" << paraVec1.size() << endl;
                 for (int i = 0; i < paraVec1.size(); i++)
                 {
                     cout << toString(paraVec1[i].type) << " " << paraVec1[i].name << endl;
@@ -2065,10 +2145,6 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             }
             else
             {
-                Operand op1 = symbol_table.get_operand(ident->v);
-                string id = "t" + to_string(counter++);
-                Operand des(id, op1.type);
-                root->v = id;
                 ir::CallInst *callInst = new ir::CallInst(op1,
                                                           des);
                 Inst.push_back(callInst);
@@ -2083,6 +2159,8 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                 cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
             }
             root->is_computable = false;
+            root->t=op1.type;
+            root->v=id;
         }
         else
         {
@@ -2300,96 +2378,109 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
         ANALYSIS(unaryexp_right, UnaryExp, index);
         index++;
 
+        Operator def_or_fdef;
+        Operator mul_or_fmul_or_div_or_fdiv_or_mod;
+        Type t;
+        Type t_temp;
+        if (unaryexp->t == Type::Float || unaryexp_right->t == Type::Float || unaryexp->t == Type::FloatLiteral || unaryexp_right->t == Type::FloatLiteral)
+        {
+            t = Type::Float;
+            t_temp = Type::FloatLiteral;
+            def_or_fdef = Operator::fdef;
+            if (term->token.type == TokenType::MULT)
+                mul_or_fmul_or_div_or_fdiv_or_mod = Operator::fmul;
+            else if (term->token.type == TokenType::DIV)
+                mul_or_fmul_or_div_or_fdiv_or_mod = Operator::fdiv;
+        }
+        else
+        {
+            t = Type::Int;
+            t_temp = Type::IntLiteral;
+            def_or_fdef = Operator::def;
+            if (term->token.type == TokenType::MULT)
+                mul_or_fmul_or_div_or_fdiv_or_mod = Operator::mul;
+            else if (term->token.type == TokenType::DIV)
+                mul_or_fmul_or_div_or_fdiv_or_mod = Operator::div;
+            else
+                mul_or_fmul_or_div_or_fdiv_or_mod = Operator::mod;
+        }
+
+        cout << "inst op is " << toString(mul_or_fmul_or_div_or_fdiv_or_mod) << endl;
+
         if (unaryexp->is_computable) // 乘法是常数需要先定义
         {
-            Operand op1(unaryexp->v, unaryexp->t);
+            Operand op1(unaryexp->v, t_temp);
             string id = "t" + to_string(counter++);
 
-            result.insert({id, stoi(unaryexp->v)});
-            cout << "result中将 " << id << " 和 " << stoi(unaryexp->v) << " 绑定" << endl;
+            if (t == Type::Int)
+            {
+                result.insert({id, stoi(unaryexp->v)});
+                cout << "result中将 " << id << " 和 " << stoi(unaryexp->v) << " 绑定" << endl;
+            }
 
-            Type t;
-            if (unaryexp->t == Type::IntLiteral)
-                t = Type::Int;
-            else
-                t = Type::Float;
             Operand des(id, t);
-            Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
+            Instruction *defInst = new Instruction(op1, Operand(), des, def_or_fdef);
             Inst.push_back(defInst);
             pc++;
 
-            cout << "add def" << endl;
+            if (t == Type::Int)
+                cout << "add def" << endl;
+            else
+                cout << "add fdef" << endl;
+
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
             cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+
             unaryexp->v = id;
             unaryexp->t = t;
         }
 
         if (unaryexp_right->is_computable) // 乘法是常数需要先定义
         {
-            Operand op1(unaryexp_right->v, unaryexp_right->t);
+            Operand op1(unaryexp_right->v, t_temp);
             string id = "t" + to_string(counter++);
+            if (t == Type::Int)
+            {
+                result.insert({id, stoi(unaryexp_right->v)});
+                cout << "result中将 " << id << " 和 " << stoi(unaryexp_right->v) << " 绑定" << endl;
+            }
 
-            result.insert({id, stoi(unaryexp_right->v)});
-            cout << "result中将 " << id << " 和 " << stoi(unaryexp_right->v) << " 绑定" << endl;
-
-            Type t;
-            if (unaryexp_right->t == Type::IntLiteral)
-                t = Type::Int;
-            else
-                t = Type::Float;
             Operand des(id, t);
-            Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
+            Instruction *defInst = new Instruction(op1, Operand(), des, def_or_fdef);
             Inst.push_back(defInst);
             pc++;
 
-            cout << "add def" << endl;
+            if (t == Type::Int)
+                cout << "add def" << endl;
+            else
+                cout << "add fdef" << endl;
+
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
             cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+
             unaryexp_right->v = id;
             unaryexp_right->t = t;
         }
+
         Operand op1(unaryexp->v, unaryexp->t);
         Operand op2(unaryexp_right->v, unaryexp_right->t);
         string id = "t" + to_string(counter++);
-        Operand des(id, ir::Type::Int);
-        if (term->token.type == TokenType::MULT)
+        Operand des(id, t);
+
+        Instruction *inst = new Instruction(op1,
+                                            op2,
+                                            des, mul_or_fmul_or_div_or_fdiv_or_mod);
+        Inst.push_back(inst);
+        pc++;
+
+        cout << "add */÷/mod inst" << endl;
+
+        if (t == Type::Int)
         {
-            Instruction *mulInst = new Instruction(op1,
-                                                   op2,
-                                                   des, ir::Operator::mul);
-            Inst.push_back(mulInst);
-            pc++;
-
-            cout << "add mul" << endl;
-
-            string name1 = op1.name;
-            string name2 = op2.name;
-            string name3 = des.name;
-
-            map<std::string, int>::iterator it1 = result.find(name1);
-            map<std::string, int>::iterator it2 = result.find(name2);
-            if (it1 != result.end() && it2 != result.end())
-            {
-                cout << name1 << "      " << name2 << endl;
-                result.insert({name3, it1->second * it2->second});
-                cout << "result中将 " << name3 << " 和 " << it1->second * it2->second << " 绑定" << endl;
-            }
-        }
-        else if (term->token.type == TokenType::DIV)
-        {
-            Instruction *divInst = new Instruction(op1,
-                                                   op2,
-                                                   des, ir::Operator::div);
-            Inst.push_back(divInst);
-            pc++;
-
-            cout << "add div" << endl;
-
             string name1 = op1.name;
             string name2 = op2.name;
             string name3 = des.name;
@@ -2398,36 +2489,31 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
             if (it1 != result.end() && it2 != result.end())
             {
                 cout << name1 << "      " << name2 << endl;
-                result.insert({name3, it1->second / it2->second});
-                cout << "result中将 " << name3 << " 和 " << it1->second / it2->second << " 绑定" << endl;
+                if (mul_or_fmul_or_div_or_fdiv_or_mod == Operator::mul)
+                {
+                    result.insert({name3, it1->second * it2->second});
+                    cout << "result中将 " << name3 << " 和 " << it1->second * it2->second << " 绑定" << endl;
+                }
+                else if (mul_or_fmul_or_div_or_fdiv_or_mod == Operator::div)
+                {
+                    result.insert({name3, it1->second / it2->second});
+                    cout << "result中将 " << name3 << " 和 " << it1->second / it2->second << " 绑定" << endl;
+                }
+                else if (mul_or_fmul_or_div_or_fdiv_or_mod == Operator::mod)
+                {
+                    result.insert({name3, it1->second % it2->second});
+                    cout << "result中将 " << name3 << " 和 " << it1->second % it2->second << " 绑定" << endl;
+                }
             }
         }
-        else
-        {
-            Instruction *modInst = new Instruction(op1,
-                                                   op2,
-                                                   des, ir::Operator::mod);
-            Inst.push_back(modInst);
-            pc++;
 
-            cout << "add mod" << endl;
-
-            string name1 = op1.name;
-            string name2 = op2.name;
-            string name3 = des.name;
-            map<std::string, int>::iterator it1 = result.find(name1);
-            map<std::string, int>::iterator it2 = result.find(name2);
-            if (it1 != result.end() && it2 != result.end())
-            {
-                cout << name1 << "      " << name2 << endl;
-                result.insert({name3, it1->second % it2->second});
-                cout << "result中将 " << name3 << " 和 " << it1->second % it2->second << " 绑定" << endl;
-            }
-        }
-        root->t = unaryexp->t;
+        root->t = t;
         root->v = id;
         root->is_computable = false;
+
         unaryexp->v = id;
+        unaryexp->t = t;
+        unaryexp->is_computable = false;
     }
 #ifdef DEBUG_RESULT
     string sure;
@@ -2449,7 +2535,6 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
     cout << "begin addexp" << endl;
 #endif
     ANALYSIS(mulexp, MulExp, 0);
-    cout << "the first mulexp type is " << toString(mulexp->t) << endl;
     COPY_EXP_NODE(mulexp, root);
     int len = root->children.size();
     int index = 1;
@@ -2460,53 +2545,163 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
         ANALYSIS(mulexp_right, MulExp, index);
         index++;
 
+        Type t;
+        Operator add_or_sub;
+        Operand op1(mulexp->v, mulexp->t);
+        Operand op2(mulexp_right->v, mulexp_right->t);
+        if (mulexp->t == Type::Float || mulexp_right->t == Type::Float || mulexp->t == Type::FloatLiteral || mulexp_right->t == Type::FloatLiteral)
+        {
+            if (mulexp->is_computable && mulexp_right->is_computable)
+                t = Type::FloatLiteral;
+            else
+            {
+                t = Type::Float;
+                if (term->token.type == TokenType::PLUS)
+                    add_or_sub = Operator::fadd;
+                else
+                    add_or_sub = Operator::fsub;
+
+                if (mulexp->t == Type::IntLiteral)
+                {
+                    mulexp->t = Type::FloatLiteral;
+                }
+                if (mulexp_right->t == Type::IntLiteral)
+                {
+                    mulexp_right->t = Type::FloatLiteral;
+                }
+            }
+
+            if (mulexp->t == Type::Int || mulexp->t == Type::IntLiteral)
+            {
+                string id = "t" + to_string(counter++);
+                Instruction *inst = new Instruction(op1,
+                                                    Operand(),
+                                                    Operand(id, Type::Float),
+                                                    Operator::cvt_i2f);
+                Inst.push_back(inst);
+                pc++;
+
+                cout << "add cvt_i2f inst" << endl;
+                mulexp->v = id;
+                mulexp->t = Type::Float;
+                mulexp->is_computable = false;
+                op1 = Operand(mulexp->v, mulexp->t);
+            }
+            if (mulexp_right->t == Type::Int || mulexp_right->t == Type::IntLiteral)
+            {
+                string id = "t" + to_string(counter++);
+                Instruction *inst = new Instruction(op2,
+                                                    Operand(),
+                                                    Operand(id, Type::Float),
+                                                    Operator::cvt_i2f);
+                Inst.push_back(inst);
+                pc++;
+
+                cout << "add cvt_i2f inst" << endl;
+                mulexp_right->v = id;
+                mulexp_right->t = Type::Float;
+                mulexp_right->is_computable = false;
+                op2 = Operand(mulexp_right->v, mulexp_right->t);
+            }
+        }
+        else
+        {
+            if (mulexp->is_computable && mulexp_right->is_computable)
+                t = Type::IntLiteral;
+            else
+            {
+                t = Type::Int;
+                if (!mulexp->is_computable && !mulexp_right->is_computable)
+                {
+                    if (term->token.type == TokenType::PLUS)
+                        add_or_sub = Operator::add;
+                    else
+                        add_or_sub = Operator::sub;
+                }
+                else if (!mulexp->is_computable)
+                {
+                    if (term->token.type == TokenType::PLUS)
+                        add_or_sub = Operator::addi;
+                    else
+                        add_or_sub = Operator::subi;
+                }
+                else
+                {
+                    if (term->token.type == TokenType::PLUS)
+                    {
+                        Operand temp = op1;
+                        op1 = op2;
+                        op2 = temp;
+                        add_or_sub = Operator::addi;
+                    }
+
+                    else
+                    {
+                        add_or_sub = Operator::sub;
+                        string id = "t" + to_string(counter++);
+                        Operand des_temp(id, Type::Int);
+                        Instruction *defInst = new Instruction(op1,
+                                                               Operand(),
+                                                               des_temp, ir::Operator::def);
+                        Inst.push_back(defInst);
+                        pc++;
+
+                        cout << "add def" << endl;
+
+                        mulexp->t = Type::Int;
+                        mulexp->v = id;
+                        mulexp->is_computable = false;
+                    }
+                }
+            }
+        }
+
         // 两个都是常量
         if (mulexp->is_computable && mulexp_right->is_computable)
         {
-            cout << "two is computable" << endl;
-            root->is_computable = true;
             if (term->token.type == TokenType::PLUS)
             {
-                if (mulexp->t == Type::IntLiteral && mulexp_right->t == Type::IntLiteral)
+                if (t == Type::IntLiteral)
                 {
                     root->v = to_string(std::stoi(mulexp->v) + std::stoi(mulexp_right->v));
+                    root->t = t;
                 }
                 else
                 {
                     root->v = to_string(std::stof(mulexp->v) + std::stof(mulexp_right->v));
+                    root->t = t;
                 }
             }
             else
             {
-                if (mulexp->t == Type::IntLiteral && mulexp_right->t == Type::IntLiteral)
+                if (t == Type::IntLiteral)
+                {
                     root->v = to_string(std::stoi(mulexp->v) - std::stoi(mulexp_right->v));
+                    root->t = t;
+                }
                 else
+                {
                     root->v = to_string(std::stof(mulexp->v) - std::stof(mulexp_right->v));
+                    root->t = t;
+                }
             }
+            root->is_computable = true;
+            mulexp->v = root->v;
+            mulexp->t = root->t;
+            mulexp->is_computable = true;
         }
-        // 两个都不是常量
-        else if (!mulexp->is_computable && !mulexp_right->is_computable)
+        else
         {
-            cout << "the first mulexp type is " << toString(mulexp->t) << endl;
-            cout << "the second mulexp type is " << toString(mulexp_right->t) << endl;
-            cout << "two is not computable" << endl;
-            Operand op1 = Operand(mulexp->v, mulexp->t);
-            Operand op2 = Operand(mulexp_right->v, mulexp_right->t);
             string id = "t" + to_string(counter++);
-            cout << "the first mulexp type is " << toString(mulexp->t) << endl;
-            if (mulexp->t == Type::Int && mulexp_right->t == Type::Int)
-                root->t = Type::Int;
-            else
-                root->t = Type::Float;
-            Operand des(id, Type::Int);
-            if (term->token.type == TokenType::PLUS)
+            Operand des(id, t);
+            Instruction *inst = new Instruction(op1, op2, des, add_or_sub);
+            Inst.push_back(inst);
+            pc++;
+
+            cout << "add +/- inst" << endl;
+
+            if (t == Type::Int)
             {
-                Instruction *addInst = new Instruction(op1, op2, des, ir::Operator::add);
-                Inst.push_back(addInst);
-                pc++;
-
-                cout << "add add" << endl;
-
                 string name1 = op1.name;
                 string name2 = op2.name;
                 string name3 = des.name;
@@ -2518,158 +2713,207 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
                     result.insert({name3, it1->second + it2->second});
                     cout << "result中将 " << name3 << " 和 " << it1->second + it2->second << " 绑定" << endl;
                 }
-            }
-            else
-            {
-                Instruction *subInst = new Instruction(op1, op2, des, ir::Operator::sub);
-                Inst.push_back(subInst);
-                pc++;
 
-                cout << "add sub" << endl;
-
-                string name1 = op1.name;
-                string name2 = op2.name;
-                string name3 = des.name;
-                map<std::string, int>::iterator it1 = result.find(name1);
-                map<std::string, int>::iterator it2 = result.find(name2);
-                if (it1 != result.end() && it2 != result.end())
-                {
-                    cout << name1 << "      " << name2 << endl;
-                    result.insert({name3, it1->second - it2->second});
-                    cout << it1->second << "    " << it2->second << endl;
-                    cout << "result中将 " << name3 << " 和 " << it1->second - it2->second << " 绑定" << endl;
-                }
+                STE ste;
+                ste.operand = des;
+                symbol_table.scope_stack.back().table.insert({des.name, ste});
+                cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
             }
 
             root->v = id;
+            root->t = t;
+            root->is_computable = false;
             mulexp->v = id;
-            Operand op = des;
-            STE ste;
-            ste.operand = op;
-            symbol_table.scope_stack.back().table.insert({op.name, ste});
-            cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-        }
-        // 第二个是常量
-        else if (!mulexp->is_computable && mulexp_right->is_computable)
-        {
-            cout << "second is computable" << endl;
-            Operand op1(mulexp->v, mulexp->t);
-            Operand op2(mulexp_right->v, mulexp_right->t);
-            if (term->token.type == TokenType::PLUS)
-            {
-                if (mulexp->t == Type::Int && mulexp_right->t == Type::IntLiteral)
-                {
-                    string id = "t" + to_string(counter++);
-                    root->v = id;
-                    root->t = Type::Int;
-                    Operand des(id, Type::Int);
-                    Instruction *addiInst = new Instruction(op1,
-                                                            op2,
-                                                            des, ir::Operator::addi);
-                    Inst.push_back(addiInst);
-                    pc++;
+            mulexp->t = t;
+            mulexp->is_computable = false;
 
-                    cout << "add addi" << endl;
-                    cout << pc - 1 << "************************************************************des name is " << des.name << endl;
+            // else
+            // {
+            //     // 两个都不是常量
+            //     if (!mulexp->is_computable && !mulexp_right->is_computable)
+            //     {
+            //         Operand op1 = Operand(mulexp->v, mulexp->t);
+            //         Operand op2 = Operand(mulexp_right->v, mulexp_right->t);
+            //         string id = "t" + to_string(counter++);
 
-                    Operand op = des;
-                    STE ste;
-                    ste.operand = op;
-                    symbol_table.scope_stack.back().table.insert({op.name, ste});
-                    cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+            //         if (mulexp->t == Type::Int && mulexp_right->t == Type::Int)
+            //             root->t = Type::Int;
+            //         else
+            //             root->t = Type::Float;
+            //         Operand des(id, Type::Int);
+            //         if (term->token.type == TokenType::PLUS)
+            //         {
+            //             Instruction *addInst = new Instruction(op1, op2, des, ir::Operator::add);
+            //             Inst.push_back(addInst);
+            //             pc++;
 
-                    map<std::string, int>::iterator it = result.find(mulexp->v);
-                    if (it != result.end())
-                    {
-                        result.insert({id, it->second + stoi(mulexp_right->v)});
-                        cout << "result中将 " << id << " 和 " << it->second + stoi(mulexp_right->v) << " 绑定" << endl;
-                    }
-                }
-            }
-            else
-            {
-                if (mulexp->t == Type::Int && mulexp_right->t == Type::IntLiteral)
-                {
-                    string id = "t" + to_string(counter++);
-                    root->v = id;
-                    root->t = Type::Int;
-                    Operand des(id, Type::Int);
-                    Instruction *subInst = new Instruction(op1,
-                                                           op2,
-                                                           des, ir::Operator::subi);
-                    Inst.push_back(subInst);
-                    pc++;
+            //             cout << "add add" << endl;
 
-                    cout << "add subi" << endl;
-                }
-            }
-            {
-            }
-        }
-        // 第一个是常量
-        else
-        {
-            cout << "first is computable" << endl;
-            Operand op2(mulexp->v, mulexp->t);
-            Operand op1(mulexp_right->v, mulexp_right->t);
-            if (term->token.type == TokenType::PLUS)
-            {
-                if (mulexp_right->t == Type::Int && mulexp->t == Type::IntLiteral)
-                {
-                    string id = "t" + to_string(counter++);
-                    root->v = id;
-                    root->t = Type::Int;
-                    Operand des(id, Type::Int);
-                    Instruction *addInst = new Instruction(op1,
-                                                           op2,
-                                                           des, ir::Operator::addi);
-                    Inst.push_back(addInst);
-                    pc++;
+            //             string name1 = op1.name;
+            //             string name2 = op2.name;
+            //             string name3 = des.name;
+            //             map<std::string, int>::iterator it1 = result.find(name1);
+            //             map<std::string, int>::iterator it2 = result.find(name2);
+            //             if (it1 != result.end() && it2 != result.end())
+            //             {
+            //                 cout << name1 << "      " << name2 << endl;
+            //                 result.insert({name3, it1->second + it2->second});
+            //                 cout << "result中将 " << name3 << " 和 " << it1->second + it2->second << " 绑定" << endl;
+            //             }
+            //         }
+            //         else
+            //         {
+            //             Instruction *subInst = new Instruction(op1, op2, des, ir::Operator::sub);
+            //             Inst.push_back(subInst);
+            //             pc++;
 
-                    cout << "add addi" << endl;
+            //             cout << "add sub" << endl;
 
-                    Operand op = des;
-                    STE ste;
-                    ste.operand = op;
-                    symbol_table.scope_stack.back().table.insert({op.name, ste});
-                    cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-                }
-            }
-            else
-            {
-                if (mulexp_right->t == Type::Int && mulexp->t == Type::IntLiteral)
-                {
-                    string id = "t" + to_string(counter++);
-                    Operand des_temp(id, Type::Int);
-                    Instruction *defInst = new Instruction(op2,
-                                                           Operand(),
-                                                           des_temp, ir::Operator::def);
-                    Inst.push_back(defInst);
-                    pc++;
+            //             string name1 = op1.name;
+            //             string name2 = op2.name;
+            //             string name3 = des.name;
+            //             map<std::string, int>::iterator it1 = result.find(name1);
+            //             map<std::string, int>::iterator it2 = result.find(name2);
+            //             if (it1 != result.end() && it2 != result.end())
+            //             {
+            //                 cout << name1 << "      " << name2 << endl;
+            //                 result.insert({name3, it1->second - it2->second});
+            //                 cout << it1->second << "    " << it2->second << endl;
+            //                 cout << "result中将 " << name3 << " 和 " << it1->second - it2->second << " 绑定" << endl;
+            //             }
+            //         }
 
-                    cout << "add def" << endl;
+            //         root->v = id;
+            //         mulexp->v = id;
+            //         Operand op = des;
+            //         STE ste;
+            //         ste.operand = op;
+            //         symbol_table.scope_stack.back().table.insert({op.name, ste});
+            //         cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+            //     }
+            //     // 第二个是常量
+            //     else if (!mulexp->is_computable && mulexp_right->is_computable)
+            //     {
+            //         cout << "second is computable" << endl;
+            //         Operand op1(mulexp->v, mulexp->t);
+            //         Operand op2(mulexp_right->v, mulexp_right->t);
+            //         if (term->token.type == TokenType::PLUS)
+            //         {
+            //             if (mulexp->t == Type::Int && mulexp_right->t == Type::IntLiteral)
+            //             {
+            //                 string id = "t" + to_string(counter++);
+            //                 root->v = id;
+            //                 root->t = Type::Int;
+            //                 Operand des(id, Type::Int);
+            //                 Instruction *addiInst = new Instruction(op1,
+            //                                                         op2,
+            //                                                         des, ir::Operator::addi);
+            //                 Inst.push_back(addiInst);
+            //                 pc++;
 
-                    id = "t" + to_string(counter++);
-                    root->v = id;
-                    root->t = Type::Int;
-                    root->is_computable = false;
-                    mulexp->v = id;
-                    mulexp->t = Type::Int;
-                    Operand des(id, Type::Int);
-                    Instruction *subInst = new Instruction(des_temp,
-                                                           op1,
-                                                           des, ir::Operator::sub);
-                    Inst.push_back(subInst);
-                    pc++;
+            //                 cout << "add addi" << endl;
+            //                 cout << pc - 1 << "************************************************************des name is " << des.name << endl;
 
-                    cout << "add subi" << endl;
+            //                 Operand op = des;
+            //                 STE ste;
+            //                 ste.operand = op;
+            //                 symbol_table.scope_stack.back().table.insert({op.name, ste});
+            //                 cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
 
-                    STE ste;
-                    ste.operand = des;
-                    symbol_table.scope_stack.back().table.insert({des.name, ste});
-                    cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-                }
-            }
+            //                 map<std::string, int>::iterator it = result.find(mulexp->v);
+            //                 if (it != result.end())
+            //                 {
+            //                     result.insert({id, it->second + stoi(mulexp_right->v)});
+            //                     cout << "result中将 " << id << " 和 " << it->second + stoi(mulexp_right->v) << " 绑定" << endl;
+            //                 }
+            //             }
+            //         }
+            //         else
+            //         {
+            //             if (mulexp->t == Type::Int && mulexp_right->t == Type::IntLiteral)
+            //             {
+            //                 string id = "t" + to_string(counter++);
+            //                 root->v = id;
+            //                 root->t = Type::Int;
+            //                 Operand des(id, Type::Int);
+            //                 Instruction *subInst = new Instruction(op1,
+            //                                                        op2,
+            //                                                        des, ir::Operator::subi);
+            //                 Inst.push_back(subInst);
+            //                 pc++;
+
+            //                 cout << "add subi" << endl;
+            //             }
+            //         }
+            //         {
+            //         }
+            //     }
+            //     // 第一个是常量
+            //     else
+            //     {
+            //         cout << "first is computable" << endl;
+            //         Operand op2(mulexp->v, mulexp->t);
+            //         Operand op1(mulexp_right->v, mulexp_right->t);
+            //         if (term->token.type == TokenType::PLUS)
+            //         {
+            //             if (mulexp_right->t == Type::Int && mulexp->t == Type::IntLiteral)
+            //             {
+            //                 string id = "t" + to_string(counter++);
+            //                 root->v = id;
+            //                 root->t = Type::Int;
+            //                 Operand des(id, Type::Int);
+            //                 Instruction *addInst = new Instruction(op1,
+            //                                                        op2,
+            //                                                        des, ir::Operator::addi);
+            //                 Inst.push_back(addInst);
+            //                 pc++;
+
+            //                 cout << "add addi" << endl;
+
+            //                 Operand op = des;
+            //                 STE ste;
+            //                 ste.operand = op;
+            //                 symbol_table.scope_stack.back().table.insert({op.name, ste});
+            //                 cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+            //             }
+            //         }
+            //         else
+            //         {
+            //             if (mulexp_right->t == Type::Int && mulexp->t == Type::IntLiteral)
+            //             {
+            //                 string id = "t" + to_string(counter++);
+            //                 Operand des_temp(id, Type::Int);
+            //                 Instruction *defInst = new Instruction(op2,
+            //                                                        Operand(),
+            //                                                        des_temp, ir::Operator::def);
+            //                 Inst.push_back(defInst);
+            //                 pc++;
+
+            //                 cout << "add def" << endl;
+
+            //                 id = "t" + to_string(counter++);
+            //                 root->v = id;
+            //                 root->t = Type::Int;
+            //                 root->is_computable = false;
+            //                 mulexp->v = id;
+            //                 mulexp->t = Type::Int;
+            //                 Operand des(id, Type::Int);
+            //                 Instruction *subInst = new Instruction(des_temp,
+            //                                                        op1,
+            //                                                        des, ir::Operator::sub);
+            //                 Inst.push_back(subInst);
+            //                 pc++;
+
+            //                 cout << "add subi" << endl;
+
+            //                 STE ste;
+            //                 ste.operand = des;
+            //                 symbol_table.scope_stack.back().table.insert({des.name, ste});
+            //                 cout << "add  " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+            //             }
+            //         }
+            // }
+            // }
         }
     }
 #ifdef DEBUG_RESULT
@@ -2701,59 +2945,76 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
         index++;
         ANALYSIS(addexp_right, AddExp, index);
         index++;
-        Operand op1(addexp->v, addexp->t);
-        Operand op2(addexp_right->v, addexp_right->t);
-        string id = "t" + to_string(counter++);
-        Operand des(id, Type::Int);
-        if (term->token.type == TokenType::LSS)
-        {
-            Instruction *lssinst = new Instruction(op1, op2, des, ir::Operator::lss);
-            Inst.push_back(lssinst);
-            pc++;
+        Operator op;
+        Type t;
 
-            cout << "add lss" << endl;
-        }
-        else if (term->token.type == TokenType::GTR)
+        if ((addexp->t == Type::Int || addexp->t == Type::IntLiteral) && (addexp_right->t == Type::Int || addexp_right->t == Type::IntLiteral))
         {
-            Instruction *gtrInst = new Instruction(op1, op2, des, ir::Operator::gtr);
-            Inst.push_back(gtrInst);
-            pc++;
-
-            cout << "add gtr" << endl;
-        }
-        else if (term->token.type == TokenType::LEQ)
-        {
-            Instruction *leqInst = new Instruction(op1, op2, des, ir::Operator::leq);
-            Inst.push_back(leqInst);
-            pc++;
-
-            cout << "add leq" << endl;
+            t = Type::Int;
+            if (term->token.type == TokenType::LSS)
+                op = Operator::lss;
+            else if (term->token.type == TokenType::GTR)
+                op = Operator::gtr;
+            else if (term->token.type == TokenType::LEQ)
+                op = Operator::leq;
+            else
+                op = Operator::geq;
         }
         else
         {
-            if (addexp->t == Type::Int && addexp_right->t == Type::Float)
+            t = Type::Float;
+            if (term->token.type == TokenType::LSS)
+                op = Operator::flss;
+            else if (term->token.type == TokenType::GTR)
+                op = Operator::fgtr;
+            else if (term->token.type == TokenType::LEQ)
+                op = Operator::fleq;
+            else
+                op = Operator::fgeq;
+
+            if (addexp->t == Type::Int || addexp->t == Type::IntLiteral)
             {
                 string id = "t" + to_string(counter++);
-                root->v = id;
-                root->t = Type::Int;
-                Operand des(id, Type::Int);
-                Instruction *geqInst = new Instruction(op1, op2, des, ir::Operator::geq);
-                Inst.push_back(geqInst);
+                Instruction *inst = new Instruction(Operand(addexp->v, addexp->t),
+                                                    Operand(),
+                                                    Operand(id, Type::Float), ir::Operator::cvt_i2f);
+                Inst.push_back(inst);
                 pc++;
 
-                cout << "add geq" << endl;
+                cout << "add cvt_i2f" << endl;
+
+                addexp->v = id;
+                addexp->t = Type::Float;
+                addexp->is_computable = false;
             }
-            else
+            if (addexp_right->t == Type::Int || addexp_right->t == Type::IntLiteral)
             {
-                Instruction *geqInst = new Instruction(op1, op2, des, ir::Operator::geq);
-                Inst.push_back(geqInst);
+                string id = "t" + to_string(counter++);
+                Instruction *inst = new Instruction(Operand(addexp_right->v, addexp_right->t),
+                                                    Operand(),
+                                                    Operand(id, Type::Float), ir::Operator::cvt_i2f);
+                Inst.push_back(inst);
                 pc++;
 
-                cout << "add geq" << endl;
+                cout << "add cvt_i2f" << endl;
+
+                addexp_right->v = id;
+                addexp_right->t = Type::Float;
+                addexp_right->is_computable = false;
             }
         }
+        Operand op1(addexp->v, addexp->t);
+        Operand op2(addexp_right->v, addexp_right->t);
+        string id = "t" + to_string(counter++);
+        Operand des(id, t);
+        Instruction *inst = new Instruction(op1, op2, des, op);
+        Inst.push_back(inst);
+        pc++;
+
+        cout << "add </>/<=/>=" << endl;
+
         root->v = id;
-        root->t = Type::Int;
+        root->t = t;
         root->is_computable = false;
 
         STE ste;
@@ -2992,8 +3253,6 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
     Operand op1 = symbol_table.get_operand(landexp->v);
     if (root->children.size() == 3)
     {
-
-        // todo
         if (landexp->is_computable) // 乘法是常数需要先定义
         {
             Operand op1(landexp->v, landexp->t);
@@ -3038,6 +3297,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
         Instruction *gotoInst = new Instruction(des, Operand(), ir::Operand("1", Type::IntLiteral), ir::Operator::_goto);
         Inst.push_back(gotoInst);
         pc++;
+        
         cout << "add goto" << endl;
         cout << "&&之前一个的结果出来后判断是否跳转" << endl;
 

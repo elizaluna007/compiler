@@ -117,12 +117,14 @@ python test.py s2
 ..\bin\compiler.exe .\testcase\basic\09_func_defn.sy -e -o .\output\basic\09_func_defn.out
 ..\bin\compiler.exe .\testcase\basic\33_while_if_test3.sy -e -o .\output\basic\33_while_if_test3.out
 
- ..\bin\compiler.exe .\testcase\function\50_short_circuit.sy -e -o .\output\function\50_short_circuit.out
+..\bin\compiler.exe .\testcase\function\50_short_circuit.sy -e -o .\output\function\50_short_circuit.out
 通过47个/
 ..\bin\compiler.exe .\testcase\function\51_short_circuit3.sy -e -o .\output\function\51_short_circuit3.out
 通过48个
 ..\bin\compiler.exe .\testcase\function\55_sort_test1.sy -e -o .\output\function\55_sort_test1.out
 通过49个
+..\bin\compiler.exe .\testcase\function\62_percolation.sy -e -o .\output\function\62_percolation.out
+通过51个
 
 
 

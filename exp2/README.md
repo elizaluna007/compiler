@@ -119,6 +119,8 @@ python test.py s2
 
  ..\bin\compiler.exe .\testcase\function\50_short_circuit.sy -e -o .\output\function\50_short_circuit.out
 通过47个/
+..\bin\compiler.exe .\testcase\function\51_short_circuit3.sy -e -o .\output\function\51_short_circuit3.out
+通过48个
 
 
 

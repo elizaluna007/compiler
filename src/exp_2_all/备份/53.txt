@@ -2132,15 +2132,15 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             Operand des(id, op1.type);
             if (index < len - 1)
             {
-                vector<Operand> paraList = {};
-                callInst_temp = new ir::CallInst(Operand(), paraList, Operand());
+                vector<Operand> paraVec = {};
+                callInst_temp = new ir::CallInst(Operand(), paraVec, Operand());
                 ANALYSIS(funcrparam, FuncRParams, 2);
                 // 一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
                 vector<Operand> paraVec1 = callInst_temp->argumentList;
                 ir::CallInst *callInst = new ir::CallInst(op1, paraVec1, des);
                 for (int i = 0; i < paraVec1.size(); i++)
                 {
-                    cout << toString(paraVec1[i].type) << " " << paraVec1[i].name << endl;
+                    cout << "最后函数的参数为： " << toString(paraVec1[i].type) << " " << paraVec1[i].name << endl;
                 }
                 Inst.push_back(callInst);
                 pc++;

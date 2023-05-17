@@ -284,76 +284,24 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
             Inst.push_back(globalreturn);
             pc++;
 
-            cout << "add globalreturn" << endl;
+            cout << "add globalreturn inst in global" << endl;
 
             program.addFunction(function_temp);
             function_temp = Function();
-            cout << "add func "
-                 << "global"
-                 << " " << toString(Type::null) << "  in program" << endl;
+            cout << "add function global" << toString(Type::null) << "  in program" << endl;
 
             for (int q = 0; q < pc; q++)
             {
                 program.functions.back().addInst(Inst[q]);
 
-                cout << "pc is " << q << " , add Instruction " << toString(Inst[q]->op) << " in program " << function_temp.name << endl;
-                cout << toString(Inst[q]->op) << " " << toString(Inst[q]->des.type) << " " << Inst[q]->des.name << " " << toString(Inst[q]->op1.type) << " " << Inst[q]->op1.name << " " << toString(Inst[q]->op2.type) << " " << Inst[q]->op2.name << endl;
+                cout << "pc = " << q << ":  " << toString(Inst[q]->op) << " " << toString(Inst[q]->des.type) << " " << Inst[q]->des.name << " " << toString(Inst[q]->op1.type) << " " << Inst[q]->op1.name << " " << toString(Inst[q]->op2.type) << " " << Inst[q]->op2.name << endl;
             }
-
-            cout << "add return" << endl;
         }
+
         // FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
-        function_temp = Function(); // 清零
-        int pc_old = pc;
-        cout << "***************************1*********************" << endl;
-        for (int i = 0; i < function_temp.ParameterList.size(); i++)
-        {
-            cout << "param is " << toString(function_temp.ParameterList[i].type) << "  " << function_temp.ParameterList[i].name << endl;
-        }
+        cout << "********************************begin a function********************************" << endl;
         ANALYSIS(funcdef, FuncDef, 0);
-        cout << "***************************2*********************" << endl;
-        for (int i = 0; i < function_temp.ParameterList.size(); i++)
-        {
-            cout << "param is " << toString(function_temp.ParameterList[i].type) << "  " << function_temp.ParameterList[i].name << endl;
-        }
-
-        function_temp.name = funcdef->v;
-        function_temp.returnType = funcdef->t;
-        STE ste;
-        ste.operand = Operand(funcdef->v, funcdef->t);
-        symbol_table.scope_stack.back().table.insert({funcdef->v, ste});
-        cout << "add func in table" << endl;
-        program.addFunction(function_temp);
-        cout << "***************************3*********************" << endl;
-        cout << "add func " << toString(funcdef->t) << " " << funcdef->v << "  in program" << endl;
-        for (int i = 0; i < function_temp.ParameterList.size(); i++)
-        {
-            cout << function_temp.name << " param is " << toString(function_temp.ParameterList[i].type) << "  " << function_temp.ParameterList[i].name << endl;
-        }
-
-        // STE ste;
-        // ste.operand = Operand(funcdef->v, funcdef->t);
-        // symbol_table.scope_stack.back().table.insert({funcdef->v, ste});
-
-        if (function_temp.returnType == Type::null)
-        {
-            Instruction *funcreturn = new Instruction(ir::Operand(),
-                                                      ir::Operand(),
-                                                      ir::Operand(), ir::Operator::_return);
-            Inst.push_back(funcreturn);
-            pc++;
-
-            cout << "add funcreturn" << endl;
-        }
-        int pc_new = pc;
-        cout << "pc_old is " << pc_old << " pc_new is " << pc_new << endl;
-        for (int q = pc_old; q < pc_new; q++)
-        {
-            program.functions.back().addInst(Inst[q]);
-
-            cout << "pc is " << q << " " << toString(Inst[q]->op) << " " << toString(Inst[q]->des.type) << " " << Inst[q]->des.name << " " << toString(Inst[q]->op1.type) << " " << Inst[q]->op1.name << " " << toString(Inst[q]->op2.type) << " " << Inst[q]->op2.name << " in program " << function_temp.name << endl;
-        }
-        function_temp = Function();
+        cout << "********************************end a function********************************" << endl;
 
         int len = root->children.size();
         int index = 1;
@@ -1164,13 +1112,6 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
                     break;
                 }
             }
-            // int index = 2;
-            // while (index < len && root->children[index]->token.type == TokenType::COMMA)
-            // {
-            //     index++;
-            //     ANALYSIS(initval, InitVal, index);
-            //     index++;
-            // }
         }
         else
         {
@@ -1197,6 +1138,7 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin funcdef" << endl;
 #endif
+    int pc_old = pc;
     ANALYSIS(functype, FuncType, 0);
     GET_CHILD_PTR(ident, Term, 1);
     if (ident->token.value == "main")
@@ -1233,6 +1175,33 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
         symbol_table.scope_stack[0].table.insert({op.name, ste});
         ANALYSIS(block, Block, 4);
     }
+
+    function_temp.name = root->v;
+    function_temp.returnType = root->t;
+    program.addFunction(function_temp);
+    cout << "add function " << toString(function_temp.returnType) << "  " << function_temp.name << " in program" << endl;
+
+    if (function_temp.returnType == Type::null)
+    {
+        Instruction *funcreturn = new Instruction(ir::Operand(),
+                                                  ir::Operand(),
+                                                  ir::Operand(), ir::Operator::_return);
+        Inst.push_back(funcreturn);
+        pc++;
+
+        cout << "add funcreturn" << endl;
+    }
+
+    int pc_new = pc;
+    cout << "pc_old is " << pc_old << " pc_new is " << pc_new << endl;
+
+    for (int q = pc_old; q < pc_new; q++)
+    {
+        program.functions.back().addInst(Inst[q]);
+
+        cout << "pc is " << q << " " << toString(Inst[q]->op) << " " << toString(Inst[q]->des.type) << " " << Inst[q]->des.name << " " << toString(Inst[q]->op1.type) << " " << Inst[q]->op1.name << " " << toString(Inst[q]->op2.type) << " " << Inst[q]->op2.name << " in program " << function_temp.name << endl;
+    }
+    function_temp = Function();
 
 #ifdef DEBUG_RESULT
     string sure;
@@ -2232,58 +2201,6 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             }
             root->is_computable = false;
         }
-
-        // int len = root->children.size();
-        // int index = 2;
-        // if (index < len - 1)
-        // {
-        //     vector<Operand> paraList = {};
-        //     callInst_temp = new ir::CallInst(Operand(), paraList, Operand());
-        //     ANALYSIS(funcrparam, FuncRParams, 2);
-        //     // 一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
-        //     Operand op1 = symbol_table.get_operand(ident->v);
-        //     string id = "t" + to_string(counter++);
-        //     Operand des(id, op1.type);
-        //     root->v = id;
-
-        //     vector<Operand> paraVec1 = callInst_temp->argumentList;
-        //     ir::CallInst *callInst = new ir::CallInst(op1, paraVec1, des);
-        //     cout << "call func param is——" << paraVec1.size() << endl;
-        //     for (int i = 0; i < paraVec1.size(); i++)
-        //     {
-        //         cout << toString(paraVec1[i].type) << " " << paraVec1[i].name << endl;
-        //     }
-        //     Inst.push_back(callInst);
-        //     pc++;
-
-        //     cout << "add call" << endl;
-
-        //     STE ste;
-        //     Operand op = des;
-        //     ste.operand = op;
-        //     symbol_table.scope_stack.back().table.insert({op.name, ste});
-        //     cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-        // }
-        // else
-        // {
-        //     Operand op1 = symbol_table.get_operand(ident->v);
-        //     string id = "t" + to_string(counter++);
-        //     Operand des(id, op1.type);
-        //     root->v = id;
-        //     ir::CallInst *callInst = new ir::CallInst(op1,
-        //                                               des);
-        //     Inst.push_back(callInst);
-        //     pc++;
-
-        //     cout << "add call" << endl;
-
-        //     STE ste;
-        //     Operand op = des;
-        //     ste.operand = op;
-        //     symbol_table.scope_stack.back().table.insert({op.name, ste});
-        //     cout << "add  " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-        // }
-        // root->is_computable = false;
     }
 #ifdef DEBUG_RESULT
     string sure;
@@ -2337,6 +2254,10 @@ void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, ir::Program &pro
     cout << "begin funcrparams" << endl;
 #endif
     vector<Operand> paraVec1;
+    for (auto i : program.functions)
+    {
+        // todo
+    }
     ANALYSIS(exp, Exp, 0);
     Operand op(exp->v, exp->t);
 

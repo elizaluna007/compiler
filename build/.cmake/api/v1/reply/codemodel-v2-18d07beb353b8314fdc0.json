@@ -1,0 +1,96 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"jsonFile" : "directory-.-Debug-d0094a50bb2071803777.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.22"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "compiler",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "Front::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Front-Debug-793268d5749e7e9eacb0.json",
+					"name" : "Front",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "IR::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-IR-Debug-c3ee955b2a966191537e.json",
+					"name" : "IR",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "Tools::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-Tools-Debug-9800ac8c03ae9356678f.json",
+					"name" : "Tools",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "compiler::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-compiler-Debug-40984e08102490ee33b1.json",
+					"name" : "compiler",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "jsoncpp::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-jsoncpp-Debug-cc43c05a9b537705e868.json",
+					"name" : "jsoncpp",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "D:/360MoveData/Users/Luna/Desktop/compiler/build",
+		"source" : "D:/360MoveData/Users/Luna/Desktop/compiler/exp2"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 4
+	}
+}

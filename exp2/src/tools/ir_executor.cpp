@@ -67,6 +67,7 @@ ir::Value ir::Executor::find_src_operand(Operand op)
         assert(iter != global_vars.end() && "can not find the arguement in current conxtext or global variables");
     }
     retval = iter->second;
+    std::cout << "nowwwwwwwwwww"<<toString(retval.t)<<", value = "<<toString(op.type)<<std::endl;
     assert(retval.t == op.type && "type not match");
 #if (DEBUG_EXEC_DETAIL)
     std::cout << ", value = ";
@@ -275,7 +276,12 @@ bool ir::Executor::exec_ir(size_t n)
         case Operator::call:
         {
             std::cout << "begin call" << std::endl;
+
             auto callinst = dynamic_cast<CallInst *>(inst);
+            if(callinst->argumentList.size()==1)
+            {
+                std::cout<<"²ÎÊýÊÇ"<<toString(callinst->argumentList[0].type)<<"  "<<callinst->argumentList[0].name<<std::endl;
+            }
             auto fn = callinst->op1.name;
 
             std::cout << "begin lib functions" << std::endl;
@@ -328,6 +334,9 @@ bool ir::Executor::exec_ir(size_t n)
                     auto para = cxt->pfunc->ParameterList[i];
                     assert(i < callinst->argumentList.size() && "callinst's arguement list should match function's parameter list");
                     auto arg = callinst->argumentList[i];
+
+                    std::cout<<"ohhhhhhhh"<<toString(para.type)<<"    "<<para.name<<std::endl;
+                    std::cout<<"ohhhhhhhh"<<toString(arg.type)<<"    "<<arg.name<<std::endl;
                     switch (arg.type)
                     {
                     case Type::Int:

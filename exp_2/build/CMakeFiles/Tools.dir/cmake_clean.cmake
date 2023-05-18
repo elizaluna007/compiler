@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.obj"
-  "CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.obj.d"
-  "D:/360MoveData/Users/Luna/Desktop/compiler/exp_2/bin/libTools.a"
-  "D:/360MoveData/Users/Luna/Desktop/compiler/exp_2/bin/libTools.pdb"
+  "/mnt/hgfs/shared_file/compiler/exp_2/bin/libTools.a"
+  "/mnt/hgfs/shared_file/compiler/exp_2/bin/libTools.pdb"
+  "CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o"
+  "CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.d"
 )
 
 # Per-language clean rules from dependency scanning.

@@ -1,16 +1,16 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.obj"
-  "CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.obj.d"
-  "CMakeFiles/Front.dir/src/front/lexical.cpp.obj"
-  "CMakeFiles/Front.dir/src/front/lexical.cpp.obj.d"
-  "CMakeFiles/Front.dir/src/front/semantic.cpp.obj"
-  "CMakeFiles/Front.dir/src/front/semantic.cpp.obj.d"
-  "CMakeFiles/Front.dir/src/front/syntax.cpp.obj"
-  "CMakeFiles/Front.dir/src/front/syntax.cpp.obj.d"
-  "CMakeFiles/Front.dir/src/front/token.cpp.obj"
-  "CMakeFiles/Front.dir/src/front/token.cpp.obj.d"
-  "D:/360MoveData/Users/Luna/Desktop/compiler/exp_2/bin/libFront.a"
-  "D:/360MoveData/Users/Luna/Desktop/compiler/exp_2/bin/libFront.pdb"
+  "/mnt/hgfs/shared_file/compiler/exp_2/bin/libFront.a"
+  "/mnt/hgfs/shared_file/compiler/exp_2/bin/libFront.pdb"
+  "CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.o"
+  "CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.o.d"
+  "CMakeFiles/Front.dir/src/front/lexical.cpp.o"
+  "CMakeFiles/Front.dir/src/front/lexical.cpp.o.d"
+  "CMakeFiles/Front.dir/src/front/semantic.cpp.o"
+  "CMakeFiles/Front.dir/src/front/semantic.cpp.o.d"
+  "CMakeFiles/Front.dir/src/front/syntax.cpp.o"
+  "CMakeFiles/Front.dir/src/front/syntax.cpp.o.d"
+  "CMakeFiles/Front.dir/src/front/token.cpp.o"
+  "CMakeFiles/Front.dir/src/front/token.cpp.o.d"
 )
 
 # Per-language clean rules from dependency scanning.

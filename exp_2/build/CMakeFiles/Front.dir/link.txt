@@ -1,2 +1,2 @@
-G:\MinGW\bin\ar.exe qc D:\360MoveData\Users\Luna\Desktop\compiler\exp_2\bin\libFront.a CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.obj CMakeFiles/Front.dir/src/front/lexical.cpp.obj CMakeFiles/Front.dir/src/front/semantic.cpp.obj CMakeFiles/Front.dir/src/front/syntax.cpp.obj CMakeFiles/Front.dir/src/front/token.cpp.obj
-G:\MinGW\bin\ranlib.exe D:\360MoveData\Users\Luna\Desktop\compiler\exp_2\bin\libFront.a
+/usr/bin/ar qc /mnt/hgfs/shared_file/compiler/exp_2/bin/libFront.a CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.o CMakeFiles/Front.dir/src/front/lexical.cpp.o CMakeFiles/Front.dir/src/front/semantic.cpp.o CMakeFiles/Front.dir/src/front/syntax.cpp.o CMakeFiles/Front.dir/src/front/token.cpp.o
+/usr/bin/ranlib /mnt/hgfs/shared_file/compiler/exp_2/bin/libFront.a

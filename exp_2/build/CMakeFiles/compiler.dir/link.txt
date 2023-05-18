@@ -1,3 +1,1 @@
-G:\CMake\bin\cmake.exe -E rm -f CMakeFiles\compiler.dir/objects.a
-G:\MinGW\bin\ar.exe qc CMakeFiles\compiler.dir/objects.a @CMakeFiles\compiler.dir\objects1.rsp
-G:\MinGW\bin\g++.exe -Wall -Wl,--whole-archive CMakeFiles\compiler.dir/objects.a -Wl,--no-whole-archive -o D:\360MoveData\Users\Luna\Desktop\compiler\exp_2\bin\compiler.exe -Wl,--out-implib,D:\360MoveData\Users\Luna\Desktop\compiler\exp_2\bin\libcompiler.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\compiler.dir\linklibs.rsp
+/usr/bin/c++ -Wall CMakeFiles/compiler.dir/main.cpp.o -o /mnt/hgfs/shared_file/compiler/exp_2/bin/compiler   -L/mnt/hgfs/shared_file/compiler/exp_2/./lib  -Wl,-rpath,/mnt/hgfs/shared_file/compiler/exp_2/./lib /mnt/hgfs/shared_file/compiler/exp_2/bin/libTools.a /mnt/hgfs/shared_file/compiler/exp_2/bin/libFront.a /mnt/hgfs/shared_file/compiler/exp_2/bin/libIR.a /mnt/hgfs/shared_file/compiler/exp_2/bin/libjsoncpp.a 

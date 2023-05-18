@@ -1,0 +1,34 @@
+string frontend::SymbolTable::get_scoped_name(string id) const
+{
+    cout << "在当前作用域中是否已存在重命名的变量" << endl;
+    auto it = scope_stack.back().table.find(id + "_" + to_string(scope_stack.back().cnt));
+    if (it != scope_stack.back().table.end()) // 嵌套的时候重复定义了，就重命名
+    {
+        cout << "在当前" << scope_stack.back().name << "作用域中找到了该变量重命名的定义，需要重命名" << endl;
+        return id + "_" + to_string(scope_stack.back().cnt);
+    }
+    cout << "在当前作用域中不存在重命名的变量，查看原本变量是否已经定义" << endl;
+    // 变量在当前作用域内没有被定义：如果当前作用域内不存在与该变量名相同的定义，则不需要进行重命名。这意味着该变量是在外部作用域中定义的或者还未定义，因此无需重命名。
+    // 变量在当前作用域内有多个定义：如果当前作用域内存在多个与该变量名相同的定义，即出现了重名情况，那么需要进行重命名。因为在翻译成 IR 的过程中，变量名在一个作用域内必须是唯一的，否则会引起命名冲突。
+    // 变量在嵌套的作用域中被定义：如果变量在嵌套的作用域中被定义，并且外层作用域中也存在与该变量名相同的定义，那么需要进行重命名。因为在内层作用域中，需要区分与外层作用域中同名的变量，以确保变量引用的正确性。
+    it = scope_stack.back().table.find(id);
+    if (it != scope_stack.back().table.end()) // 嵌套的时候重复定义了，就重命名
+    {
+        cout << "在当前" << scope_stack.back().name << "作用域中找到了该变量的定义，需要重命名" << endl;
+        return id + "_" + to_string(scope_stack.back().cnt);
+    }
+    cout << "不需要重命名" << endl;
+    return id;
+}
+string frontend::SymbolTable::get_scoped_name_use(string id) const
+{
+    cout << "在当前作用域中是否已存在重命名的变量" << endl;
+    auto it = scope_stack.back().table.find(id + "_" + to_string(scope_stack.back().cnt));
+    if (it != scope_stack.back().table.end()) // 嵌套的时候重复定义了，就重命名
+    {
+        cout << "在当前" << scope_stack.back().name << "作用域中找到了该变量重命名的定义，需要重命名" << endl;
+        return id + "_" + to_string(scope_stack.back().cnt);
+    }
+    cout << "不需要重命名" << endl;
+    return id;
+}

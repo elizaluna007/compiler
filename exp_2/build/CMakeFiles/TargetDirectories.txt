@@ -1,7 +1,0 @@
-H:/shared_file/compiler/exp_2/build/CMakeFiles/jsoncpp.dir
-H:/shared_file/compiler/exp_2/build/CMakeFiles/Front.dir
-H:/shared_file/compiler/exp_2/build/CMakeFiles/IR.dir
-H:/shared_file/compiler/exp_2/build/CMakeFiles/Tools.dir
-H:/shared_file/compiler/exp_2/build/CMakeFiles/compiler.dir
-H:/shared_file/compiler/exp_2/build/CMakeFiles/edit_cache.dir
-H:/shared_file/compiler/exp_2/build/CMakeFiles/rebuild_cache.dir

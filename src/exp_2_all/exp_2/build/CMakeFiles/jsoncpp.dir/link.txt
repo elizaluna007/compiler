@@ -1,0 +1,2 @@
+/usr/bin/ar qc /mnt/hgfs/shared_file/compiler/exp_2/bin/libjsoncpp.a CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o
+/usr/bin/ranlib /mnt/hgfs/shared_file/compiler/exp_2/bin/libjsoncpp.a

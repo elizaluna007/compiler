@@ -1,2 +1,0 @@
-G:\MinGW\bin\ar.exe qc H:\shared_file\compiler\exp_2\bin\libIR.a CMakeFiles/IR.dir/src/ir/ir_function.cpp.obj CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.obj CMakeFiles/IR.dir/src/ir/ir_operand.cpp.obj CMakeFiles/IR.dir/src/ir/ir_operator.cpp.obj CMakeFiles/IR.dir/src/ir/ir_program.cpp.obj CMakeFiles/IR.dir/src/ir/type.cpp.obj
-G:\MinGW\bin\ranlib.exe H:\shared_file\compiler\exp_2\bin\libIR.a

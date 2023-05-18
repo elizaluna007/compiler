@@ -105,7 +105,12 @@ void frontend::SymbolTable::add_scope(Block *node)
     scope_info.cnt = scope_stack.empty() ? 0 : scope_stack.back().cnt + 1; // 得到新的作用域的cnt
     scope_info.name = "block_" + std::to_string(scope_info.cnt);           // 得到新的作用域的name为"block_类型_编号"
                                                                            // 在翻译成 IR 的过程中我们需要解决不通过作用域中同名变量的问题, 我们的解决方案是重命名, 为变量名加上与作用域相关的后缀使得重命名之后的变量名字在一个 IR Function 中是独一无二的
-    scope_stack.push_back(scope_info);                                     // 将新的作用域压入作用域栈
+
+    for (auto &&item : scope_stack.back().table) // 将之前作用域的变量名重新命名，以便于在不同的作用域中识别同名的变量。
+    {
+        scope_info.table.insert(item); // 把嵌套的作用域外面可用的全部作用域先全部添加到当前作用域中
+    }
+    scope_stack.push_back(scope_info); // 将新的作用域压入作用域栈
 }
 // 这个函数的作用是退出当前作用域，在符号表中删除当前作用域对应的内容。
 void frontend::SymbolTable::exit_scope()
@@ -285,7 +290,6 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
             }
         }
 
-        // FuncDef -> FuncType Ident '(' [FuncFParams] ')' Block
         cout << "********************************begin a function********************************" << endl;
         ANALYSIS(funcdef, FuncDef, 0);
         cout << "**********************************end a function********************************" << endl;
@@ -361,7 +365,7 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
     }
     else
     {
-        op1.name = "";
+        op1.name = "0";
         op1.type = Type::FloatLiteral;
         des.type = Type::Float;
         op = Operator::fdef;
@@ -455,7 +459,9 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
     int len = root->children.size();
     int index = 0;
     GET_CHILD_PTR(ident, Term, index);
-    Inst.back()->des.name = ident->token.value;
+    // todo
+    ident->v = ident->token.value;
+    Inst.back()->des.name = ident->v;
     index = 1;
     GET_CHILD_PTR(l_or_a, Term, index);
     // 是数组，需要改变des的type
@@ -786,7 +792,7 @@ void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program)
     }
     else
     {
-        op1.name = "";
+        op1.name = "0";
         op1.type = Type::FloatLiteral;
         des.type = Type::Float;
         op = Operator::fdef;
@@ -855,8 +861,8 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 #endif
     // des的name先定义好
     GET_CHILD_PTR(ident, Term, 0);
-
-    Inst.back()->des.name = ident->token.value;
+    ident->v = ident->token.value;
+    Inst.back()->des.name = ident->v;
     int key = 0; // 用来判断当前是否是整数赋值
     if (Inst.back()->des.type == Type::Int)
     {

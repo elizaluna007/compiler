@@ -1,0 +1,1 @@
+  -LH:/shared_file/compiler/exp_2/./lib  H:/shared_file/compiler/exp_2/bin/libTools.a H:/shared_file/compiler/exp_2/bin/libFront.a H:/shared_file/compiler/exp_2/bin/libIR.a H:/shared_file/compiler/exp_2/bin/libjsoncpp.a -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 

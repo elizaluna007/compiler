@@ -1,8 +1,8 @@
 file(REMOVE_RECURSE
-  "/mnt/hgfs/shared_file/compiler/exp_2/bin/libjsoncpp.a"
-  "/mnt/hgfs/shared_file/compiler/exp_2/bin/libjsoncpp.pdb"
-  "CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o"
-  "CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.d"
+  "CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.obj"
+  "CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.obj.d"
+  "H:/shared_file/compiler/exp_2/bin/libjsoncpp.a"
+  "H:/shared_file/compiler/exp_2/bin/libjsoncpp.pdb"
 )
 
 # Per-language clean rules from dependency scanning.

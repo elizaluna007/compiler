@@ -1,8 +1,10 @@
 file(REMOVE_RECURSE
-  "/mnt/hgfs/shared_file/compiler/exp_2/bin/compiler"
-  "/mnt/hgfs/shared_file/compiler/exp_2/bin/compiler.pdb"
-  "CMakeFiles/compiler.dir/main.cpp.o"
-  "CMakeFiles/compiler.dir/main.cpp.o.d"
+  "CMakeFiles/compiler.dir/main.cpp.obj"
+  "CMakeFiles/compiler.dir/main.cpp.obj.d"
+  "H:/shared_file/compiler/exp_2/bin/compiler.exe"
+  "H:/shared_file/compiler/exp_2/bin/compiler.exe.manifest"
+  "H:/shared_file/compiler/exp_2/bin/compiler.pdb"
+  "H:/shared_file/compiler/exp_2/bin/libcompiler.dll.a"
 )
 
 # Per-language clean rules from dependency scanning.

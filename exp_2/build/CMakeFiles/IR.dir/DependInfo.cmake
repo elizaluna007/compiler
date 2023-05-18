@@ -8,16 +8,16 @@ set(CMAKE_DEPENDS_LANGUAGES
 
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/mnt/hgfs/shared_file/compiler/exp_2/src/ir/ir_function.cpp" "CMakeFiles/IR.dir/src/ir/ir_function.cpp.o" "gcc" "CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.d"
-  "/mnt/hgfs/shared_file/compiler/exp_2/src/ir/ir_instruction.cpp" "CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o" "gcc" "CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.d"
-  "/mnt/hgfs/shared_file/compiler/exp_2/src/ir/ir_operand.cpp" "CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o" "gcc" "CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.d"
-  "/mnt/hgfs/shared_file/compiler/exp_2/src/ir/ir_operator.cpp" "CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o" "gcc" "CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.d"
-  "/mnt/hgfs/shared_file/compiler/exp_2/src/ir/ir_program.cpp" "CMakeFiles/IR.dir/src/ir/ir_program.cpp.o" "gcc" "CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.d"
-  "/mnt/hgfs/shared_file/compiler/exp_2/src/ir/type.cpp" "CMakeFiles/IR.dir/src/ir/type.cpp.o" "gcc" "CMakeFiles/IR.dir/src/ir/type.cpp.o.d"
+  "H:/shared_file/compiler/exp_2/src/ir/ir_function.cpp" "CMakeFiles/IR.dir/src/ir/ir_function.cpp.obj" "gcc" "CMakeFiles/IR.dir/src/ir/ir_function.cpp.obj.d"
+  "H:/shared_file/compiler/exp_2/src/ir/ir_instruction.cpp" "CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.obj" "gcc" "CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.obj.d"
+  "H:/shared_file/compiler/exp_2/src/ir/ir_operand.cpp" "CMakeFiles/IR.dir/src/ir/ir_operand.cpp.obj" "gcc" "CMakeFiles/IR.dir/src/ir/ir_operand.cpp.obj.d"
+  "H:/shared_file/compiler/exp_2/src/ir/ir_operator.cpp" "CMakeFiles/IR.dir/src/ir/ir_operator.cpp.obj" "gcc" "CMakeFiles/IR.dir/src/ir/ir_operator.cpp.obj.d"
+  "H:/shared_file/compiler/exp_2/src/ir/ir_program.cpp" "CMakeFiles/IR.dir/src/ir/ir_program.cpp.obj" "gcc" "CMakeFiles/IR.dir/src/ir/ir_program.cpp.obj.d"
+  "H:/shared_file/compiler/exp_2/src/ir/type.cpp" "CMakeFiles/IR.dir/src/ir/type.cpp.obj" "gcc" "CMakeFiles/IR.dir/src/ir/type.cpp.obj.d"
   )
 
-# Targets to which this target links which contain Fortran sources.
-set(CMAKE_Fortran_TARGET_LINKED_INFO_FILES
+# Targets to which this target links.
+set(CMAKE_TARGET_LINKED_INFO_FILES
   )
 
 # Fortran module output directory.

@@ -1,3 +1,3 @@
 file(REMOVE_RECURSE
-  "/mnt/hgfs/shared_file/compiler/exp_2/bin/libIR.a"
+  "H:/shared_file/compiler/exp_2/bin/libIR.a"
 )

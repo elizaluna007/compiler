@@ -1,0 +1,1 @@
+/usr/bin/x86_64-linux-gnu-g++-7  -Wall  -rdynamic CMakeFiles/compiler.dir/main.o  -o ../bin/compiler  -L./lib -Wl,-rpath,./lib ../bin/libBackend.a ../bin/libTools.a ../bin/libFront.a ../bin/libIR.a ../bin/libjsoncpp.a 

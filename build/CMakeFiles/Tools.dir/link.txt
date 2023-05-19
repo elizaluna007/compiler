@@ -1,2 +1,0 @@
-G:\MinGW\bin\ar.exe qc D:\360MoveData\Users\Luna\Desktop\compiler\exp2\bin\libTools.a CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.obj
-G:\MinGW\bin\ranlib.exe D:\360MoveData\Users\Luna\Desktop\compiler\exp2\bin\libTools.a

@@ -64,7 +64,7 @@ void AstNode::get_json_output(Json::Value& root) const {
 
 Term::Term(Token t, AstNode* p): AstNode(NodeType::TERMINAL, p), token(t) {}
 
-CompUnit::CompUnit(AstNode* p): AstNode(NodeType::COMPUINT, p) {}
+CompUnit::CompUnit(AstNode* p): AstNode(NodeType::COMPUNIT, p) {}
 
 Decl::Decl(AstNode* p): AstNode(NodeType::DECL, p) {}
 
@@ -130,7 +130,7 @@ ConstExp::ConstExp(AstNode* p): AstNode(NodeType::CONSTEXP, p) {}
 std::string frontend::toString(NodeType nt) {
     switch (nt) {
     case NodeType::TERMINAL: return "Terminal";
-    case NodeType::COMPUINT: return "CompUnit";
+    case NodeType::COMPUNIT: return "CompUnit";
     case NodeType::DECL: return "Decl";
     case NodeType::FUNCDEF: return "FuncDef";
     case NodeType::CONSTDECL: return "ConstDecl";

@@ -36,4 +36,21 @@
 
 #### 语法分析 62 错，修改 UnaryExp
 
+### 汇编——generator.cpp
+
+```
+当你想用VMware
+bcdedit /set hypervisorlaunchtype off
+
+当你想用Docker
+bcdedit /set hypervisorlaunchtype auto
+```
+
+```
+docker run -it -v D:\360MoveData\Users\Luna\Desktop\compiler\exp_3:/coursegrader frankd35/demo:v3
+```
+
+```
+python3 test.py -S
+```
 

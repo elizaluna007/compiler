@@ -1,6 +1,6 @@
 # compiler
 
-### 词法分析——lexical.cpp
+### 实验一：词法分析——lexical.cpp
 
 #### (1)从文件流中读取的字符串末尾加"\n"，否则最后一个 token 无法成功读出
 
@@ -10,7 +10,7 @@
 
 #### (4)区分 op 时修改为识别到两个相邻 op 可以组成 op，直接输出然后 reset()以下，如果只识别一个 op，则待定，等待第二个读入，做一个判断（当然这里也可以直接识别第一个 op 是不是仅单符号操作数，直接考虑是否输出）
 
-### 语法分析——abstract_syntax_tree.h/abstract_syntax_tree.cpp/syntax.h/syntax.cpp
+### 实验一：语法分析——abstract_syntax_tree.h/abstract_syntax_tree.cpp/syntax.h/syntax.cpp
 
 #### (1)修改 abstract_syntax_tree.h 中的 COMPUINT 为 COMPUNIT(8/47)
 
@@ -26,7 +26,7 @@
 
 #### (7)25 错误，去修改 Stmt-->忘记加'('和')'(47/47)——全过了
 
-### 语义分析——semantic.cpp
+### 实验二：语义分析——semantic.cpp
 
 #### 通过 58 个测试点：修改原本词法和语法分析
 
@@ -36,7 +36,7 @@
 
 #### 语法分析 62 错，修改 UnaryExp
 
-### 汇编——generator.cpp
+### 实验三：汇编——generator.cpp
 
 ```
 当你想用VMware

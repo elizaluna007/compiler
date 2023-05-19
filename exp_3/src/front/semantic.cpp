@@ -17,7 +17,7 @@ int calculateIndex(const std::vector<int> &dimension, const std::vector<int> &in
     int index = 0;
     int multiplier = 1;
 
-    // 从最后一个维度开始，计算索引值
+    // 从最后一个维度开始,计算索引值
     for (int i = numDimensions - 1; i >= 0; --i)
     {
         int currentIndex = indices[i];
@@ -27,7 +27,7 @@ int calculateIndex(const std::vector<int> &dimension, const std::vector<int> &in
 
     return index;
 }
-// 计数器，用来标识中间的值
+// 计数器,用来标识中间的值
 int counter = 0;
 // pc位置
 int pc = 0;
@@ -62,7 +62,7 @@ map<string, vector<string>> arr_dim;
     to->v = from->v;                         \
     to->t = from->t;
 
-// 这个函数返回一个指向字符串和 IR 函数对应的 map 的指针。这个 map 存储了一些内置函数，比如 getint、putint 等等。
+// 这个函数返回一个指向字符串和 IR 函数对应的 map 的指针。这个 map 存储了一些内置函数,比如 getint、putint 等等。
 map<std::string, ir::Function *> *frontend::get_lib_funcs()
 {
     static map<std::string, ir::Function *> lib_funcs = {
@@ -79,7 +79,7 @@ map<std::string, ir::Function *> *frontend::get_lib_funcs()
     };
     return &lib_funcs;
 }
-// 这个函数的作用是向符号表中添加一个新的作用域，参数 node 表示这个作用域对应的语法树节点。
+// 这个函数的作用是向符号表中添加一个新的作用域,参数 node 表示这个作用域对应的语法树节点。
 // 进入新作用域时, 向符号表中添加 ScopeInfo, 相当于压栈
 // struct ScopeInfo
 // {
@@ -88,8 +88,8 @@ map<std::string, ir::Function *> *frontend::get_lib_funcs()
 //     map_str_ste table;
 // };
 // cnt 是作用域在函数中的唯一编号, 代表是函数中出现的第几个作用域
-// name 可以用来分辨作用域的类别, 'b' 代表是一个单独嵌套的作用域, 'i' 'e' 'w' 分别代表由 if else while 产生的新作用域（你也可以取你喜欢的名字，只是这样会表意比较清晰）
-// table 是一张存放符号的表, {string: STE}, string 是操作数的原始名称, 表项 Variable Table Entry(STE), 实际上就是一个 IR 的操作数，即 STE -> Operand, 在 STE 中存放的应该是变量重命名后的名称
+// name 可以用来分辨作用域的类别, 'b' 代表是一个单独嵌套的作用域, 'i' 'e' 'w' 分别代表由 if else while 产生的新作用域（你也可以取你喜欢的名字,只是这样会表意比较清晰）
+// table 是一张存放符号的表, {string: STE}, string 是操作数的原始名称, 表项 Variable Table Entry(STE), 实际上就是一个 IR 的操作数,即 STE -> Operand, 在 STE 中存放的应该是变量重命名后的名称
 // map_str_ste = map<string, STE>;
 // struct STE
 // {
@@ -108,12 +108,12 @@ void frontend::SymbolTable::add_scope(Block *node)
                                                                  // 在翻译成 IR 的过程中我们需要解决不通过作用域中同名变量的问题, 我们的解决方案是重命名, 为变量名加上与作用域相关的后缀使得重命名之后的变量名字在一个 IR Function 中是独一无二的
     scope_stack.push_back(scope_info);                           // 将新的作用域压入作用域栈
 }
-// 这个函数的作用是退出当前作用域，在符号表中删除当前作用域对应的内容。
+// 这个函数的作用是退出当前作用域,在符号表中删除当前作用域对应的内容。
 void frontend::SymbolTable::exit_scope()
 {
     scope_stack.pop_back();
 }
-// 这个函数的作用是根据一个标识符 id 获取它在符号表中的作用域限定名。例如，如果 id 是 "x"，而在当前作用域中已经有了一个同名变量，则返回 "scope_x"。
+// 这个函数的作用是根据一个标识符 id 获取它在符号表中的作用域限定名。例如,如果 id 是 "x",而在当前作用域中已经有了一个同名变量,则返回 "scope_x"。
 // 输入一个变量名, 返回其在当前作用域下重命名后的名字 (相当于加后缀)
 // 在翻译成 IR 的过程中我们需要解决不通过作用域中同名变量的问题, 我们的解决方案是重命名, 为变量名加上与作用域相关的后缀使得重命名之后的变量名字在一个 IR Function 中是独一无二的
 string frontend::SymbolTable::get_scoped_name(string id) const
@@ -135,10 +135,10 @@ string frontend::SymbolTable::get_scoped_name(string id) const
             return id + "_" + to_string(scope_stack.back().cnt);
         }
     }
-    // 变量在当前作用域内没有被定义：如果当前作用域内不存在与该变量名相同的定义，则不需要进行重命名。这意味着该变量是在外部作用域中定义的或者还未定义，因此无需重命名。
-    // 变量在当前作用域内有多个定义：如果当前作用域内存在多个与该变量名相同的定义，即出现了重名情况，那么需要进行重命名。因为在翻译成 IR 的过程中，变量名在一个作用域内必须是唯一的，否则会引起命名冲突。
-    // 变量在嵌套的作用域中被定义：如果变量在嵌套的作用域中被定义，并且外层作用域中也存在与该变量名相同的定义，那么需要进行重命名。因为在内层作用域中，需要区分与外层作用域中同名的变量，以确保变量引用的正确性。
-    cout << "定义时不需要重命名，故返回原值" << id << endl;
+    // 变量在当前作用域内没有被定义：如果当前作用域内不存在与该变量名相同的定义,则不需要进行重命名。这意味着该变量是在外部作用域中定义的或者还未定义,因此无需重命名。
+    // 变量在当前作用域内有多个定义：如果当前作用域内存在多个与该变量名相同的定义,即出现了重名情况,那么需要进行重命名。因为在翻译成 IR 的过程中,变量名在一个作用域内必须是唯一的,否则会引起命名冲突。
+    // 变量在嵌套的作用域中被定义：如果变量在嵌套的作用域中被定义,并且外层作用域中也存在与该变量名相同的定义,那么需要进行重命名。因为在内层作用域中,需要区分与外层作用域中同名的变量,以确保变量引用的正确性。
+    cout << "定义时不需要重命名,故返回原值" << id << endl;
     return id;
 }
 string frontend::SymbolTable::get_scoped_name_use(string id) const
@@ -161,11 +161,11 @@ string frontend::SymbolTable::get_scoped_name_use(string id) const
         }
     }
 }
-// 这个函数的作用是根据一个标识符 id 获取它对应的操作数。如果这个标识符是一个变量，则返回一个寄存器或栈上的位置，如果是一个常量，则返回它的值。
-// 在当前作用域查找这个标识符是否已经定义，如果已经定义，则返回它的操作数。
-// 如果当前作用域没有定义这个标识符，则递归地在外层作用域中查找，直到找到或者到全局作用域为止。
-// 如果全局作用域也没有定义这个标识符，则说明这是一个未声明的标识符，需要报错并返回一个错误的操作数。
-// 输入一个变量名, 在符号表中寻找最近的同名变量, 返回对应的 Operand(注意，此 Operand 的 name 是重命名后的)
+// 这个函数的作用是根据一个标识符 id 获取它对应的操作数。如果这个标识符是一个变量,则返回一个寄存器或栈上的位置,如果是一个常量,则返回它的值。
+// 在当前作用域查找这个标识符是否已经定义,如果已经定义,则返回它的操作数。
+// 如果当前作用域没有定义这个标识符,则递归地在外层作用域中查找,直到找到或者到全局作用域为止。
+// 如果全局作用域也没有定义这个标识符,则说明这是一个未声明的标识符,需要报错并返回一个错误的操作数。
+// 输入一个变量名, 在符号表中寻找最近的同名变量, 返回对应的 Operand(注意,此 Operand 的 name 是重命名后的)
 Operand frontend::SymbolTable::get_operand(string id) const
 {
     auto iter = get_lib_funcs()->find(id);
@@ -176,15 +176,15 @@ Operand frontend::SymbolTable::get_operand(string id) const
     // const auto &current_scope = scope_stack.back(); // 当前作用域
     // auto it = current_scope.table.find(id);         // 当前作用域查找id
 
-    // rbegin()是容器的成员函数，返回一个反向迭代器，指向容器中的最后一个元素。
-    // rend()是容器的成员函数，返回一个反向迭代器，指向容器中的第一个元素之前的位置。
-    // 这段代码的作用是从最后一个作用域开始向前遍历作用域栈中的元素，以查找符号表中的标识符。它排除了最后一个作用域，即当前作用域。
+    // rbegin()是容器的成员函数,返回一个反向迭代器,指向容器中的最后一个元素。
+    // rend()是容器的成员函数,返回一个反向迭代器,指向容器中的第一个元素之前的位置。
+    // 这段代码的作用是从最后一个作用域开始向前遍历作用域栈中的元素,以查找符号表中的标识符。它排除了最后一个作用域,即当前作用域。
     for (auto it = scope_stack.rbegin(); it != scope_stack.rend(); ++it)
     {
         auto iter = it->table.find(id);
         // 找到标识符在该作用域中定义
         if (iter != it->table.end())
-        { // 找到了定义，生成新的操作数并返回
+        { // 找到了定义,生成新的操作数并返回
             return iter->second.operand;
         }
     }
@@ -206,11 +206,11 @@ frontend::STE frontend::SymbolTable::get_ste(string id) const
     // 标识符STE
     return STE();
 }
-// 这个类是语义分析器的主体部分，它有一个私有变量 symbol_table，表示语义分析过程中的符号表，以及一个私有变量 tmp_cnt，表示生成临时变量时使用的计数器。
+// 这个类是语义分析器的主体部分,它有一个私有变量 symbol_table,表示语义分析过程中的符号表,以及一个私有变量 tmp_cnt,表示生成临时变量时使用的计数器。
 frontend::Analyzer::Analyzer() : tmp_cnt(0), symbol_table()
 {
 }
-// 它接受一个根节点 root，返回一个 IR 程序。这个函数会递归地遍历整棵语法树，并调用一些辅助函数来实现不同类型的语义分析。
+// 它接受一个根节点 root,返回一个 IR 程序。这个函数会递归地遍历整棵语法树,并调用一些辅助函数来实现不同类型的语义分析。
 ir::Program frontend::Analyzer::get_ir_program(CompUnit *root)
 {
     ir::Program program;
@@ -236,7 +236,7 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin compunit" << endl;
 #endif
-    // 根据观察，CompUnit的第一个孩子节点是Decl只能是全局赋值语句，第一个孩子节点是FuncDef只能是函数定义
+    // 根据观察,CompUnit的第一个孩子节点是Decl只能是全局赋值语句,第一个孩子节点是FuncDef只能是函数定义
     if (root->children[0]->type == NodeType::DECL)
     {
         ANALYSIS(decl, Decl, 0);
@@ -461,10 +461,10 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
     Inst.back()->des.name = ident->v;
     index = 1;
     GET_CHILD_PTR(l_or_a, Term, index);
-    // 是数组，需要改变des的type
+    // 是数组,需要改变des的type
     if (index < len - 2 && l_or_a->token.type == TokenType::LBRACK)
     {
-        // 这里考虑到赋值的时候后面可能是先存在的值，故对原本指令备份，重新填入
+        // 这里考虑到赋值的时候后面可能是先存在的值,故对原本指令备份,重新填入
         Instruction *old_inst = Inst.back();
         Inst.pop_back();
         pc--;
@@ -569,7 +569,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
 
         cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
         result_arr.insert({op.name, arr_len});
-        cout << "开始数组初始化，得到的数组的大小是" << arr_len << endl;
+        cout << "开始数组初始化,得到的数组的大小是" << arr_len << endl;
         for (int i = 0; i < arr_len; i++)
         {
             string id = "t" + to_string(counter++);
@@ -583,7 +583,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
             cout << "add store" << endl;
         }
         // 数组且赋值
-        // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数。
+        // 存数指令,指向数组中存数。第一个操作数为数组名,第二个操作数为要存数所在数组下标,目的操作数为存入的数。
         if (index < len)
         {
             index++;
@@ -591,10 +591,10 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
             index++;
         }
     }
-    // 不是数组，那就一定是赋值
+    // 不是数组,那就一定是赋值
     else
     {
-        // 这里考虑到赋值的时候后面可能是先存在的值，故对原本指令备份，重新填入
+        // 这里考虑到赋值的时候后面可能是先存在的值,故对原本指令备份,重新填入
         Instruction *old_inst = Inst.back();
         Inst.pop_back();
         pc--;
@@ -704,7 +704,7 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
         }
         if (root->children[1]->type == NodeType::CONSTINITVAL)
         {
-            // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数
+            // 存数指令,指向数组中存数。第一个操作数为数组名,第二个操作数为要存数所在数组下标,目的操作数为存入的数
             int index = 1;
             int arr_index = 0;
 
@@ -871,10 +871,10 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
     if (index < len)
     {
         GET_CHILD_PTR(l_or_a, Term, index);
-        // 是数组，需要改变des的type
+        // 是数组,需要改变des的type
         if (index < len && l_or_a->token.type == TokenType::LBRACK)
         {
-            // 这里考虑到赋值的时候后面可能是先存在的值，故对原本指令备份，重新填入
+            // 这里考虑到赋值的时候后面可能是先存在的值,故对原本指令备份,重新填入
             Instruction *old_inst = Inst.back();
             Inst.pop_back();
             pc--;
@@ -914,7 +914,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                 // op1的name和type
                 index++;
                 ANALYSIS(constexp, ConstExp, index);
-                if (!constexp->is_computable) // 未知数，直接相乘
+                if (!constexp->is_computable) // 未知数,直接相乘
                 {
                     id = "t" + to_string(counter++);
                     inst = new Instruction(mul_temp, Operand(constexp->v, Type::Int), Operand(id, Type::Int), Operator::mul);
@@ -992,7 +992,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             symbol_table.scope_stack.back().table.insert({op.name, ste});
             cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
             result_arr.insert({op.name, arr_len});
-            cout << "开始数组初始化，得到的数组的大小是" << arr_len << endl;
+            cout << "开始数组初始化,得到的数组的大小是" << arr_len << endl;
             for (int i = 0; i < arr_len; i++)
             {
                 string id = "t" + to_string(counter++);
@@ -1007,7 +1007,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             }
 
             // 数组且赋值
-            // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数。
+            // 存数指令,指向数组中存数。第一个操作数为数组名,第二个操作数为要存数所在数组下标,目的操作数为存入的数。
             if (index < len)
             {
                 index++;
@@ -1015,10 +1015,10 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                 index++;
             }
         }
-        // 不是数组，那就一定是赋值
+        // 不是数组,那就一定是赋值
         else
         {
-            // 这里考虑到赋值的时候后面可能是先存在的值，故对原本指令备份，重新填入
+            // 这里考虑到赋值的时候后面可能是先存在的值,故对原本指令备份,重新填入
             Instruction *old_inst = Inst.back();
             Inst.pop_back();
             pc--;
@@ -1072,7 +1072,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             symbol_table.scope_stack.back().table.insert({op.name, ste});
             cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
 
-            // 如果是整数赋值，直接添加到result
+            // 如果是整数赋值,直接添加到result
             if (key)
             {
                 if (initval->is_computable)
@@ -1083,7 +1083,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             }
         }
     }
-    // 单纯一个Ident，无任何赋值
+    // 单纯一个Ident,无任何赋值
     else
     {
         STE ste;
@@ -1129,7 +1129,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
     }
     else
     {
-        Operand des = Inst.back()->op1; // 上一个肯定是初始化的，所以得到op1
+        Operand des = Inst.back()->op1; // 上一个肯定是初始化的,所以得到op1
         Type t;
         // Type t_init;
         if (des.type == Type::IntPtr)
@@ -1145,7 +1145,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
 
         if (root->children[1]->type == NodeType::INITVAL) // 肯定是数组赋值
         {
-            //  存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数
+            //  存数指令,指向数组中存数。第一个操作数为数组名,第二个操作数为要存数所在数组下标,目的操作数为存入的数
             int index = 1;
             int arr_index = 0;
             while (index < len)
@@ -1458,7 +1458,7 @@ void frontend::Analyzer::analysisBlock(Block *root, ir::Program &program)
         ANALYSIS(blockitem, BlockItem, index);
         index++;
     }
-    // 函数定义结束时，函数内部的作用域会退出。在函数定义结束后，函数内部的变量将不再可见。
+    // 函数定义结束时,函数内部的作用域会退出。在函数定义结束后,函数内部的变量将不再可见。
     symbol_table.exit_scope();
 #ifdef DEBUG_RESULT
     string sure;
@@ -1517,12 +1517,12 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
     {
         ANALYSIS(lval, LVal, 0);
         ANALYSIS(exp, Exp, 2);
-        if (lval->arr_name != "") // lval是数组，需要store
+        if (lval->arr_name != "") // lval是数组,需要store
         {
             Operand op1 = symbol_table.get_operand(lval->arr_name); // 数组地址
             Operand op2 = symbol_table.get_operand(lval->v);        // 下标
             Operand des(exp->v, exp->t);                            // 数据
-            // 存数指令，指向数组中存数。第一个操作数为数组名，第二个操作数为要存数所在数组下标，目的操作数为存入的数。
+            // 存数指令,指向数组中存数。第一个操作数为数组名,第二个操作数为要存数所在数组下标,目的操作数为存入的数。
             ir::Instruction *storeInst = new Instruction(op1,
                                                          op2,
                                                          des, ir::Operator::store);
@@ -1542,7 +1542,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             {
                 mov_or_fmov = Operator::fmov;
             }
-            // 第一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
+            // 第一个操作数为赋值变量,第二个操作数不使用,结果为被赋值变量。
             Operand op1(exp->v, exp->t);
             Operand des(lval->v, lval->t);
             ir::Instruction *movInst = new Instruction(op1,
@@ -1602,7 +1602,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
 
             cout << "add goto" << endl;
 
-            int pc_to_change1 = pc; // 需要修改的指令的位置，指向下一个else if 语句开始前
+            int pc_to_change1 = pc; // 需要修改的指令的位置,指向下一个else if 语句开始前
 
             // 第二个goto,指向下一个判断语句,需要更新
             Instruction *gotoInst2 = new Instruction(ir::Operand(),
@@ -1849,7 +1849,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
     // 是数组的一部分
     if (index < len)
     {
-        root->arr_name = ident->v; // 是一个数组，向上传递数组名
+        root->arr_name = ident->v; // 是一个数组,向上传递数组名
         Operand op = symbol_table.get_operand(ident->v);
         cout << "找到了数组" << op.name << "的returntTybe是 " << toString(op.type) << endl;
         STE ste = symbol_table.get_ste(ident->v);
@@ -2011,14 +2011,14 @@ void frontend::Analyzer::analysisPrimaryExp(PrimaryExp *root, ir::Program &progr
     {
         ANALYSIS(lval, LVal, 0);
         COPY_EXP_NODE(lval, root);
-        if (lval->arr_name != "") // 这是一个数组，在这里需要load出来
+        if (lval->arr_name != "") // 这是一个数组,在这里需要load出来
         {
             Operand op1 = symbol_table.get_operand(lval->arr_name); // 数组信息
             Operand op2 = symbol_table.get_operand(lval->v);        // 位置
             string id = "t" + to_string(counter++);
             Operand des(id, lval->t); // 结果
 
-            // 第一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
+            // 第一个操作数为赋值变量,第二个操作数不使用,结果为被赋值变量。
             Instruction *loadInst = new Instruction(op1,
                                                     op2, des, ir::Operator::load);
             Inst.push_back(loadInst);
@@ -2162,7 +2162,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                 unaryexp->is_computable = false;
                 op1 = Operand(unaryexp->v, unaryexp->t);
             }
-            // 变量取非运算 ! ，第一个操作数为取非变量，第二个操作数不使用，结果为取非结果变量。
+            // 变量取非运算 ! ,第一个操作数为取非变量,第二个操作数不使用,结果为取非结果变量。
             string id = "t" + to_string(counter++);
             Operand des(id, Type::Int);
             Instruction *notInst = new Instruction(op1, Operand(), des, ir::Operator::_not);
@@ -2211,7 +2211,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             vector<Operand> paraList = {};
             callInst_temp = new ir::CallInst(Operand(), paraList, Operand());
             ANALYSIS(funcrparam, FuncRParams, 2);
-            // 一个操作数为赋值变量，第二个操作数不使用，结果为被赋值变量。
+            // 一个操作数为赋值变量,第二个操作数不使用,结果为被赋值变量。
             Operand op1 = symbol_table.get_operand(ident->v);
             string id = "t" + to_string(counter++);
             Operand des(id, op1.type);
@@ -3048,8 +3048,8 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
         cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
         root->v = id;
 
-        // 如果可以继续执行，否则跳过
-        // 第一个操作数为跳转条件，其为整形变量或type = Type::null的变量，当为整形变量时表示条件跳转（值不等于0发生跳转），否则为无条件跳转。第二个操作数不使用，目的操作数应为整形，其值为跳转相对目前pc的偏移量。
+        // 如果可以继续执行,否则跳过
+        // 第一个操作数为跳转条件,其为整形变量或type = Type::null的变量,当为整形变量时表示条件跳转（值不等于0发生跳转）,否则为无条件跳转。第二个操作数不使用,目的操作数应为整形,其值为跳转相对目前pc的偏移量。
         Instruction *gotoInst = new Instruction(des, Operand(), ir::Operand("2", Type::IntLiteral), ir::Operator::_goto);
         Inst.push_back(gotoInst);
         pc++;
@@ -3148,7 +3148,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
             op1 = Operand(landexp->v, landexp->t);
         }
 
-        // 先对前一个做一下or如果成立说明op1肯定可以，直接跳过
+        // 先对前一个做一下or如果成立说明op1肯定可以,直接跳过
         Operand op_temp("0", Type::IntLiteral);
         string id = "t" + to_string(counter++);
         Operand des(id, Type::Int);
@@ -3163,8 +3163,8 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
         cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
         root->v = id;
 
-        // 如果可以直接跳过下一个，与&&不同的是这里一个跳转就行了
-        // 第一个操作数为跳转条件，其为整形变量或type = Type::null的变量，当为整形变量时表示条件跳转（值不等于0发生跳转），否则为无条件跳转。第二个操作数不使用，目的操作数应为整形，其值为跳转相对目前pc的偏移量。
+        // 如果可以直接跳过下一个,与&&不同的是这里一个跳转就行了
+        // 第一个操作数为跳转条件,其为整形变量或type = Type::null的变量,当为整形变量时表示条件跳转（值不等于0发生跳转）,否则为无条件跳转。第二个操作数不使用,目的操作数应为整形,其值为跳转相对目前pc的偏移量。
         int pc_to_change = pc;
         Instruction *gotoInst = new Instruction(des, Operand(), ir::Operand("1", Type::IntLiteral), ir::Operator::_goto);
         Inst.push_back(gotoInst);

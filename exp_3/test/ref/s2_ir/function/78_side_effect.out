@@ -1,0 +1,78 @@
+void global()
+	0: def t0, 0
+	1: subi t1, t0, 1
+	2: def a, t1
+	3: def b, 1
+	4: return null
+end
+
+int inc_a()
+	0: def b_0, a
+	1: addi t2, b_0, 1
+	2: mov b_0, t2
+	3: mov a, b_0
+	4: return a
+end
+
+int main()
+	0: call t0, global()
+	1: def k, 5
+	2: geq t3, k, 0
+	3: if t3 goto [pc, 2]
+	4: goto [pc, 45]
+	5: call t4, inc_a()
+	6: and t5, t4, 1
+	7: if t5 goto [pc, 2]
+	8: goto [pc, 8]
+	9: call t6, inc_a()
+	10: and t7, t6, 1
+	11: if t7 goto [pc, 2]
+	12: goto [pc, 3]
+	13: call t8, inc_a()
+	14: and t7, t6, t8
+	15: and t5, t4, t7
+	16: if t5 goto [pc, 2]
+	17: goto [pc, 6]
+	18: call t9, putint(a)
+	19: call t10, putch(32)
+	20: call t11, putint(b)
+	21: call t12, putch(10)
+	22: goto [pc, 1]
+	23: call t13, inc_a()
+	24: lss t14, t13, 14
+	25: or t15, t14, 0
+	26: if t15 goto [pc, 11]
+	27: call t16, inc_a()
+	28: and t17, t16, 1
+	29: if t17 goto [pc, 2]
+	30: goto [pc, 6]
+	31: call t18, inc_a()
+	32: call t19, inc_a()
+	33: sub t20, t18, t19
+	34: addi t21, t20, 1
+	35: and t17, t16, t21
+	36: or t15, t14, t17
+	37: if t15 goto [pc, 2]
+	38: goto [pc, 7]
+	39: call t22, putint(a)
+	40: call t23, putch(10)
+	41: def t24, 2
+	42: mul t25, b, t24
+	43: mov b, t25
+	44: goto [pc, 2]
+	45: call t26, inc_a()
+	46: subi t27, k, 1
+	47: mov k, t27
+	48: goto [pc, -46]
+	49: call t28, putint(a)
+	50: call t29, putch(32)
+	51: call t30, putint(b)
+	52: call t31, putch(10)
+	53: return a
+end
+
+GVT:
+	a int 0
+	b int 0
+	t0 int 0
+	t1 int 0

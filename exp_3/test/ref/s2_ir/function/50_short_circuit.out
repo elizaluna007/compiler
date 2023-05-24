@@ -1,0 +1,82 @@
+void global()
+	0: def g, 0
+	1: return null
+end
+
+int func(int n)
+	0: add t0, g, n
+	1: mov g, t0
+	2: call t1, putint(g)
+	3: return g
+end
+
+int main()
+	0: call t0, global()
+	1: def i, 0
+	2: call t2, getint()
+	3: mov i, t2
+	4: gtr t3, i, 10
+	5: and t4, t3, 1
+	6: if t4 goto [pc, 2]
+	7: goto [pc, 3]
+	8: call t5, func(i)
+	9: and t4, t3, t5
+	10: if t4 goto [pc, 2]
+	11: goto [pc, 3]
+	12: mov i, 1
+	13: goto [pc, 2]
+	14: mov i, 0
+	15: call t6, getint()
+	16: mov i, t6
+	17: gtr t7, i, 11
+	18: and t8, t7, 1
+	19: if t8 goto [pc, 2]
+	20: goto [pc, 3]
+	21: call t9, func(i)
+	22: and t8, t7, t9
+	23: if t8 goto [pc, 2]
+	24: goto [pc, 3]
+	25: mov i, 1
+	26: goto [pc, 2]
+	27: mov i, 0
+	28: call t10, getint()
+	29: mov i, t10
+	30: leq t11, i, 99
+	31: or t12, t11, 0
+	32: if t12 goto [pc, 3]
+	33: call t13, func(i)
+	34: or t12, t11, t13
+	35: if t12 goto [pc, 2]
+	36: goto [pc, 3]
+	37: mov i, 1
+	38: goto [pc, 2]
+	39: mov i, 0
+	40: call t14, getint()
+	41: mov i, t14
+	42: leq t15, i, 100
+	43: or t16, t15, 0
+	44: if t16 goto [pc, 3]
+	45: call t17, func(i)
+	46: or t16, t15, t17
+	47: if t16 goto [pc, 2]
+	48: goto [pc, 3]
+	49: mov i, 1
+	50: goto [pc, 2]
+	51: mov i, 0
+	52: call t18, func(99)
+	53: not t19, t18
+	54: and t20, t19, 1
+	55: if t20 goto [pc, 2]
+	56: goto [pc, 3]
+	57: call t21, func(100)
+	58: and t20, t19, t21
+	59: if t20 goto [pc, 2]
+	60: goto [pc, 3]
+	61: mov i, 1
+	62: goto [pc, 2]
+	63: mov i, 0
+	64: return 0
+end
+
+GVT:
+	g int 0

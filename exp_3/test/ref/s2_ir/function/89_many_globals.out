@@ -1,0 +1,204 @@
+void global()
+	0: def a0, 0
+	1: def a1, 0
+	2: def a2, 0
+	3: def a3, 0
+	4: def a4, 0
+	5: def a5, 0
+	6: def a6, 0
+	7: def a7, 0
+	8: def a8, 0
+	9: def a9, 0
+	10: def a10, 0
+	11: def a11, 0
+	12: def a12, 0
+	13: def a13, 0
+	14: def a14, 0
+	15: def a15, 0
+	16: def a16, 0
+	17: def a17, 0
+	18: def a18, 0
+	19: def a19, 0
+	20: def a20, 0
+	21: def a21, 0
+	22: def a22, 0
+	23: def a23, 0
+	24: def a24, 0
+	25: def a25, 0
+	26: def a26, 0
+	27: def a27, 0
+	28: def a28, 0
+	29: def a29, 0
+	30: def a30, 0
+	31: def a31, 0
+	32: def a32, 0
+	33: def a33, 0
+	34: def a34, 0
+	35: def a35, 0
+	36: def a36, 0
+	37: def a37, 0
+	38: def a38, 0
+	39: def a39, 0
+	40: return null
+end
+
+int testParam8(int a0,int a1,int a2,int a3,int a4,int a5,int a6,int a7)
+	0: add t0, a0, a1
+	1: add t1, t0, a2
+	2: add t2, t1, a3
+	3: add t3, t2, a4
+	4: add t4, t3, a5
+	5: add t5, t4, a6
+	6: add t6, t5, a7
+	7: return t6
+end
+
+int testParam16(int a0,int a1,int a2,int a3,int a4,int a5,int a6,int a7,int a8,int a9,int a10,int a11,int a12,int a13,int a14,int a15)
+	0: add t7, a0, a1
+	1: add t8, t7, a2
+	2: sub t9, t8, a3
+	3: sub t10, t9, a4
+	4: sub t11, t10, a5
+	5: sub t12, t11, a6
+	6: sub t13, t12, a7
+	7: add t14, t13, a8
+	8: add t15, t14, a9
+	9: add t16, t15, a10
+	10: add t17, t16, a11
+	11: add t18, t17, a12
+	12: add t19, t18, a13
+	13: add t20, t19, a14
+	14: add t21, t20, a15
+	15: return t21
+end
+
+int testParam32(int a0,int a1,int a2,int a3,int a4,int a5,int a6,int a7,int a8,int a9,int a10,int a11,int a12,int a13,int a14,int a15,int a16,int a17,int a18,int a19,int a20,int a21,int a22,int a23,int a24,int a25,int a26,int a27,int a28,int a29,int a30,int a31)
+	0: add t22, a0, a1
+	1: add t23, t22, a2
+	2: add t24, t23, a3
+	3: add t25, t24, a4
+	4: add t26, t25, a5
+	5: add t27, t26, a6
+	6: add t28, t27, a7
+	7: add t29, t28, a8
+	8: add t30, t29, a9
+	9: add t31, t30, a10
+	10: add t32, t31, a11
+	11: add t33, t32, a12
+	12: add t34, t33, a13
+	13: add t35, t34, a14
+	14: add t36, t35, a15
+	15: add t37, t36, a16
+	16: add t38, t37, a17
+	17: sub t39, t38, a18
+	18: sub t40, t39, a19
+	19: sub t41, t40, a20
+	20: sub t42, t41, a21
+	21: sub t43, t42, a22
+	22: add t44, t43, a23
+	23: add t45, t44, a24
+	24: add t46, t45, a25
+	25: add t47, t46, a26
+	26: add t48, t47, a27
+	27: add t49, t48, a28
+	28: add t50, t49, a29
+	29: add t51, t50, a30
+	30: add t52, t51, a31
+	31: return t52
+end
+
+int main()
+	0: call t0, global()
+	1: mov a0, 0
+	2: mov a1, 1
+	3: mov a2, 2
+	4: mov a3, 3
+	5: mov a4, 4
+	6: mov a5, 5
+	7: mov a6, 6
+	8: mov a7, 7
+	9: mov a8, 8
+	10: mov a9, 9
+	11: mov a10, 0
+	12: mov a11, 1
+	13: mov a12, 2
+	14: mov a13, 3
+	15: mov a14, 4
+	16: mov a15, 5
+	17: mov a16, 6
+	18: mov a17, 7
+	19: mov a18, 8
+	20: mov a19, 9
+	21: mov a20, 0
+	22: mov a21, 1
+	23: mov a22, 2
+	24: mov a23, 3
+	25: mov a24, 4
+	26: mov a25, 5
+	27: mov a26, 6
+	28: mov a27, 7
+	29: mov a28, 8
+	30: mov a29, 9
+	31: mov a30, 0
+	32: mov a31, 1
+	33: mov a32, 4
+	34: mov a33, 5
+	35: mov a34, 6
+	36: mov a35, 7
+	37: mov a36, 8
+	38: mov a37, 9
+	39: mov a38, 0
+	40: mov a39, 1
+	41: call t53, testParam8(a0, a1, a2, a3, a4, a5, a6, a7)
+	42: mov a0, t53
+	43: call t54, putint(a0)
+	44: call t55, testParam16(a32, a33, a34, a35, a36, a37, a38, a39, a8, a9, a10, a11, a12, a13, a14, a15)
+	45: mov a0, t55
+	46: call t56, putint(a0)
+	47: call t57, testParam32(a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16, a17, a18, a19, a20, a21, a22, a23, a24, a25, a26, a27, a28, a29, a30, a31)
+	48: mov a0, t57
+	49: call t58, putint(a0)
+	50: return 0
+end
+
+GVT:
+	a0 int 0
+	a1 int 0
+	a10 int 0
+	a11 int 0
+	a12 int 0
+	a13 int 0
+	a14 int 0
+	a15 int 0
+	a16 int 0
+	a17 int 0
+	a18 int 0
+	a19 int 0
+	a2 int 0
+	a20 int 0
+	a21 int 0
+	a22 int 0
+	a23 int 0
+	a24 int 0
+	a25 int 0
+	a26 int 0
+	a27 int 0
+	a28 int 0
+	a29 int 0
+	a3 int 0
+	a30 int 0
+	a31 int 0
+	a32 int 0
+	a33 int 0
+	a34 int 0
+	a35 int 0
+	a36 int 0
+	a37 int 0
+	a38 int 0
+	a39 int 0
+	a4 int 0
+	a5 int 0
+	a6 int 0
+	a7 int 0
+	a8 int 0
+	a9 int 0

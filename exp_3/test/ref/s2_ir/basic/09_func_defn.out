@@ -1,0 +1,22 @@
+void global()
+	0: def a, 0
+	1: return null
+end
+
+int func(int p)
+	0: subi t0, p, 1
+	1: mov p, t0
+	2: return p
+end
+
+int main()
+	0: call t0, global()
+	1: def b, 0
+	2: mov a, 10
+	3: call t1, func(a)
+	4: mov b, t1
+	5: return b
+end
+
+GVT:
+	a int 0

@@ -219,6 +219,36 @@ src/backend/generator.s:
 .PHONY : src/backend/generator.s
 
 # target to build an object file
+src/backend/rv_def.o:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.o
+.PHONY : src/backend/rv_def.o
+
+# target to preprocess a source file
+src/backend/rv_def.i:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.i
+.PHONY : src/backend/rv_def.i
+
+# target to generate assembly for a file
+src/backend/rv_def.s:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.s
+.PHONY : src/backend/rv_def.s
+
+# target to build an object file
+src/backend/rv_inst_impl.o:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o
+.PHONY : src/backend/rv_inst_impl.o
+
+# target to preprocess a source file
+src/backend/rv_inst_impl.i:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.i
+.PHONY : src/backend/rv_inst_impl.i
+
+# target to generate assembly for a file
+src/backend/rv_inst_impl.s:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.s
+.PHONY : src/backend/rv_inst_impl.s
+
+# target to build an object file
 src/front/abstract_syntax_tree.o:
 	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/abstract_syntax_tree.o
 .PHONY : src/front/abstract_syntax_tree.o
@@ -433,6 +463,12 @@ help:
 	@echo "... src/backend/generator.o"
 	@echo "... src/backend/generator.i"
 	@echo "... src/backend/generator.s"
+	@echo "... src/backend/rv_def.o"
+	@echo "... src/backend/rv_def.i"
+	@echo "... src/backend/rv_def.s"
+	@echo "... src/backend/rv_inst_impl.o"
+	@echo "... src/backend/rv_inst_impl.i"
+	@echo "... src/backend/rv_inst_impl.s"
 	@echo "... src/front/abstract_syntax_tree.o"
 	@echo "... src/front/abstract_syntax_tree.i"
 	@echo "... src/front/abstract_syntax_tree.s"

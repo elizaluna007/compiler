@@ -1,0 +1,112 @@
+void global()
+	0: def ascii_0, 48
+	1: return null
+end
+
+int my_getint()
+	0: def sum, 0
+	1: def c, 0
+	2: if 1 goto [pc, 2]
+	3: goto [pc, 14]
+	4: call t0, getch()
+	5: sub t1, t0, ascii_0
+	6: mov c, t1
+	7: lss t2, c, 0
+	8: or t3, t2, 0
+	9: if t3 goto [pc, 3]
+	10: gtr t4, c, 9
+	11: or t3, t2, t4
+	12: if t3 goto [pc, 2]
+	13: goto [pc, 2]
+	14: goto [pc, 2]
+	15: if  goto [pc, 2]
+	16: goto [pc, -14]
+	17: mov sum, c
+	18: if 1 goto [pc, 2]
+	19: goto [pc, 19]
+	20: call t5, getch()
+	21: sub t6, t5, ascii_0
+	22: mov c, t6
+	23: geq t7, c, 0
+	24: and t8, t7, 1
+	25: if t8 goto [pc, 2]
+	26: goto [pc, 3]
+	27: leq t9, c, 9
+	28: and t8, t7, t9
+	29: if t8 goto [pc, 2]
+	30: goto [pc, 6]
+	31: def t10, 10
+	32: mul t11, sum, t10
+	33: add t12, t11, c
+	34: mov sum, t12
+	35: goto [pc, 2]
+	36: if  goto [pc, 2]
+	37: goto [pc, -19]
+	38: return sum
+end
+
+void my_putint(int a)
+	0: def t13, 1
+	1: def t14, 16
+	2: mul t15, t13, t14
+	3: alloc b, t15
+	4: store 0, b, 0
+	5: store 0, b, 1
+	6: store 0, b, 2
+	7: store 0, b, 3
+	8: store 0, b, 4
+	9: store 0, b, 5
+	10: store 0, b, 6
+	11: store 0, b, 7
+	12: store 0, b, 8
+	13: store 0, b, 9
+	14: store 0, b, 10
+	15: store 0, b, 11
+	16: store 0, b, 12
+	17: store 0, b, 13
+	18: store 0, b, 14
+	19: store 0, b, 15
+	20: def i, 0
+	21: gtr t32, a, 0
+	22: if t32 goto [pc, 2]
+	23: goto [pc, 11]
+	24: def t33, 10
+	25: mod t34, a, t33
+	26: add t35, t34, ascii_0
+	27: store t35, b, i
+	28: def t36, 10
+	29: div t37, a, t36
+	30: mov a, t37
+	31: addi t38, i, 1
+	32: mov i, t38
+	33: goto [pc, -12]
+	34: gtr t39, i, 0
+	35: if t39 goto [pc, 2]
+	36: goto [pc, 6]
+	37: subi t40, i, 1
+	38: mov i, t40
+	39: load t41, b, i
+	40: call t42, putch(t41)
+	41: goto [pc, -7]
+	42: return null
+end
+
+int main()
+	0: call t0, global()
+	1: call t43, my_getint()
+	2: def n, t43
+	3: gtr t44, n, 0
+	4: if t44 goto [pc, 2]
+	5: goto [pc, 8]
+	6: call t45, my_getint()
+	7: def m, t45
+	8: call t46, my_putint(m)
+	9: call t47, putch(10)
+	10: subi t48, n, 1
+	11: mov n, t48
+	12: goto [pc, -9]
+	13: return 0
+end
+
+GVT:
+	ascii_0 int 0

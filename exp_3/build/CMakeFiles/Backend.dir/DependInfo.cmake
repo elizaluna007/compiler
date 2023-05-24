@@ -5,6 +5,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/coursegrader/src/backend/generator.cpp" "/coursegrader/build/CMakeFiles/Backend.dir/src/backend/generator.o"
+  "/coursegrader/src/backend/rv_def.cpp" "/coursegrader/build/CMakeFiles/Backend.dir/src/backend/rv_def.o"
+  "/coursegrader/src/backend/rv_inst_impl.cpp" "/coursegrader/build/CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

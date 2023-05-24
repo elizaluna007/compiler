@@ -1,0 +1,28 @@
+void global()
+	0: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def a, 0
+	2: mov a, 10
+	3: not t0, a
+	4: not t1, t0
+	5: not t2, t1
+	6: def t3, 0
+	7: sub t4, t3, t2
+	8: if t4 goto [pc, 2]
+	9: goto [pc, 9]
+	10: def t5, 0
+	11: subi t6, t5, 1
+	12: def t7, 0
+	13: sub t8, t7, t6
+	14: def t9, 0
+	15: sub t10, t9, t8
+	16: mov a, t10
+	17: goto [pc, 2]
+	18: mov a, 0
+	19: return a
+end
+
+GVT:

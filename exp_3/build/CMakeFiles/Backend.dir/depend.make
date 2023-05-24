@@ -4,11 +4,22 @@
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/backend/generator.h
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/backend/rv_def.h
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/backend/rv_inst_impl.h
+CMakeFiles/Backend.dir/src/backend/generator.o: .././include/front/abstract_syntax_tree.h
+CMakeFiles/Backend.dir/src/backend/generator.o: .././include/front/semantic.h
+CMakeFiles/Backend.dir/src/backend/generator.o: .././include/front/token.h
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/ir/ir.h
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/ir/ir_function.h
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/ir/ir_instruction.h
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/ir/ir_operand.h
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/ir/ir_operator.h
 CMakeFiles/Backend.dir/src/backend/generator.o: .././include/ir/ir_program.h
+CMakeFiles/Backend.dir/src/backend/generator.o: .././include/json/json.h
 CMakeFiles/Backend.dir/src/backend/generator.o: ../src/backend/generator.cpp
+
+CMakeFiles/Backend.dir/src/backend/rv_def.o: .././include/backend/rv_def.h
+CMakeFiles/Backend.dir/src/backend/rv_def.o: ../src/backend/rv_def.cpp
+
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o: .././include/backend/rv_def.h
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o: .././include/backend/rv_inst_impl.h
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o: ../src/backend/rv_inst_impl.cpp
 

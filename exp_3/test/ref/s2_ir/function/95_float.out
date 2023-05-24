@@ -1,0 +1,241 @@
+void global()
+	0: fdef RADIUS, 5.5
+	1: fdef PI, 03.141592653589793
+	2: fdef EPS, 0.000001
+	3: fdef PI_HEX, 3.141592741012573242
+	4: fdef HEX2, 0.078125
+	5: fdef t0, 0
+	6: fsub t1, t0, 33000.0
+	7: fdef FACT, t1
+	8: fmul t2, PI, RADIUS
+	9: fmul t3, t2, RADIUS
+	10: fdef EVAL1, t3
+	11: cvt_i2f t4, 2
+	12: fmul t5, t4, PI_HEX
+	13: fmul t6, t5, RADIUS
+	14: fdef EVAL2, t6
+	15: cvt_i2f t7, 2
+	16: fmul t8, PI, t7
+	17: fmul t9, t8, RADIUS
+	18: fdef EVAL3, t9
+	19: cvt_i2f t10, 233
+	20: fdef CONV1, t10
+	21: cvt_i2f t11, 0xfff
+	22: fdef CONV2, t11
+	23: def MAX, 1000000000
+	24: cvt_f2i t12, 2.9
+	25: def TWO, t12
+	26: cvt_f2i t13, 3.2
+	27: def THREE, t13
+	28: add t14, TWO, THREE
+	29: def FIVE, t14
+	30: return null
+end
+
+float float_abs(float x)
+	0: cvt_i2f t15, 0
+	1: flss t16, x, t15
+	2: if t16 goto [pc, 2]
+	3: goto [pc, 5]
+	4: fdef t17, 0
+	5: fsub t18, t17, x
+	6: return t18
+	7: goto [pc, 1]
+	8: return x
+end
+
+float circle_area(int radius)
+	0: cvt_i2f t19, radius
+	1: fmul t20, PI, t19
+	2: cvt_i2f t21, radius
+	3: fmul t22, t20, t21
+	4: mul t23, radius, radius
+	5: cvt_i2f t24, t23
+	6: fmul t25, t24, PI
+	7: fadd t26, t22, t25
+	8: cvt_i2f t27, 2
+	9: fdiv t28, t26, t27
+	10: return t28
+end
+
+int float_eq(float a,float b)
+	0: fsub t29, a, b
+	1: call t30, float_abs(t29)
+	2: flss t31, t30, EPS
+	3: if t31 goto [pc, 2]
+	4: goto [pc, 9]
+	5: cvt_i2f t32, 1
+	6: fdef t33, 2.
+	7: fmul t34, t32, t33
+	8: cvt_i2f t35, 2
+	9: fdiv t36, t34, t35
+	10: cvt_f2i t37, t36
+	11: return t37
+	12: goto [pc, 2]
+	13: return 0
+end
+
+void error()
+	0: call t38, putch(101)
+	1: call t39, putch(114)
+	2: call t40, putch(114)
+	3: call t41, putch(111)
+	4: call t42, putch(114)
+	5: call t43, putch(10)
+	6: return null
+end
+
+void ok()
+	0: call t44, putch(111)
+	1: call t45, putch(107)
+	2: call t46, putch(10)
+	3: return null
+end
+
+void assert(int cond)
+	0: not t47, cond
+	1: if t47 goto [pc, 2]
+	2: goto [pc, 3]
+	3: call t48, error()
+	4: goto [pc, 2]
+	5: call t49, ok()
+	6: return null
+end
+
+void assert_not(int cond)
+	0: if cond goto [pc, 2]
+	1: goto [pc, 3]
+	2: call t50, error()
+	3: goto [pc, 2]
+	4: call t51, ok()
+	5: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def t52, 2
+	2: def t53, 16
+	3: mul t54, t52, t53
+	4: addi t55, t54, 32
+	5: subi t56, t55, 0x40
+	6: cvt_i2f t57, t56
+	7: fsub t58, t57, 0.1
+	8: fdef f, t58
+	9: call t59, float_eq(HEX2, FACT)
+	10: call t60, assert_not(t59)
+	11: call t61, float_eq(EVAL1, EVAL2)
+	12: call t62, assert_not(t61)
+	13: call t63, float_eq(EVAL2, EVAL3)
+	14: call t64, assert(t63)
+	15: cvt_f2i t66, RADIUS
+	16: call t65, circle_area(t66)
+	17: call t67, circle_area(FIVE)
+	18: call t68, float_eq(t65, t67)
+	19: call t69, assert(t68)
+	20: call t70, float_eq(CONV1, CONV2)
+	21: call t71, assert_not(t70)
+	22: if 1.5 goto [pc, 2]
+	23: goto [pc, 3]
+	24: call t72, ok()
+	25: goto [pc, 1]
+	26: cvt_f2i t73, 3.3
+	27: not t74, t73
+	28: not t75, t74
+	29: if t75 goto [pc, 2]
+	30: goto [pc, 3]
+	31: call t76, ok()
+	32: goto [pc, 1]
+	33: neq t77, .0, 0
+	34: cvt_f2i t78, t77
+	35: and t79, t78, 1
+	36: if t79 goto [pc, 2]
+	37: goto [pc, 5]
+	38: def t80, 3
+	39: def t81, 0.4
+	40: eq t82, t80, t81
+	41: and t79, t78, t82
+	42: if t79 goto [pc, 2]
+	43: goto [pc, 3]
+	44: call t83, error()
+	45: goto [pc, 1]
+	46: or t84, 0, 0
+	47: if t84 goto [pc, 4]
+	48: neq t85, 0.3, 0
+	49: cvt_f2i t86, t85
+	50: or t84, 0, t86
+	51: if t84 goto [pc, 2]
+	52: goto [pc, 3]
+	53: call t87, ok()
+	54: goto [pc, 1]
+	55: def i, 1
+	56: def p, 0
+	57: def t88, 1
+	58: def t89, 10
+	59: mul t90, t88, t89
+	60: alloc arr, t90
+	61: store 0, arr, 0
+	62: store 0, arr, 1
+	63: store 0, arr, 2
+	64: store 0, arr, 3
+	65: store 0, arr, 4
+	66: store 0, arr, 5
+	67: store 0, arr, 6
+	68: store 0, arr, 7
+	69: store 0, arr, 8
+	70: store 0, arr, 9
+	71: store 1., arr, 0
+	72: cvt_i2f t101, 2
+	73: store t101, arr, 1
+	74: call t102, getfarray(arr)
+	75: def len, t102
+	76: lss t103, i, MAX
+	77: if t103 goto [pc, 2]
+	78: goto [pc, 26]
+	79: call t104, getfloat()
+	80: fdef input, t104
+	81: fmul t105, PI, input
+	82: fmul t106, t105, input
+	83: fdef area, t106
+	84: cvt_f2i t108, input
+	85: call t107, circle_area(t108)
+	86: fdef area_trunc, t107
+	87: load t109, arr, p
+	88: fadd t110, t109, input
+	89: store t110, arr, p
+	90: call t111, putfloat(area)
+	91: call t112, putch(32)
+	92: cvt_f2i t114, area_trunc
+	93: call t113, putint(t114)
+	94: call t115, putch(10)
+	95: def t116, 0
+	96: subi t117, t116, 10
+	97: def t118, 0
+	98: sub t119, t118, t117
+	99: mul t120, i, t119
+	100: mov i, t120
+	101: addi t121, p, 1
+	102: mov p, t121
+	103: goto [pc, -27]
+	104: call t122, putfarray(len, arr)
+	105: return 0
+end
+
+GVT:
+	CONV1 float 0
+	CONV2 float 0
+	EPS float 0
+	EVAL1 float 0
+	EVAL2 float 0
+	EVAL3 float 0
+	FACT float 0
+	FIVE int 0
+	HEX2 float 0
+	MAX int 0
+	PI float 0
+	PI_HEX float 0
+	RADIUS float 0
+	THREE int 0
+	TWO int 0
+	t0 float 0
+	t1 float 0
+	t14 int 0

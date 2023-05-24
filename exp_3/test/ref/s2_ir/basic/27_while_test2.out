@@ -1,0 +1,57 @@
+void global()
+	0: return null
+end
+
+int FourWhile()
+	0: def a, 0
+	1: mov a, 5
+	2: def b, 0
+	3: def c, 0
+	4: mov b, 6
+	5: mov c, 7
+	6: def d, 0
+	7: mov d, 10
+	8: lss t0, a, 20
+	9: if t0 goto [pc, 2]
+	10: goto [pc, 29]
+	11: addi t1, a, 3
+	12: mov a, t1
+	13: lss t2, b, 10
+	14: if t2 goto [pc, 2]
+	15: goto [pc, 21]
+	16: addi t3, b, 1
+	17: mov b, t3
+	18: def t4, 7
+	19: eq t5, c, t4
+	20: if t5 goto [pc, 2]
+	21: goto [pc, 12]
+	22: subi t6, c, 1
+	23: mov c, t6
+	24: lss t7, d, 20
+	25: if t7 goto [pc, 2]
+	26: goto [pc, 4]
+	27: addi t8, d, 3
+	28: mov d, t8
+	29: goto [pc, -5]
+	30: subi t9, d, 1
+	31: mov d, t9
+	32: goto [pc, -14]
+	33: addi t10, c, 1
+	34: mov c, t10
+	35: goto [pc, -22]
+	36: subi t11, b, 2
+	37: mov b, t11
+	38: goto [pc, -30]
+	39: add t12, b, d
+	40: add t13, a, t12
+	41: add t14, t13, c
+	42: return t14
+end
+
+int main()
+	0: call t0, global()
+	1: call t15, FourWhile()
+	2: return t15
+end
+
+GVT:

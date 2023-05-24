@@ -6,8 +6,8 @@
 
 #define TODO assert(0 && "todo")
 
-// #define DEBUG_DFA 
-// #define DEBUG_SCANNER 
+// #define DEBUG_DFA 0
+// #define DEBUG_SCANNER 0
 
 std::string frontend::toString(State s)
 {

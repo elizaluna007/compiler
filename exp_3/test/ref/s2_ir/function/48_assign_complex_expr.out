@@ -1,0 +1,52 @@
+void global()
+	0: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def a, 0
+	2: def b, 0
+	3: def c, 0
+	4: def d, 0
+	5: def result, 0
+	6: mov a, 5
+	7: mov b, 5
+	8: mov c, 1
+	9: def t0, 0
+	10: subi t1, t0, 2
+	11: mov d, t1
+	12: def t2, 1
+	13: mul t3, d, t2
+	14: def t4, 2
+	15: div t5, t3, t4
+	16: sub t6, a, b
+	17: add t7, t5, t6
+	18: addi t8, c, 3
+	19: def t9, 0
+	20: sub t10, t9, t8
+	21: def t11, 2
+	22: mod t12, t10, t11
+	23: sub t13, t7, t12
+	24: mov result, t13
+	25: call t14, putint(result)
+	26: def t15, 2
+	27: mod t16, d, t15
+	28: addi t17, t16, 67
+	29: sub t18, a, b
+	30: def t19, 0
+	31: sub t20, t19, t18
+	32: add t21, t17, t20
+	33: addi t22, c, 2
+	34: def t23, 2
+	35: mod t24, t22, t23
+	36: def t25, 0
+	37: sub t26, t25, t24
+	38: sub t27, t21, t26
+	39: mov result, t27
+	40: addi t28, result, 3
+	41: mov result, t28
+	42: call t29, putint(result)
+	43: return 0
+end
+
+GVT:

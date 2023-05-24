@@ -1,0 +1,203 @@
+void global()
+	0: def a, 0
+	1: def b, 0
+	2: def d, 0
+	3: return null
+end
+
+int set_a(int val)
+	0: mov a, val
+	1: return a
+end
+
+int set_b(int val)
+	0: mov b, val
+	1: return b
+end
+
+int set_d(int val)
+	0: mov d, val
+	1: return d
+end
+
+int main()
+	0: call t0, global()
+	1: mov a, 2
+	2: mov b, 3
+	3: call t0, set_a(0)
+	4: and t1, t0, 1
+	5: if t1 goto [pc, 2]
+	6: goto [pc, 3]
+	7: call t2, set_b(1)
+	8: and t1, t0, t2
+	9: if t1 goto [pc, 2]
+	10: goto [pc, 2]
+	11: goto [pc, 1]
+	12: call t3, putint(a)
+	13: call t4, putch(32)
+	14: call t5, putint(b)
+	15: call t6, putch(32)
+	16: mov a, 2
+	17: mov b, 3
+	18: call t7, set_a(0)
+	19: and t8, t7, 1
+	20: if t8 goto [pc, 2]
+	21: goto [pc, 3]
+	22: call t9, set_b(1)
+	23: and t8, t7, t9
+	24: if t8 goto [pc, 2]
+	25: goto [pc, 2]
+	26: goto [pc, 1]
+	27: call t10, putint(a)
+	28: call t11, putch(32)
+	29: call t12, putint(b)
+	30: call t13, putch(10)
+	31: def c, 1
+	32: mov d, 2
+	33: geq t14, c, 1
+	34: and t15, t14, 1
+	35: if t15 goto [pc, 2]
+	36: goto [pc, 3]
+	37: call t16, set_d(3)
+	38: and t15, t14, t16
+	39: if t15 goto [pc, 2]
+	40: goto [pc, 2]
+	41: goto [pc, 1]
+	42: call t17, putint(d)
+	43: call t18, putch(32)
+	44: leq t19, c, 1
+	45: or t20, t19, 0
+	46: if t20 goto [pc, 3]
+	47: call t21, set_d(4)
+	48: or t20, t19, t21
+	49: if t20 goto [pc, 2]
+	50: goto [pc, 2]
+	51: goto [pc, 1]
+	52: call t22, putint(d)
+	53: call t23, putch(10)
+	54: geq t24, 16, 0
+	55: if t24 goto [pc, 2]
+	56: goto [pc, 3]
+	57: call t25, putch(65)
+	58: goto [pc, 1]
+	59: def t26, 6
+	60: def t27, 3
+	61: mul t28, t26, t27
+	62: def t29, 36
+	63: sub t30, 36, t28
+	64: def t31, 18
+	65: neq t32, t31, t30
+	66: if t32 goto [pc, 2]
+	67: goto [pc, 3]
+	68: call t33, putch(66)
+	69: goto [pc, 1]
+	70: lss t34, 1, 8
+	71: def t35, 7
+	72: def t36, 2
+	73: mod t37, t35, t36
+	74: neq t38, t34, t37
+	75: if t38 goto [pc, 2]
+	76: goto [pc, 3]
+	77: call t39, putch(67)
+	78: goto [pc, 1]
+	79: gtr t40, 3, 4
+	80: def t41, 0
+	81: eq t42, t40, t41
+	82: if t42 goto [pc, 2]
+	83: goto [pc, 3]
+	84: call t43, putch(68)
+	85: goto [pc, 1]
+	86: leq t44, 0x66, 077
+	87: def t45, 1
+	88: eq t46, t45, t44
+	89: if t46 goto [pc, 2]
+	90: goto [pc, 3]
+	91: call t47, putch(69)
+	92: goto [pc, 1]
+	93: not t48, 0
+	94: def t49, 0
+	95: sub t50, t49, t48
+	96: def t51, -1
+	97: eq t52, t51, t50
+	98: if t52 goto [pc, 2]
+	99: goto [pc, 3]
+	100: call t53, putch(70)
+	101: goto [pc, 1]
+	102: call t54, putch(10)
+	103: def i0, 0
+	104: def i1, 1
+	105: def i2, 2
+	106: def i3, 3
+	107: def i4, 4
+	108: and t55, i0, 1
+	109: if t55 goto [pc, 2]
+	110: goto [pc, 2]
+	111: and t55, i0, i1
+	112: if t55 goto [pc, 2]
+	113: goto [pc, 3]
+	114: call t56, putch(32)
+	115: goto [pc, -7]
+	116: or t57, i0, 0
+	117: if t57 goto [pc, 2]
+	118: or t57, i0, i1
+	119: if t57 goto [pc, 2]
+	120: goto [pc, 3]
+	121: call t58, putch(67)
+	122: goto [pc, 1]
+	123: geq t59, i0, i1
+	124: or t60, t59, 0
+	125: if t60 goto [pc, 3]
+	126: leq t61, i1, i0
+	127: or t60, t59, t61
+	128: if t60 goto [pc, 2]
+	129: goto [pc, 3]
+	130: call t62, putch(72)
+	131: goto [pc, 1]
+	132: geq t63, i2, i1
+	133: and t64, t63, 1
+	134: if t64 goto [pc, 2]
+	135: goto [pc, 3]
+	136: neq t65, i4, i3
+	137: and t64, t63, t65
+	138: if t64 goto [pc, 2]
+	139: goto [pc, 3]
+	140: call t66, putch(73)
+	141: goto [pc, 1]
+	142: not t67, i1
+	143: eq t68, i0, t67
+	144: and t69, t68, 1
+	145: if t69 goto [pc, 2]
+	146: goto [pc, 3]
+	147: lss t70, i3, i3
+	148: and t69, t68, t70
+	149: or t71, t69, 0
+	150: if t71 goto [pc, 3]
+	151: geq t72, i4, i4
+	152: or t71, t69, t72
+	153: if t71 goto [pc, 2]
+	154: goto [pc, 3]
+	155: call t73, putch(74)
+	156: goto [pc, 1]
+	157: not t74, i1
+	158: eq t75, i0, t74
+	159: or t76, t75, 0
+	160: if t76 goto [pc, 8]
+	161: lss t77, i3, i3
+	162: and t78, t77, 1
+	163: if t78 goto [pc, 2]
+	164: goto [pc, 3]
+	165: geq t79, i4, i4
+	166: and t78, t77, t79
+	167: or t76, t75, t78
+	168: if t76 goto [pc, 2]
+	169: goto [pc, 3]
+	170: call t80, putch(75)
+	171: goto [pc, 1]
+	172: call t81, putch(10)
+	173: return 0
+end
+
+GVT:
+	a int 0
+	b int 0
+	d int 0

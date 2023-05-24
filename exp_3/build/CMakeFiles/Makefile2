@@ -66,7 +66,7 @@ CMAKE_BINARY_DIR = /coursegrader/build
 CMakeFiles/Front.dir/all:
 	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/depend
 	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=3,4,5,6,7,8 "Built target Front"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=5,6,7,8,9,10 "Built target Front"
 .PHONY : CMakeFiles/Front.dir/all
 
 # Include target in all.
@@ -103,7 +103,7 @@ clean: CMakeFiles/Front.dir/clean
 CMakeFiles/jsoncpp.dir/all:
 	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/depend
 	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=20,21 "Built target jsoncpp"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=22,23 "Built target jsoncpp"
 .PHONY : CMakeFiles/jsoncpp.dir/all
 
 # Include target in all.
@@ -137,14 +137,14 @@ clean: CMakeFiles/jsoncpp.dir/clean
 # Target rules for target CMakeFiles/compiler.dir
 
 # All Build rule for target.
-CMakeFiles/compiler.dir/all: CMakeFiles/IR.dir/all
-CMakeFiles/compiler.dir/all: CMakeFiles/Tools.dir/all
-CMakeFiles/compiler.dir/all: CMakeFiles/jsoncpp.dir/all
-CMakeFiles/compiler.dir/all: CMakeFiles/Backend.dir/all
 CMakeFiles/compiler.dir/all: CMakeFiles/Front.dir/all
+CMakeFiles/compiler.dir/all: CMakeFiles/IR.dir/all
+CMakeFiles/compiler.dir/all: CMakeFiles/jsoncpp.dir/all
+CMakeFiles/compiler.dir/all: CMakeFiles/Tools.dir/all
+CMakeFiles/compiler.dir/all: CMakeFiles/Backend.dir/all
 	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/depend
 	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=18,19 "Built target compiler"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=20,21 "Built target compiler"
 .PHONY : CMakeFiles/compiler.dir/all
 
 # Include target in all.
@@ -154,7 +154,7 @@ all: CMakeFiles/compiler.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/compiler.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /coursegrader/build/CMakeFiles 21
+	$(CMAKE_COMMAND) -E cmake_progress_start /coursegrader/build/CMakeFiles 23
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/compiler.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /coursegrader/build/CMakeFiles 0
 .PHONY : CMakeFiles/compiler.dir/rule
@@ -181,7 +181,7 @@ clean: CMakeFiles/compiler.dir/clean
 CMakeFiles/Backend.dir/all:
 	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/depend
 	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=1,2 "Built target Backend"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=1,2,3,4 "Built target Backend"
 .PHONY : CMakeFiles/Backend.dir/all
 
 # Include target in all.
@@ -191,7 +191,7 @@ all: CMakeFiles/Backend.dir/all
 
 # Build rule for subdir invocation for target.
 CMakeFiles/Backend.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /coursegrader/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /coursegrader/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 CMakeFiles/Backend.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /coursegrader/build/CMakeFiles 0
 .PHONY : CMakeFiles/Backend.dir/rule
@@ -218,7 +218,7 @@ clean: CMakeFiles/Backend.dir/clean
 CMakeFiles/Tools.dir/all:
 	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/depend
 	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=16,17 "Built target Tools"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=18,19 "Built target Tools"
 .PHONY : CMakeFiles/Tools.dir/all
 
 # Include target in all.
@@ -255,7 +255,7 @@ clean: CMakeFiles/Tools.dir/clean
 CMakeFiles/IR.dir/all:
 	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/depend
 	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=9,10,11,12,13,14,15 "Built target IR"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=11,12,13,14,15,16,17 "Built target IR"
 .PHONY : CMakeFiles/IR.dir/all
 
 # Include target in all.

@@ -1,0 +1,16 @@
+void global()
+	0: return null
+end
+
+int defn()
+	0: return 4
+end
+
+int main()
+	0: call t0, global()
+	1: call t0, defn()
+	2: def a, t0
+	3: return a
+end
+
+GVT:

@@ -1,0 +1,29 @@
+void global()
+	0: def a, 0
+	1: def b, 0
+	2: return null
+end
+
+int main()
+	0: call t0, global()
+	1: mov a, 4
+	2: mov b, 4
+	3: def c, 0
+	4: eq t0, a, b
+	5: and t1, t0, 1
+	6: if t1 goto [pc, 2]
+	7: goto [pc, 4]
+	8: def t2, 3
+	9: neq t3, a, t2
+	10: and t1, t0, t3
+	11: if t1 goto [pc, 2]
+	12: goto [pc, 3]
+	13: mov c, 1
+	14: goto [pc, 2]
+	15: mov c, 0
+	16: return c
+end
+
+GVT:
+	a int 0
+	b int 0

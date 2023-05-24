@@ -1,0 +1,42 @@
+void global()
+	0: return null
+end
+
+int ifWhile()
+	0: def a, 0
+	1: mov a, 0
+	2: def b, 0
+	3: mov b, 3
+	4: def t0, 5
+	5: eq t1, a, t0
+	6: if t1 goto [pc, 2]
+	7: goto [pc, 11]
+	8: def t2, 2
+	9: eq t3, b, t2
+	10: if t3 goto [pc, 2]
+	11: goto [pc, 4]
+	12: addi t4, b, 2
+	13: mov b, t4
+	14: goto [pc, -6]
+	15: addi t5, b, 25
+	16: mov b, t5
+	17: goto [pc, 10]
+	18: lss t6, a, 5
+	19: if t6 goto [pc, 2]
+	20: goto [pc, 7]
+	21: def t7, 2
+	22: mul t8, b, t7
+	23: mov b, t8
+	24: addi t9, a, 1
+	25: mov a, t9
+	26: goto [pc, -8]
+	27: return b
+end
+
+int main()
+	0: call t0, global()
+	1: call t10, ifWhile()
+	2: return t10
+end
+
+GVT:

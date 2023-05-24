@@ -1,0 +1,40 @@
+void global()
+	0: return null
+end
+
+int whileIf()
+	0: def a, 0
+	1: mov a, 0
+	2: def b, 0
+	3: mov b, 0
+	4: lss t0, a, 100
+	5: if t0 goto [pc, 2]
+	6: goto [pc, 19]
+	7: def t1, 5
+	8: eq t2, a, t1
+	9: if t2 goto [pc, 2]
+	10: goto [pc, 3]
+	11: mov b, 25
+	12: goto [pc, 10]
+	13: def t3, 10
+	14: eq t4, a, t3
+	15: if t4 goto [pc, 2]
+	16: goto [pc, 3]
+	17: mov b, 42
+	18: goto [pc, 4]
+	19: def t5, 2
+	20: mul t6, a, t5
+	21: mov b, t6
+	22: addi t7, a, 1
+	23: mov a, t7
+	24: goto [pc, -20]
+	25: return b
+end
+
+int main()
+	0: call t0, global()
+	1: call t8, whileIf()
+	2: return t8
+end
+
+GVT:

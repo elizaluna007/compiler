@@ -5,7 +5,7 @@
 
 using frontend::Parser;
 
-// #define DEBUG_PARSER 
+// #define DEBUG_PARSER 0
 #define TODO assert(0 && "todo")
 #define CUR_TOKEN_IS(tk_type) (token_stream[index].type == TokenType::tk_type)
 #define PARSE_TOKEN(tk_type) root->children.push_back(parseTerm(root, TokenType::tk_type))

@@ -1,0 +1,60 @@
+void global()
+	0: return null
+end
+
+int ifElseIf()
+	0: def a, 0
+	1: mov a, 5
+	2: def b, 0
+	3: mov b, 10
+	4: def t0, 6
+	5: eq t1, a, t0
+	6: or t2, t1, 0
+	7: if t2 goto [pc, 4]
+	8: def t3, 0xb
+	9: eq t4, b, t3
+	10: or t2, t1, t4
+	11: if t2 goto [pc, 2]
+	12: goto [pc, 3]
+	13: return a
+	14: goto [pc, 30]
+	15: def t5, 10
+	16: eq t6, b, t5
+	17: and t7, t6, 1
+	18: if t7 goto [pc, 2]
+	19: goto [pc, 4]
+	20: def t8, 1
+	21: eq t9, a, t8
+	22: and t7, t6, t9
+	23: if t7 goto [pc, 2]
+	24: goto [pc, 3]
+	25: mov a, 25
+	26: goto [pc, 18]
+	27: def t10, 10
+	28: eq t11, b, t10
+	29: and t12, t11, 1
+	30: if t12 goto [pc, 2]
+	31: goto [pc, 5]
+	32: def t13, 0
+	33: subi t14, t13, 5
+	34: eq t15, a, t14
+	35: and t12, t11, t15
+	36: if t12 goto [pc, 2]
+	37: goto [pc, 4]
+	38: addi t16, a, 15
+	39: mov a, t16
+	40: goto [pc, 4]
+	41: def t17, 0
+	42: sub t18, t17, a
+	43: mov a, t18
+	44: return a
+end
+
+int main()
+	0: call t0, global()
+	1: call t19, ifElseIf()
+	2: call t20, putint(t19)
+	3: return 0
+end
+
+GVT:

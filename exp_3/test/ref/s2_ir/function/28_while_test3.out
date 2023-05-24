@@ -1,0 +1,105 @@
+void global()
+	0: def g, 0
+	1: def h, 0
+	2: def f, 0
+	3: def e, 0
+	4: return null
+end
+
+int EightWhile()
+	0: def a, 0
+	1: mov a, 5
+	2: def b, 0
+	3: def c, 0
+	4: mov b, 6
+	5: mov c, 7
+	6: def d, 0
+	7: mov d, 10
+	8: lss t0, a, 20
+	9: if t0 goto [pc, 2]
+	10: goto [pc, 61]
+	11: addi t1, a, 3
+	12: mov a, t1
+	13: lss t2, b, 10
+	14: if t2 goto [pc, 2]
+	15: goto [pc, 53]
+	16: addi t3, b, 1
+	17: mov b, t3
+	18: def t4, 7
+	19: eq t5, c, t4
+	20: if t5 goto [pc, 2]
+	21: goto [pc, 44]
+	22: subi t6, c, 1
+	23: mov c, t6
+	24: lss t7, d, 20
+	25: if t7 goto [pc, 2]
+	26: goto [pc, 36]
+	27: addi t8, d, 3
+	28: mov d, t8
+	29: gtr t9, e, 1
+	30: if t9 goto [pc, 2]
+	31: goto [pc, 28]
+	32: subi t10, e, 1
+	33: mov e, t10
+	34: gtr t11, f, 2
+	35: if t11 goto [pc, 2]
+	36: goto [pc, 20]
+	37: subi t12, f, 2
+	38: mov f, t12
+	39: lss t13, g, 3
+	40: if t13 goto [pc, 2]
+	41: goto [pc, 12]
+	42: addi t14, g, 10
+	43: mov g, t14
+	44: lss t15, h, 10
+	45: if t15 goto [pc, 2]
+	46: goto [pc, 4]
+	47: addi t16, h, 8
+	48: mov h, t16
+	49: goto [pc, -5]
+	50: subi t17, h, 1
+	51: mov h, t17
+	52: goto [pc, -13]
+	53: subi t18, g, 8
+	54: mov g, t18
+	55: goto [pc, -21]
+	56: addi t19, f, 1
+	57: mov f, t19
+	58: goto [pc, -29]
+	59: addi t20, e, 1
+	60: mov e, t20
+	61: goto [pc, -37]
+	62: subi t21, d, 1
+	63: mov d, t21
+	64: goto [pc, -46]
+	65: addi t22, c, 1
+	66: mov c, t22
+	67: goto [pc, -54]
+	68: subi t23, b, 2
+	69: mov b, t23
+	70: goto [pc, -62]
+	71: add t24, b, d
+	72: add t25, a, t24
+	73: add t26, t25, c
+	74: add t27, e, d
+	75: sub t28, t27, g
+	76: add t29, t28, h
+	77: sub t30, t26, t29
+	78: return t30
+end
+
+int main()
+	0: call t0, global()
+	1: mov g, 1
+	2: mov h, 2
+	3: mov e, 4
+	4: mov f, 6
+	5: call t31, EightWhile()
+	6: return t31
+end
+
+GVT:
+	e int 0
+	f int 0
+	g int 0
+	h int 0

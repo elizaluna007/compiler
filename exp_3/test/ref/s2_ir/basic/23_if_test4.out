@@ -1,0 +1,32 @@
+void global()
+	0: return null
+end
+
+int if_ifElse_()
+	0: def a, 0
+	1: mov a, 5
+	2: def b, 0
+	3: mov b, 10
+	4: def t0, 5
+	5: eq t1, a, t0
+	6: if t1 goto [pc, 2]
+	7: goto [pc, 10]
+	8: def t2, 10
+	9: eq t3, b, t2
+	10: if t3 goto [pc, 2]
+	11: goto [pc, 3]
+	12: mov a, 25
+	13: goto [pc, 3]
+	14: addi t4, a, 15
+	15: mov a, t4
+	16: goto [pc, 1]
+	17: return a
+end
+
+int main()
+	0: call t0, global()
+	1: call t5, if_ifElse_()
+	2: return t5
+end
+
+GVT:

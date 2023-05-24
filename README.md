@@ -48,9 +48,17 @@ bcdedit /set hypervisorlaunchtype auto
 
 ```
 docker run -it -v D:\360MoveData\Users\Luna\Desktop\compiler\exp_3:/coursegrader frankd35/demo:v3
+cd coursegrader/test
 ```
 
 ```
 python3 test.py -S
+```
+
+```
+../bin/compiler ../test.sy -s0 -o ../test.tk 
+../bin/compiler ../test.sy -s1 -o ../test.json 
+../bin/compiler ../test.sy -s2 -o ../test.out 
+../bin/compiler ../test.sy -S -o ../test.s 
 ```
 

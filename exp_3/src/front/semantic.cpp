@@ -1,8 +1,8 @@
 #include "front/semantic.h"
 
 #include <cassert>
-#define DEBUG_SEMANTIC 1
-#define DEBUG_RESULT 1
+// #define DEBUG_SEMANTIC 0
+// #define DEBUG_RESULT 0
 using ir::Function;
 using ir::Instruction;
 using ir::Operand;
@@ -120,46 +120,65 @@ string frontend::SymbolTable::get_scoped_name(string id) const
 {
     if (scope_stack.empty())
     {
+#ifdef DEBUG_SEMANTIC
         cout << "get scoped name end    " << id << endl;
+#endif
         return id;
     }
+#ifdef DEBUG_SEMANTIC
     cout << "当前作用域是" << scope_stack.back().name << endl;
     cout << "定义的时候检查在嵌套之外作用域中是否已存在重命名的变量" << endl;
+#endif
     for (int i = scope_stack.size() - 1; i >= 0; i--)
     {
+#ifdef DEBUG_SEMANTIC
         cout << "在作用域" << scope_stack[i].name << "中查找" << id << endl;
+#endif
         auto iter = scope_stack[i].table.find(id);
         if (iter != scope_stack[i].table.end())
         {
+#ifdef DEBUG_SEMANTIC
             cout << "在作用域" << scope_stack[i].name << "中找到了" << id << endl;
+#endif
             return id + "_" + to_string(scope_stack.back().cnt);
         }
     }
-    // 变量在当前作用域内没有被定义：如果当前作用域内不存在与该变量名相同的定义,则不需要进行重命名。这意味着该变量是在外部作用域中定义的或者还未定义,因此无需重命名。
-    // 变量在当前作用域内有多个定义：如果当前作用域内存在多个与该变量名相同的定义,即出现了重名情况,那么需要进行重命名。因为在翻译成 IR 的过程中,变量名在一个作用域内必须是唯一的,否则会引起命名冲突。
-    // 变量在嵌套的作用域中被定义：如果变量在嵌套的作用域中被定义,并且外层作用域中也存在与该变量名相同的定义,那么需要进行重命名。因为在内层作用域中,需要区分与外层作用域中同名的变量,以确保变量引用的正确性。
+// 变量在当前作用域内没有被定义：如果当前作用域内不存在与该变量名相同的定义,则不需要进行重命名。这意味着该变量是在外部作用域中定义的或者还未定义,因此无需重命名。
+// 变量在当前作用域内有多个定义：如果当前作用域内存在多个与该变量名相同的定义,即出现了重名情况,那么需要进行重命名。因为在翻译成 IR 的过程中,变量名在一个作用域内必须是唯一的,否则会引起命名冲突。
+// 变量在嵌套的作用域中被定义：如果变量在嵌套的作用域中被定义,并且外层作用域中也存在与该变量名相同的定义,那么需要进行重命名。因为在内层作用域中,需要区分与外层作用域中同名的变量,以确保变量引用的正确性。
+#ifdef DEBUG_SEMANTIC
     cout << "定义时不需要重命名,故返回原值" << id << endl;
+#endif
     return id;
 }
 string frontend::SymbolTable::get_scoped_name_use(string id) const
 {
+#ifdef DEBUG_SEMANTIC
     cout << "使用的时候逐层向前检查是否存在原值以及重命名的值" << endl;
+#endif
     for (int i = scope_stack.size() - 1; i >= 0; i--)
     {
+#ifdef DEBUG_SEMANTIC
         cout << "在作用域" << scope_stack[i].name << "中查找" << id << endl;
+#endif
         auto iter = scope_stack[i].table.find(id);
         if (iter != scope_stack[i].table.end())
         {
+#ifdef DEBUG_SEMANTIC
             cout << "在作用域" << scope_stack[i].name << "中找到了" << id << endl;
+#endif
             return id;
         }
         iter = scope_stack[i].table.find(id + "_" + to_string(scope_stack[i].cnt));
         if (iter != scope_stack[i].table.end())
         {
+#ifdef DEBUG_SEMANTIC
             cout << "在作用域" << scope_stack[i].name << "中找到了" << id + "_" + to_string(scope_stack[i].cnt) << endl;
+#endif
             return id + "_" + to_string(scope_stack[i].cnt);
         }
     }
+    return id;
 }
 // 这个函数的作用是根据一个标识符 id 获取它对应的操作数。如果这个标识符是一个变量,则返回一个寄存器或栈上的位置,如果是一个常量,则返回它的值。
 // 在当前作用域查找这个标识符是否已经定义,如果已经定义,则返回它的操作数。
@@ -223,7 +242,9 @@ ir::Program frontend::Analyzer::get_ir_program(CompUnit *root)
     scope_info.cnt = 0;         // 得到新的作用域的cnt
     scope_info.name = "global"; // 得到新的作用域的name
     symbol_table.scope_stack.push_back(scope_info);
+#ifdef DEBUG_SEMANTIC
     cout << "add scope_info " << symbol_table.scope_stack.back().name << " in symbol table" << endl;
+#endif
 
     // 遍历节点
     analysisCompUnit(root, program);
@@ -276,19 +297,25 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
 
             program.addFunction(function_temp);
             function_temp = Function();
+#ifdef DEBUG_SEMANTIC
             cout << "add function global" << toString(Type::null) << "  in program" << endl;
+#endif
 
             for (int q = 0; q < pc; q++)
             {
                 program.functions.back().addInst(Inst[q]);
-
+#ifdef DEBUG_SEMANTIC
                 cout << "pc = " << q << ":  " << toString(Inst[q]->op) << " " << toString(Inst[q]->des.type) << " " << Inst[q]->des.name << " " << toString(Inst[q]->op1.type) << " " << Inst[q]->op1.name << " " << toString(Inst[q]->op2.type) << " " << Inst[q]->op2.name << endl;
+#endif
             }
         }
-
+#ifdef DEBUG_SEMANTIC
         cout << "********************************begin a function********************************" << endl;
+#endif
         ANALYSIS(funcdef, FuncDef, 0);
+#ifdef DEBUG_SEMANTIC
         cout << "**********************************end a function********************************" << endl;
+#endif
 
         int len = root->children.size();
         int index = 1;
@@ -372,9 +399,9 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
                                               op);
     Inst.push_back(assignInst);
     pc++;
-
+#ifdef DEBUG_SEMANTIC
     cout << "add def/fdef" << endl;
-
+#endif
     ANALYSIS(constdef, ConstDef, 2);
 
     int len = root->children.size();
@@ -388,16 +415,14 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
                                                   op);
         Inst.push_back(assignInst);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "add def/fdef" << endl;
-
+#endif
         index++;
         ANALYSIS(constdef, ConstDef, index);
         index++;
         if (index < len - 1)
         {
-            cout << "index: " << index << endl;
-            cout << "len: " << len << endl;
             GET_CHILD_PTR(term, Term, index);
         }
         else
@@ -468,9 +493,11 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         Instruction *old_inst = Inst.back();
         Inst.pop_back();
         pc--;
+#ifdef DEBUG_SEMANTIC
         cout << "pop an inst" << endl;
 
         cout << "to change the type" << endl;
+#endif
         Type t = old_inst->des.type;
         Type t_init;
         if (t == Type::Int)
@@ -488,8 +515,9 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         }
 
         old_inst->op = ir::Operator::alloc;
-
+#ifdef DEBUG_SEMANTIC
         cout << "add alloc" << endl;
+#endif
         string id = "t" + to_string(counter++);
         Operand mul_temp(id, Type::Int);
         Instruction *inst = new Instruction(Operand("1", Type::IntLiteral), Operand(), mul_temp, Operator::def);
@@ -515,7 +543,9 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
                 if (it != result.end())
                 {
                     dim.push_back(it->second);
+#ifdef DEBUG_SEMANTIC
                     cout << "array 的其中一个结构如下" << endl;
+#endif
                 }
             }
             else
@@ -556,9 +586,10 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         old_inst->op1.type = Type::Int;
         Inst.push_back(old_inst);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << all << "           " << toString(Inst.back()->op) << endl;
         cout << "得到数组" << Inst.back()->des.name << "的大小是" << to_string(all) << endl;
+#endif
 
         Operand op = Inst.back()->des;
         STE ste;
@@ -566,10 +597,13 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         ste.dimension = dim;
 
         symbol_table.scope_stack.back().table.insert({op.name, ste});
-
+#ifdef DEBUG_SEMANTIC
         cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         result_arr.insert({op.name, arr_len});
+#ifdef DEBUG_SEMANTIC
         cout << "开始数组初始化,得到的数组的大小是" << arr_len << endl;
+#endif
         for (int i = 0; i < arr_len; i++)
         {
             string id = "t" + to_string(counter++);
@@ -579,8 +613,9 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
                                                 ir::Operator::store);
             Inst.push_back(inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add store" << endl;
+#endif
         }
         // 数组且赋值
         // 存数指令,指向数组中存数。第一个操作数为数组名,第二个操作数为要存数所在数组下标,目的操作数为存入的数。
@@ -598,7 +633,9 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         Instruction *old_inst = Inst.back();
         Inst.pop_back();
         pc--;
+#ifdef DEBUG_SEMANTIC
         cout << "pop an inst" << endl;
+#endif
 
         index++;
         ANALYSIS(constinitval, ConstInitVal, index);
@@ -611,8 +648,9 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
                                                 Operator::cvt_i2f);
             Inst.push_back(inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add cvt_i2f inst" << endl;
+#endif
             constinitval->t = Type::Float;
             constinitval->v = id;
             constinitval->is_computable = false;
@@ -626,8 +664,9 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
                                                 Operator::cvt_f2i);
             Inst.push_back(inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add cvt_f2i inst" << endl;
+#endif
             constinitval->t = Type::Int;
             constinitval->v = id;
             constinitval->is_computable = false;
@@ -637,30 +676,36 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
 
         Inst.push_back(old_inst);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "the inst is           " << toString(Inst.back()->op) << endl;
+#endif
 
         Operand op = Inst.back()->des;
         STE ste;
         ste.operand = op;
         symbol_table.scope_stack.back().table[op.name] = ste;
+#ifdef DEBUG_SEMANTIC
         cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
 
         string name = old_inst->op1.name;
-        cout << "op1 is " << name << endl;
         if (old_inst->op1.type == Type::Int || old_inst->op1.type == Type::IntLiteral)
         {
             map<std::string, int>::iterator it = result.find(name);
             if (it != result.end())
             {
                 result.insert({old_inst->des.name, it->second});
+#ifdef DEBUG_SEMANTIC
                 cout << "result中将 " << old_inst->des.name << " 和 " << it->second << " 绑定" << endl;
+#endif
             }
 
             if (constinitval->is_computable)
             {
                 result.insert({Inst.back()->des.name, stoi(constinitval->v)});
+#ifdef DEBUG_SEMANTIC
                 cout << "result中将 " << Inst.back()->des.name << " 和 " << stoi(constinitval->v) << " 绑定" << endl;
+#endif
             }
         }
     }
@@ -719,8 +764,9 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
                     Instruction *inst = new Instruction(Operand(constinitval->v, constinitval->t), Operand(), Operand(id, Type::Float), Operator::cvt_i2f);
                     Inst.push_back(inst);
                     pc++;
-
+#ifdef DEBUG_SEMANTIC
                     cout << "add i2f" << endl;
+#endif
                     constinitval->v = id;
                     constinitval->t = Type::Float;
                     constinitval->is_computable = false;
@@ -731,8 +777,9 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
                     Instruction *inst = new Instruction(Operand(constinitval->v, constinitval->t), Operand(), Operand(id, Type::Float), Operator::cvt_f2i);
                     Inst.push_back(inst);
                     pc++;
-
+#ifdef DEBUG_SEMANTIC
                     cout << "add f2i" << endl;
+#endif
                     constinitval->v = id;
                     constinitval->t = Type::Float;
                     constinitval->is_computable = false;
@@ -743,8 +790,9 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
                                                          ir::Operator::store);
                 Inst.push_back(storeInst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add store" << endl;
+#endif
 
                 arr_index++;
             }
@@ -799,8 +847,9 @@ void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program)
                                               op);
     Inst.push_back(assignInst);
     pc++;
-
+#ifdef DEBUG_SEMANTIC
     cout << "add def" << endl;
+#endif
 
     ANALYSIS(vardef, VarDef, 1);
 
@@ -817,16 +866,15 @@ void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program)
                                                       op);
             Inst.push_back(assignInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add def" << endl;
+#endif
 
             index++;
             ANALYSIS(vardef, VarDef, index);
             index++;
             if (index < len - 1)
             {
-                cout << "index: " << index << endl;
-                cout << "len: " << len << endl;
                 GET_CHILD_PTR(term, Term, index);
             }
             else
@@ -878,7 +926,9 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             Instruction *old_inst = Inst.back();
             Inst.pop_back();
             pc--;
+#ifdef DEBUG_SEMANTIC
             cout << "pop an inst" << endl;
+#endif
 
             Type t = old_inst->des.type;
             Type t_init;
@@ -897,8 +947,9 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             }
 
             old_inst->op = ir::Operator::alloc;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add alloc" << endl;
+#endif
 
             string id = "t" + to_string(counter++);
             Operand mul_temp(id, Type::Int);
@@ -927,8 +978,10 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                     if (it != result.end())
                     {
                         dim.push_back(it->second);
+#ifdef DEBUG_SEMANTIC
                         cout << "array 的其中一个结构如下" << endl;
                         cout << "dim add " << it->second << endl;
+#endif
                     }
                     dim_index.push_back(constexp->v);
                 }
@@ -953,7 +1006,9 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                     mul_temp = Operand(id, Type::Int);
 
                     dim.push_back(std::stoi(constexp->v));
+#ifdef DEBUG_SEMANTIC
                     cout << "dim add " << constexp->v << endl;
+#endif
                 }
                 index = index + 2;
                 if (index < len)
@@ -978,10 +1033,11 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             old_inst->op1.type = Type::Int;
             Inst.push_back(old_inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add alloc " << all << endl;
 
             cout << all << "           " << toString(Inst.back()->op) << endl;
+#endif
 
             Operand op = Inst.back()->des;
             STE ste;
@@ -990,9 +1046,13 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 
             // symbol_table.scope_stack.back().table[op.name] = ste;
             symbol_table.scope_stack.back().table.insert({op.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
             result_arr.insert({op.name, arr_len});
+#ifdef DEBUG_SEMANTIC
             cout << "开始数组初始化,得到的数组的大小是" << arr_len << endl;
+#endif
             for (int i = 0; i < arr_len; i++)
             {
                 string id = "t" + to_string(counter++);
@@ -1002,8 +1062,9 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                                                     ir::Operator::store);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add store" << endl;
+#endif
             }
 
             // 数组且赋值
@@ -1022,8 +1083,9 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             Instruction *old_inst = Inst.back();
             Inst.pop_back();
             pc--;
+#ifdef DEBUG_SEMANTIC
             cout << "pop an inst" << endl;
-
+#endif
             index++;
             ANALYSIS(initval, InitVal, index);
             if ((initval->t == Type::Int || initval->t == Type::IntLiteral) && old_inst->des.type == Type::Float)
@@ -1035,8 +1097,9 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                                                     Operator::cvt_i2f);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add cvt_i2f inst" << endl;
+#endif
                 initval->t = Type::Float;
                 initval->v = id;
                 initval->is_computable = false;
@@ -1050,8 +1113,9 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                                                     Operator::cvt_f2i);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add cvt_f2i inst" << endl;
+#endif
                 initval->t = Type::Int;
                 initval->v = id;
                 initval->is_computable = false;
@@ -1059,18 +1123,23 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 
             old_inst->op1.name = initval->v;
             old_inst->op1.type = initval->t;
+#ifdef DEBUG_SEMANTIC
             cout << "initval  " << toString(initval->t) << "  " << initval->v << endl;
+#endif
 
             Inst.push_back(old_inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add alloc" << endl;
+#endif
 
             Operand op = Inst.back()->des;
             STE ste;
             ste.operand = op;
             symbol_table.scope_stack.back().table.insert({op.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
 
             // 如果是整数赋值,直接添加到result
             if (key)
@@ -1078,7 +1147,9 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                 if (initval->is_computable)
                 {
                     result.insert({op.name, stoi(initval->v)});
+#ifdef DEBUG_SEMANTIC
                     cout << "result中将 " << op.name << " 和 " << stoi(initval->v) << " 绑定" << endl;
+#endif
                 }
             }
         }
@@ -1093,12 +1164,16 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
         if (it != symbol_table.scope_stack.back().table.end())
         {
             symbol_table.scope_stack.back().table[op.name] = ste;
+#ifdef DEBUG_SEMANTIC
             cout << "update  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         }
         else
         {
             symbol_table.scope_stack.back().table.insert({op.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "insert  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         }
     }
 #ifdef DEBUG_RESULT
@@ -1158,8 +1233,9 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
                     Instruction *inst = new Instruction(Operand(initval->v, initval->t), Operand(), Operand(id, Type::Float), Operator::cvt_i2f);
                     Inst.push_back(inst);
                     pc++;
-
+#ifdef DEBUG_SEMANTIC
                     cout << "add i2f" << endl;
+#endif
                     initval->v = id;
                     initval->t = Type::Float;
                     initval->is_computable = false;
@@ -1170,8 +1246,9 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
                     Instruction *inst = new Instruction(Operand(initval->v, initval->t), Operand(), Operand(id, Type::Float), Operator::cvt_f2i);
                     Inst.push_back(inst);
                     pc++;
-
+#ifdef DEBUG_SEMANTIC
                     cout << "add f2i" << endl;
+#endif
                     initval->v = id;
                     initval->t = Type::Float;
                     initval->is_computable = false;
@@ -1182,18 +1259,21 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
                                                          ir::Operator::store);
                 Inst.push_back(storeInst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add store" << endl;
+#endif
 
                 arr_index++;
             }
             STE ste = symbol_table.get_ste(des.name);
             vector<int> dim = ste.dimension;
+#ifdef DEBUG_SEMANTIC
             cout << "在数组中——" << endl;
             for (size_t i = 0; i < dim.size(); i++)
             {
                 cout << i << " is " << dim[i] << endl;
             }
+#endif
         }
         else
         {
@@ -1229,8 +1309,9 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
                                                     ir::Operand("t0", ir::Type::null));
         Inst.push_back(callGlobal);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "add call global" << endl;
+#endif
     }
 
     root->t = functype->t;
@@ -1240,10 +1321,11 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
     STE ste;
     Operand op(root->v, root->t);
     ste.operand = op;
-    cout << "add  function " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-    symbol_table.scope_stack.back().table.insert({op.name, ste});
-    cout << "add  function " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
 
+    symbol_table.scope_stack.back().table.insert({op.name, ste});
+#ifdef DEBUG_SEMANTIC
+    cout << "add  function " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
     int block_begin;
     if (root->children[3]->type == NodeType::FUNCFPARAMS)
     {
@@ -1259,8 +1341,9 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
     function_temp.name = root->v;
     function_temp.returnType = root->t;
     program.addFunction(function_temp);
+#ifdef DEBUG_SEMANTIC
     cout << "add function " << toString(function_temp.returnType) << "  " << function_temp.name << " in program" << endl;
-
+#endif
     ANALYSIS(block, Block, block_begin);
 
     if (function_temp.returnType == Type::null)
@@ -1270,18 +1353,22 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
                                                   ir::Operand(), ir::Operator::_return);
         Inst.push_back(funcreturn);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "add funcreturn" << endl;
+#endif
     }
 
     int pc_new = pc;
+#ifdef DEBUG_SEMANTIC
     cout << "pc_old is " << pc_old << " pc_new is " << pc_new << endl;
+#endif
 
     for (int q = pc_old; q < pc_new; q++)
     {
         program.functions.back().addInst(Inst[q]);
-
+#ifdef DEBUG_SEMANTIC
         cout << "pc is " << q << " " << toString(Inst[q]->op) << " " << toString(Inst[q]->des.type) << " " << Inst[q]->des.name << " " << toString(Inst[q]->op1.type) << " " << Inst[q]->op1.name << " " << toString(Inst[q]->op2.type) << " " << Inst[q]->op2.name << " in program " << function_temp.name << endl;
+#endif
     }
     function_temp = Function();
 
@@ -1374,12 +1461,16 @@ void frontend::Analyzer::analysisFuncFParam(FuncFParam *root, ir::Program &progr
     if (it != symbol_table.scope_stack.back().table.end())
     {
         symbol_table.scope_stack.back().table[op.name] = ste;
+#ifdef DEBUG_SEMANTIC
         cout << "update  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
     }
     else
     {
         symbol_table.scope_stack.back().table.insert({op.name, ste});
+#ifdef DEBUG_SEMANTIC
         cout << "insert " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
     }
 #ifdef DEBUG_RESULT
     string sure;
@@ -1404,8 +1495,9 @@ void frontend::Analyzer::analysisFuncFParams(FuncFParams *root, ir::Program &pro
     ANALYSIS(funcfparam, FuncFParam, 0);
     Operand op1(funcfparam->v, funcfparam->t);
     paraVec.push_back(op1);
+#ifdef DEBUG_SEMANTIC
     cout << "add funcfparam " << toString(op1.type) << " " << op1.name << " in " << endl;
-
+#endif
     int len = root->children.size();
     int index = 1;
     if (index < len)
@@ -1418,9 +1510,9 @@ void frontend::Analyzer::analysisFuncFParams(FuncFParams *root, ir::Program &pro
 
             Operand op1(funcfparam_right->v, funcfparam_right->t);
             paraVec.push_back(op1);
-
+#ifdef DEBUG_SEMANTIC
             cout << "add funcfparam " << toString(op1.type) << " " << op1.name << " in " << endl;
-
+#endif
             index++;
         }
     }
@@ -1528,8 +1620,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                          des, ir::Operator::store);
             Inst.push_back(storeInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add store" << endl;
+#endif
         }
         else
         {
@@ -1551,16 +1644,18 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                        mov_or_fmov);
             Inst.push_back(movInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add mov/fmov" << endl;
-
+#endif
             if (exp->t == Type::Int)
             {
                 map<std::string, int>::iterator it = result.find(exp->v);
                 if (it != result.end())
                 {
                     result.insert({lval->v, it->second});
+#ifdef DEBUG_SEMANTIC
                     cout << "result中将 " << lval->v << " 和 " << it->second << " 绑定" << endl;
+#endif
                 }
             }
         }
@@ -1599,9 +1694,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                      ir::Operand("2", ir::Type::IntLiteral), ir::Operator::_goto);
             Inst.push_back(gotoInst1);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add goto" << endl;
-
+#endif
             int pc_to_change1 = pc; // 需要修改的指令的位置,指向下一个else if 语句开始前
 
             // 第二个goto,指向下一个判断语句,需要更新
@@ -1610,8 +1705,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                      ir::Operand("1", ir::Type::IntLiteral), ir::Operator::_goto);
             Inst.push_back(gotoInst2);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add goto" << endl;
+#endif
             int pc_1 = pc;
             ANALYSIS(stmt, Stmt, 4);
             int pc_to_change2 = pc;
@@ -1622,15 +1718,15 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                     ir::Operator::_goto);
             Inst.push_back(gotoInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add goto" << endl;
-
+#endif
             int pc_2 = pc;
 
             Inst[pc_to_change1]->des.name = to_string(pc_2 - pc_1 + 1);
-
+#ifdef DEBUG_SEMANTIC
             cout << "in if: 1 where is pc: " << pc_to_change1 << " change inst goto's des's name = " << to_string(pc_2 - pc_1 + 1) << endl;
-
+#endif
             int len = root->children.size();
             int index = 5;
             if (index < len)
@@ -1639,8 +1735,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             }
             int pc_des = pc;
             Inst[pc_to_change2]->des.name = to_string(pc_des - pc_2 + 1);
-
+#ifdef DEBUG_SEMANTIC
             cout << "in if: 2 where is pc: " << pc_to_change2 << " change inst goto's des's name = " << to_string(pc_des - pc_2 + 1) << endl;
+#endif
         }
         else if (ident->token.type == TokenType::WHILETK)
         {
@@ -1654,9 +1751,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                      ir::Operand("2", ir::Type::IntLiteral), ir::Operator::_goto);
             Inst.push_back(gotoInst1);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add goto" << endl;
-
+#endif
             int pc_to_change1 = pc;
 
             // 第二个goto,指向终点
@@ -1665,9 +1762,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                      ir::Operand("1", ir::Type::IntLiteral), ir::Operator::_goto);
             Inst.push_back(gotoInst2);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add goto" << endl;
-
+#endif
             ANALYSIS(stmt, Stmt, 4);
 
             string pc_again = to_string(while_begin - pc);
@@ -1678,33 +1775,38 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                     ir::Operator::_goto);
             Inst.push_back(gotoInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add goto" << endl;
             cout << "in where: 1 where is pc: return back to " << pc_again << endl;
-
+#endif
             int pc_des = pc;
             Inst[pc_to_change1]->des.name = to_string(pc_des - pc_to_change1);
-
+#ifdef DEBUG_SEMANTIC
             cout << "in where: 2 where is pc: " << pc_to_change1 << " change inst goto's des's name = " << to_string(pc_des - pc_to_change1) << endl;
-
+#endif
             for (size_t i = 0; i < break_pc.size(); i++)
             {
                 Inst[break_pc[i]]->des.name = to_string(pc_des - break_pc[i]);
+#ifdef DEBUG_SEMANTIC
                 cout << "in where: break: where is pc: " << break_pc[i] << " change inst goto's des's name = " << pc_des - break_pc[i] << endl;
+#endif
             }
         }
         else if (ident->token.type == TokenType::BREAKTK)
         {
             break_pc.push_back(pc);
+#ifdef DEBUG_SEMANTIC
             cout << "break: where pc is " << pc << " find break" << endl;
+#endif
             Instruction *gotoInst = new Instruction(ir::Operand("", Type::null),
                                                     ir::Operand(),
                                                     ir::Operand("1", Type::IntLiteral),
                                                     ir::Operator::_goto);
             Inst.push_back(gotoInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add goto" << endl;
+#endif
         }
         else if (ident->token.type == TokenType::CONTINUETK)
         {
@@ -1727,9 +1829,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                            ir::Operator::cvt_i2f);
                     Inst.push_back(i2fInst);
                     pc++;
-
+#ifdef DEBUG_SEMANTIC
                     cout << "add i2f" << endl;
-
+#endif
                     exp->t = Type::Float;
                     exp->v = id;
                     exp->is_computable = false;
@@ -1743,8 +1845,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                            ir::Operator::cvt_f2i);
                     Inst.push_back(f2iInst);
                     pc++;
-
+#ifdef DEBUG_SEMANTIC
                     cout << "add i2f" << endl;
+#endif
                     exp->t = Type::Int;
                     exp->v = id;
                     exp->is_computable = false;
@@ -1756,8 +1859,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                           ir::Operator::_return);
                 Inst.push_back(returnInst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add return" << endl;
+#endif
             }
             else
             {
@@ -1767,8 +1871,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                                                           ir::Operator::_return);
                 Inst.push_back(returnInst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add return" << endl;
+#endif
             }
         }
         else
@@ -1851,7 +1956,9 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
     {
         root->arr_name = ident->v; // 是一个数组,向上传递数组名
         Operand op = symbol_table.get_operand(ident->v);
+#ifdef DEBUG_SEMANTIC
         cout << "找到了数组" << op.name << "的returntTybe是 " << toString(op.type) << endl;
+#endif
         STE ste = symbol_table.get_ste(ident->v);
         if (op.type == Type::Int || op.type == Type::Float)
         {
@@ -1863,7 +1970,6 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
         }
         else if (op.type == Type::FloatPtr)
         {
-            cout << "成功将float赋值给t" << endl;
             root->t = Type::Float;
         }
 
@@ -1882,8 +1988,9 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
             if (exp->is_computable)
             {
                 dim.push_back(stoi(exp->v));
+#ifdef DEBUG_SEMANTIC
                 cout << "array find is " << exp->v << endl;
-
+#endif
                 string id = "t" + to_string(counter++);
                 Instruction *inst = new Instruction(Operand(exp->v, Type::IntLiteral), Operand(), Operand(id, Type::Int), Operator::def);
                 Inst.push_back(inst);
@@ -1895,7 +2002,9 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
                 arr_index_name = exp->v;
                 map<std::string, int>::iterator it1 = result.find(exp->v);
                 dim.push_back(it1->second);
+#ifdef DEBUG_SEMANTIC
                 cout << "array find is " << it1->second << endl;
+#endif
                 arr_index_name_list.push_back(exp->v);
             }
             index = index + 2;
@@ -2023,8 +2132,9 @@ void frontend::Analyzer::analysisPrimaryExp(PrimaryExp *root, ir::Program &progr
                                                     op2, des, ir::Operator::load);
             Inst.push_back(loadInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add load" << endl;
+#endif
             root->v = id;
             root->t = lval->t;
         }
@@ -2112,14 +2222,15 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             Instruction *defInst = new Instruction(op1, Operand(), des, def_or_fdef);
             Inst.push_back(defInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add def/fdef" << endl;
-
+#endif
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-
+#endif
             // 减法
             //  def一个0
             op1 = des;
@@ -2130,16 +2241,20 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             Instruction *subInst = new Instruction(op1, op2, des, sub);
             Inst.push_back(subInst);
             pc++;
+#ifdef DEBUG_SEMANTIC
             cout << "add sub" << endl;
-
+#endif
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-
+#endif
             if (unaryexp->is_computable)
             {
                 result.insert({id, -stoi(unaryexp->v)});
+#ifdef DEBUG_SEMANTIC
                 cout << "result中将 " << id << " 和 " << -stoi(unaryexp->v) << " 绑定" << endl;
+#endif
             }
 
             root->v = id;
@@ -2155,8 +2270,9 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                 Instruction *inst = new Instruction(op1, Operand(), Operand(id, Type::Int), Operator::cvt_f2i);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add f2i" << endl;
+#endif
                 unaryexp->t = Type::Int;
                 unaryexp->v = id;
                 unaryexp->is_computable = false;
@@ -2168,13 +2284,15 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             Instruction *notInst = new Instruction(op1, Operand(), des, ir::Operator::_not);
             Inst.push_back(notInst);
             pc++;
+#ifdef DEBUG_SEMANTIC
             cout << "add not" << endl;
-
+#endif
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-
+#endif
             root->v = id;
         }
     }
@@ -2185,7 +2303,9 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
         ident->v = ident->token.value;
         COPY_EXP_NODE(ident, root);
         vector<Operand> paraVec_true = {}; // 用来装原本应该存在的参数
+#ifdef DEBUG_SEMANTIC
         cout << "现在寻找的函数的名称是" << ident->v << endl;
+#endif
         auto iter = get_lib_funcs()->find(ident->v);
         if (iter == get_lib_funcs()->end())
         {
@@ -2196,12 +2316,16 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                     paraVec_true = i.ParameterList;
                 }
             }
+#ifdef DEBUG_SEMANTIC
             cout << "not find lib func" << endl;
+#endif
         }
         else
         {
             paraVec_true = iter->second->ParameterList;
+#ifdef DEBUG_SEMANTIC
             cout << "find lib func" << endl;
+#endif
         }
         Operand op1 = symbol_table.get_operand(ident->v);
         int len = root->children.size();
@@ -2218,10 +2342,8 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             root->v = id;
 
             vector<Operand> paraVec1 = callInst_temp->argumentList;
-            cout << "call func param is——" << paraVec1.size() << endl;
             for (size_t i = 0; i < paraVec1.size(); i++)
             {
-
                 if ((paraVec1[i].type == Type::Int || paraVec1[i].type == Type::IntLiteral) && paraVec_true[i].type == Type::Float)
                 {
                     string id = "t" + to_string(counter++);
@@ -2229,11 +2351,13 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                     Instruction *inst = new Instruction(paraVec1[i], Operand(), Operand(id, Type::Float), Operator::cvt_i2f);
                     Inst.push_back(inst);
                     pc++;
-
+#ifdef DEBUG_SEMANTIC
                     cout << "add i2f" << endl;
-
+#endif
                     paraVec1[i] = Operand(id, Type::Float);
+#ifdef DEBUG_SEMANTIC
                     cout << "做了一次i2f类型转换" << endl;
+#endif
                 }
                 else if ((paraVec1[i].type == Type::Float || paraVec1[i].type == Type::FloatLiteral) && paraVec_true[i].type == Type::Int)
                 {
@@ -2241,25 +2365,31 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                     Instruction *inst = new Instruction(paraVec1[i], Operand(), Operand(id, Type::Int), Operator::cvt_f2i);
                     Inst.push_back(inst);
                     pc++;
-
+#ifdef DEBUG_SEMANTIC
                     cout << "add f2i" << endl;
-
+#endif
                     paraVec1[i] = Operand(id, Type::Int);
+#ifdef DEBUG_SEMANTIC
                     cout << "做了一次f2i类型转换" << endl;
+#endif
                 }
+#ifdef DEBUG_SEMANTIC
                 cout << toString(paraVec1[i].type) << " " << paraVec1[i].name << endl;
+#endif
             }
             ir::CallInst *callInst = new ir::CallInst(op1, paraVec1, des);
             Inst.push_back(callInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add call" << endl;
-
+#endif
             STE ste;
             Operand op = des;
             ste.operand = op;
             symbol_table.scope_stack.back().table.insert({op.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         }
 
         else
@@ -2272,14 +2402,16 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                                                       des);
             Inst.push_back(callInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add call" << endl;
-
+#endif
             STE ste;
             Operand op = des;
             ste.operand = op;
             symbol_table.scope_stack.back().table.insert({op.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         }
         root->is_computable = false;
         root->t = op1.type;
@@ -2340,12 +2472,16 @@ void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, ir::Program &pro
     int index = 0;
     while (index < len)
     {
+#ifdef DEBUG_SEMANTIC
         cout << "index is " << index << " : to analysis funcrpapam" << endl;
+#endif
         ANALYSIS(exp, Exp, index);
         index = index + 2;
 
         Operand op(exp->v, exp->t);
+#ifdef DEBUG_SEMANTIC
         cout << "add FuncRParam " << toString(exp->t) << " " << exp->v << " in FuncRParams" << endl;
+#endif
         paraVec1.push_back(op);
     }
     callInst_temp->argumentList = paraVec1;
@@ -2404,8 +2540,9 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
                                                     Operator::cvt_i2f);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add cvt_i2f inst" << endl;
+#endif
                 unaryexp->v = id;
                 unaryexp->t = Type::Float;
                 unaryexp->is_computable = false;
@@ -2420,8 +2557,9 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
                                                     Operator::cvt_i2f);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add cvt_i2f inst" << endl;
+#endif
                 unaryexp_right->v = id;
                 unaryexp_right->t = Type::Float;
                 unaryexp_right->is_computable = false;
@@ -2440,9 +2578,9 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
             else
                 mul_or_fmul_or_div_or_fdiv_or_mod = Operator::mod;
         }
-
+#ifdef DEBUG_SEMANTIC
         cout << "inst op is " << toString(mul_or_fmul_or_div_or_fdiv_or_mod) << endl;
-
+#endif
         if (unaryexp->is_computable) // 乘法是常数需要先定义
         {
             Operand op1(unaryexp->v, t_temp);
@@ -2451,24 +2589,27 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
             if (t == Type::Int)
             {
                 result.insert({id, stoi(unaryexp->v)});
+#ifdef DEBUG_SEMANTIC
                 cout << "result中将 " << id << " 和 " << stoi(unaryexp->v) << " 绑定" << endl;
+#endif
             }
 
             Operand des(id, t);
             Instruction *defInst = new Instruction(op1, Operand(), des, def_or_fdef);
             Inst.push_back(defInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             if (t == Type::Int)
                 cout << "add def" << endl;
             else
                 cout << "add fdef" << endl;
-
+#endif
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-
+#endif
             unaryexp->v = id;
             unaryexp->t = t;
         }
@@ -2480,24 +2621,27 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
             if (t == Type::Int)
             {
                 result.insert({id, stoi(unaryexp_right->v)});
+#ifdef DEBUG_SEMANTIC
                 cout << "result中将 " << id << " 和 " << stoi(unaryexp_right->v) << " 绑定" << endl;
+#endif
             }
 
             Operand des(id, t);
             Instruction *defInst = new Instruction(op1, Operand(), des, def_or_fdef);
             Inst.push_back(defInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             if (t == Type::Int)
                 cout << "add def" << endl;
             else
                 cout << "add fdef" << endl;
-
+#endif
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
-
+#endif
             unaryexp_right->v = id;
             unaryexp_right->t = t;
         }
@@ -2512,9 +2656,9 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
                                             des, mul_or_fmul_or_div_or_fdiv_or_mod);
         Inst.push_back(inst);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "add */÷/mod inst" << endl;
-
+#endif
         if (t == Type::Int)
         {
             string name1 = op1.name;
@@ -2528,17 +2672,23 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
                 if (mul_or_fmul_or_div_or_fdiv_or_mod == Operator::mul)
                 {
                     result.insert({name3, it1->second * it2->second});
+#ifdef DEBUG_SEMANTIC
                     cout << "result中将 " << name3 << " 和 " << it1->second * it2->second << " 绑定" << endl;
+#endif
                 }
                 else if (mul_or_fmul_or_div_or_fdiv_or_mod == Operator::div)
                 {
                     result.insert({name3, it1->second / it2->second});
+#ifdef DEBUG_SEMANTIC
                     cout << "result中将 " << name3 << " 和 " << it1->second / it2->second << " 绑定" << endl;
+#endif
                 }
                 else if (mul_or_fmul_or_div_or_fdiv_or_mod == Operator::mod)
                 {
                     result.insert({name3, it1->second % it2->second});
+#ifdef DEBUG_SEMANTIC
                     cout << "result中将 " << name3 << " 和 " << it1->second % it2->second << " 绑定" << endl;
+#endif
                 }
             }
         }
@@ -2616,8 +2766,9 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
                                                     Operator::cvt_i2f);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add cvt_i2f inst" << endl;
+#endif
                 mulexp->v = id;
                 mulexp->t = Type::Float;
                 mulexp->is_computable = false;
@@ -2632,8 +2783,9 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
                                                     Operator::cvt_i2f);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add cvt_i2f inst" << endl;
+#endif
                 mulexp_right->v = id;
                 mulexp_right->t = Type::Float;
                 mulexp_right->is_computable = false;
@@ -2681,9 +2833,9 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
                                                                des_temp, ir::Operator::def);
                         Inst.push_back(defInst);
                         pc++;
-
+#ifdef DEBUG_SEMANTIC
                         cout << "add def" << endl;
-
+#endif
                         mulexp->t = Type::Int;
                         mulexp->v = id;
                         mulexp->is_computable = false;
@@ -2733,9 +2885,9 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
             Instruction *inst = new Instruction(op1, op2, des, add_or_sub);
             Inst.push_back(inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add +/- inst" << endl;
-
+#endif
             if (t == Type::Int)
             {
                 string name1 = op1.name;
@@ -2747,22 +2899,32 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
                 {
                     if (add_or_sub == Operator::add || add_or_sub == Operator::addi || add_or_sub == Operator::fadd)
                     {
+#ifdef DEBUG_SEMANTIC
                         cout << name1 << "      " << name2 << endl;
+#endif
                         result.insert({name3, it1->second + it2->second});
+#ifdef DEBUG_SEMANTIC
                         cout << "result中将 " << name3 << " 和 " << it1->second + it2->second << " 绑定" << endl;
+#endif
                     }
                     else
                     {
+#ifdef DEBUG_SEMANTIC
                         cout << name1 << "      " << name2 << endl;
+#endif
                         result.insert({name3, it1->second - it2->second});
+#ifdef DEBUG_SEMANTIC
                         cout << "result中将 " << name3 << " 和 " << it1->second - it2->second << " 绑定" << endl;
+#endif
                     }
                 }
 
                 STE ste;
                 ste.operand = des;
                 symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
                 cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
             }
 
             root->v = id;
@@ -2837,9 +2999,9 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
                                                     Operand(id, Type::Float), ir::Operator::cvt_i2f);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add cvt_i2f" << endl;
-
+#endif
                 addexp->v = id;
                 addexp->t = Type::Float;
                 addexp->is_computable = false;
@@ -2852,9 +3014,9 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
                                                     Operand(id, Type::Float), ir::Operator::cvt_i2f);
                 Inst.push_back(inst);
                 pc++;
-
+#ifdef DEBUG_SEMANTIC
                 cout << "add cvt_i2f" << endl;
-
+#endif
                 addexp_right->v = id;
                 addexp_right->t = Type::Float;
                 addexp_right->is_computable = false;
@@ -2867,9 +3029,9 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
         Instruction *inst = new Instruction(op1, op2, des, op);
         Inst.push_back(inst);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "add </>/<=/>=" << endl;
-
+#endif
         root->v = id;
         root->t = t;
         root->is_computable = false;
@@ -2877,7 +3039,9 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
         STE ste;
         ste.operand = des;
         symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
         cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
     }
 #ifdef DEBUG_RESULT
     string sure;
@@ -2916,13 +3080,15 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
             Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
             Inst.push_back(defInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add def" << endl;
-
+#endif
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
             relexp->v = id;
             relexp->t = Type::Int;
             relexp->is_computable = false;
@@ -2936,13 +3102,15 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
             Instruction *defInst = new Instruction(op1, Operand(), des, ir::Operator::def);
             Inst.push_back(defInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add def" << endl;
-
+#endif
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
             relexp_right->v = id;
             relexp_right->t = Type::Int;
             relexp_right->is_computable = false;
@@ -2956,14 +3124,17 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
             Instruction *eqInst = new Instruction(op1, op2, des, ir::Operator::eq);
             Inst.push_back(eqInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add eq" << endl;
+#endif
             relexp_right->v = id;
 
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         }
         else
         {
@@ -2973,14 +3144,17 @@ void frontend::Analyzer::analysisEqExp(EqExp *root, ir::Program &program)
             Instruction *eqInst = new Instruction(op1, op2, des, ir::Operator::neq);
             Inst.push_back(eqInst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add eq" << endl;
+#endif
             relexp_right->v = id;
 
             STE ste;
             ste.operand = des;
             symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         }
         relexp = relexp_right;
         root->v = id;
@@ -3019,16 +3193,17 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
             Instruction *inst = new Instruction(op1, Operand("0", Type::FloatLiteral), Operand(id_1, Type::Float), Operator::fneq);
             Inst.push_back(inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add neq" << endl;
-
+#endif
             // 然后转换成整型
             string id_2 = "t" + to_string(counter++);
             Instruction *inst_2 = new Instruction(Operand(id_1, Type::Float), Operand(), Operand(id_2, Type::Int), Operator::cvt_f2i);
             Inst.push_back(inst_2);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add f2i" << endl;
+#endif
             eqexp->t = Type::Int;
             eqexp->v = id_2;
             eqexp->is_computable = false;
@@ -3040,12 +3215,15 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
         Instruction *andInst = new Instruction(op1, op_temp, des, ir::Operator::_and);
         Inst.push_back(andInst);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "&&之前先判断一下前一个" << endl;
+#endif
         STE ste;
         ste.operand = des;
         symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
         cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         root->v = id;
 
         // 如果可以继续执行,否则跳过
@@ -3053,16 +3231,18 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
         Instruction *gotoInst = new Instruction(des, Operand(), ir::Operand("2", Type::IntLiteral), ir::Operator::_goto);
         Inst.push_back(gotoInst);
         pc++;
+#ifdef DEBUG_SEMANTIC
         cout << "add goto" << endl;
         cout << "&&之前一个的结果出来后判断是否跳转" << endl;
-
+#endif
         int pc_to_change = pc;
         Instruction *gotoInst_2 = new Instruction(Operand(), Operand(), ir::Operand("2", Type::IntLiteral), ir::Operator::_goto);
         Inst.push_back(gotoInst_2);
         pc++;
+#ifdef DEBUG_SEMANTIC
         cout << "add goto" << endl;
         cout << "&&之前一个的结果出来后判断是否跳转" << endl;
-
+#endif
         // goto
         ANALYSIS(landexp, LAndExp, 2);
         Operand op2(landexp->v, landexp->t);
@@ -3073,17 +3253,17 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
             Instruction *inst = new Instruction(op2, Operand("0", Type::FloatLiteral), Operand(id_1, Type::Float), Operator::fneq);
             Inst.push_back(inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add neq" << endl;
-
+#endif
             // 然后转换成整型
             string id_2 = "t" + to_string(counter++);
             Instruction *inst_2 = new Instruction(Operand(id_1, Type::Float), Operand(), Operand(id_2, Type::Int), Operator::cvt_f2i);
             Inst.push_back(inst_2);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add f2i" << endl;
-
+#endif
             landexp->t = Type::Int;
             landexp->v = id_2;
             landexp->is_computable = false;
@@ -3093,12 +3273,14 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
         Instruction *andInst_2 = new Instruction(op1, op2, des, ir::Operator::_and);
         Inst.push_back(andInst_2);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "add and" << endl;
-
+#endif
         int pc_des = pc;
         Inst[pc_to_change]->des.name = to_string(pc_des - pc_to_change);
+#ifdef DEBUG_SEMANTIC
         cout << "in and: where is pc: " << pc_to_change << " change inst goto's des's name = " << pc_des - pc_to_change << endl;
+#endif
     }
 #ifdef DEBUG_RESULT
     string sure;
@@ -3131,17 +3313,17 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
             Instruction *inst = new Instruction(op1, Operand("0", Type::FloatLiteral), Operand(id_1, Type::Float), Operator::fneq);
             Inst.push_back(inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add neq" << endl;
-
+#endif
             // 然后转换成整型
             string id_2 = "t" + to_string(counter++);
             Instruction *inst_2 = new Instruction(Operand(id_1, Type::Float), Operand(), Operand(id_2, Type::Int), Operator::cvt_f2i);
             Inst.push_back(inst_2);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add f2i" << endl;
-
+#endif
             landexp->t = Type::Int;
             landexp->v = id_2;
             landexp->is_computable = false;
@@ -3155,12 +3337,15 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
         Instruction *orInst = new Instruction(op1, op_temp, des, ir::Operator::_or);
         Inst.push_back(orInst);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "&&之前先判断一下前一个" << endl;
+#endif
         STE ste;
         ste.operand = des;
         symbol_table.scope_stack.back().table.insert({des.name, ste});
+#ifdef DEBUG_SEMANTIC
         cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
+#endif
         root->v = id;
 
         // 如果可以直接跳过下一个,与&&不同的是这里一个跳转就行了
@@ -3169,10 +3354,10 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
         Instruction *gotoInst = new Instruction(des, Operand(), ir::Operand("1", Type::IntLiteral), ir::Operator::_goto);
         Inst.push_back(gotoInst);
         pc++;
-
+#ifdef DEBUG_SEMANTIC
         cout << "add goto" << endl;
         cout << "&&之前一个的结果出来后判断是否跳转" << endl;
-
+#endif
         ANALYSIS(lorexp, LOrExp, 2);
         Operand op2(lorexp->v, lorexp->t);
         if (lorexp->t != Type::Int && lorexp->t != Type::IntLiteral)
@@ -3182,17 +3367,17 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
             Instruction *inst = new Instruction(op2, Operand("0", Type::FloatLiteral), Operand(id_1, Type::Float), Operator::fneq);
             Inst.push_back(inst);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add neq" << endl;
-
+#endif
             // 然后转换成整型
             string id_2 = "t" + to_string(counter++);
             Instruction *inst_2 = new Instruction(Operand(id_1, Type::Float), Operand(), Operand(id_2, Type::Int), Operator::cvt_f2i);
             Inst.push_back(inst_2);
             pc++;
-
+#ifdef DEBUG_SEMANTIC
             cout << "add f2i" << endl;
-
+#endif
             lorexp->t = Type::Int;
             lorexp->v = id_2;
             lorexp->is_computable = false;
@@ -3204,8 +3389,9 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
 
         int pc_des = pc;
         Inst[pc_to_change]->des.name = to_string(pc_des - pc_to_change);
+#ifdef DEBUG_SEMANTIC
         cout << "in or: where is pc: " << pc_to_change << " change inst goto's des's name = " << pc_des - pc_to_change << endl;
-
+#endif
         root->v = des.name;
         root->t = Type::Int;
         root->is_computable = false;

@@ -1,0 +1,550 @@
+#include "backend/generator.h"
+#include "backend/rv_def.h"
+#include "backend/rv_inst_impl.h"
+#include <iostream>
+#include <assert.h>
+#include "front/semantic.h"
+using ir::Function;
+using ir::Instruction;
+using ir::Operand;
+using ir::Operator;
+using namespace std;
+#include "ir/ir.h"
+#define TODO assert(0 && "todo")
+
+uint32_t delt = 0;
+backend::stackVarMap stackvarmap = {};
+std::vector<rv::rv_inst> Instr = {};           // 汇编的指令集合
+std::set<std::string> globalvs = {};           // 全局变量集合
+std::map<rv::rvREG, std::string> rvreg = {};   // 寄存器集合
+std::map<rv::rvFREG, std::string> rvfreg = {}; // 寄存器集合
+backend::Generator::Generator(ir::Program &p, std::ofstream &f) : program(p), fout(f) {}
+
+// 这个函数用于查找给定操作数（Operand）的地址偏移。它通过访问_table成员变量，并根据给定的操作数执行必要的操作来找到操作数的地址，并返回偏移量。
+int backend::stackVarMap::find_operand(ir::Operand op)
+{
+    return _table[op];
+}
+// 这个函数用于将操作数添加到当前的映射表中，并为该变量在内存中分配空间。它通过更新_table成员变量，并根据给定的操作数和大小（以字节为单位）分配内存空间，并返回偏移量。
+int backend::stackVarMap::add_operand(ir::Operand op, uint32_t size)
+{
+    _table[op] = delt;
+    delt += size;
+    return _table[op];
+}
+// 这个函数用于获取给定操作数（Operand）的寄存器目标（rvREG）。根据给定的操作数，它返回适当的rvREG值，表示操作数的寄存器目标。
+rv::rvREG backend::Generator::getRd(ir::Operand op)
+{
+    // // a0~a7-->X10~X17
+    // auto it0 = rvreg.find(rv::rvREG::X10);
+    // if (it0 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X10, op.name});
+    //     return rv::rvREG::X10;
+    // }
+    // auto it1 = rvreg.find(rv::rvREG::X11);
+    // if (it1 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X11, op.name});
+    //     return rv::rvREG::X11;
+    // }
+    // auto it2 = rvreg.find(rv::rvREG::X12);
+    // if (it2 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X12, op.name});
+    //     return rv::rvREG::X12;
+    // }
+    // auto it3 = rvreg.find(rv::rvREG::X13);
+    // if (it3 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X13, op.name});
+    //     return rv::rvREG::X13;
+    // }
+    // auto it4 = rvreg.find(rv::rvREG::X14);
+    // if (it4 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X14, op.name});
+    //     return rv::rvREG::X14;
+    // }
+    // auto it5 = rvreg.find(rv::rvREG::X15);
+    // if (it5 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X15, op.name});
+    //     return rv::rvREG::X15;
+    // }
+    // auto it6 = rvreg.find(rv::rvREG::X16);
+    // if (it6 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X16, op.name});
+    //     return rv::rvREG::X16;
+    // }
+    // auto it7 = rvreg.find(rv::rvREG::X17);
+    // if (it7 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X17, op.name});
+    //     return rv::rvREG::X17;
+    // }
+    return rv::rvREG::X28;
+}
+// 这个函数用于获取给定操作数的整数类型源寄存器（rvREG）。根据给定的操作数，它返回适当的整数寄存器对象，表示操作数的源寄存器。
+rv::rvREG backend::Generator::getRs1(ir::Operand op)
+{
+    // // a0~a7-->X10~X17
+    // auto it0 = rvreg.find(rv::rvREG::X10);
+    // if (it0 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X10, op.name});
+    //     return rv::rvREG::X10;
+    // }
+    // auto it1 = rvreg.find(rv::rvREG::X11);
+    // if (it1 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X11, op.name});
+    //     return rv::rvREG::X11;
+    // }
+    // auto it2 = rvreg.find(rv::rvREG::X12);
+    // if (it2 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X12, op.name});
+    //     return rv::rvREG::X12;
+    // }
+    // auto it3 = rvreg.find(rv::rvREG::X13);
+    // if (it3 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X13, op.name});
+    //     return rv::rvREG::X13;
+    // }
+    // auto it4 = rvreg.find(rv::rvREG::X14);
+    // if (it4 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X14, op.name});
+    //     return rv::rvREG::X14;
+    // }
+    // auto it5 = rvreg.find(rv::rvREG::X15);
+    // if (it5 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X15, op.name});
+    //     return rv::rvREG::X15;
+    // }
+    // auto it6 = rvreg.find(rv::rvREG::X16);
+    // if (it6 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X16, op.name});
+    //     return rv::rvREG::X16;
+    // }
+    // auto it7 = rvreg.find(rv::rvREG::X17);
+    // if (it7 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X17, op.name});
+    //     return rv::rvREG::X17;
+    // }
+    return rv::rvREG::X29;
+}
+// 这个函数用于获取给定操作数的整数类型源寄存器（rvREG）。根据给定的操作数，它返回适当的整数寄存器对象，表示操作数的源寄存器。
+rv::rvREG backend::Generator::getRs2(ir::Operand op)
+{
+    // // a0~a7-->X10~X17
+    // auto it0 = rvreg.find(rv::rvREG::X10);
+    // if (it0 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X10, op.name});
+    //     return rv::rvREG::X10;
+    // }
+    // auto it1 = rvreg.find(rv::rvREG::X11);
+    // if (it1 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X11, op.name});
+    //     return rv::rvREG::X11;
+    // }
+    // auto it2 = rvreg.find(rv::rvREG::X12);
+    // if (it2 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X12, op.name});
+    //     return rv::rvREG::X12;
+    // }
+    // auto it3 = rvreg.find(rv::rvREG::X13);
+    // if (it3 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X13, op.name});
+    //     return rv::rvREG::X13;
+    // }
+    // auto it4 = rvreg.find(rv::rvREG::X14);
+    // if (it4 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X14, op.name});
+    //     return rv::rvREG::X14;
+    // }
+    // auto it5 = rvreg.find(rv::rvREG::X15);
+    // if (it5 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X15, op.name});
+    //     return rv::rvREG::X15;
+    // }
+    // auto it6 = rvreg.find(rv::rvREG::X16);
+    // if (it6 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X16, op.name});
+    //     return rv::rvREG::X16;
+    // }
+    // auto it7 = rvreg.find(rv::rvREG::X17);
+    // if (it7 == rvreg.end())
+    // {
+    //     rvreg.insert({rv::rvREG::X17, op.name});
+    //     return rv::rvREG::X17;
+    // }
+    return rv::rvREG::X30;
+}
+// 这个函数用于获取给定操作数（Operand）的浮点寄存器目标（rvFREG）。根据给定的操作数，它返回适当的rvFREG值，表示操作数的浮点寄存器目标。
+rv::rvFREG backend::Generator::fgetRd(ir::Operand op)
+{
+    // // fa0~fa7-->F10~F17
+    // auto it0 = rvfreg.find(rv::rvFREG::F10);
+    // if (it0 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F10, op.name});
+    //     return rv::rvFREG::F10;
+    // }
+    // auto it1 = rvfreg.find(rv::rvFREG::F11);
+    // if (it1 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F11, op.name});
+    //     return rv::rvFREG::F11;
+    // }
+    // auto it2 = rvfreg.find(rv::rvFREG::F12);
+    // if (it2 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F12, op.name});
+    //     return rv::rvFREG::F12;
+    // }
+    // auto it3 = rvfreg.find(rv::rvFREG::F13);
+    // if (it3 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F13, op.name});
+    //     return rv::rvFREG::F13;
+    // }
+    // auto it4 = rvfreg.find(rv::rvFREG::F14);
+    // if (it4 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F14, op.name});
+    //     return rv::rvFREG::F14;
+    // }
+    // auto it5 = rvfreg.find(rv::rvFREG::F15);
+    // if (it5 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F15, op.name});
+    //     return rv::rvFREG::F15;
+    // }
+    // auto it6 = rvfreg.find(rv::rvFREG::F16);
+    // if (it6 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F16, op.name});
+    //     return rv::rvFREG::F16;
+    // }
+    // auto it7 = rvfreg.find(rv::rvFREG::F17);
+    // if (it7 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F17, op.name});
+    //     return rv::rvFREG::F17;
+    // }
+
+    return rv::rvFREG::F28;
+}
+
+// 这个函数用于获取给定操作数的浮点寄存器目标（rv::rvFREG）。根据给定的操作数，它返回适当的浮点寄存器目标，表示操作数应存储在哪个浮点寄存器中。
+rv::rvFREG backend::Generator::fgetRs1(ir::Operand op)
+{
+    // // fa0~fa7-->F10~F17
+    // auto it0 = rvfreg.find(rv::rvFREG::F10);
+    // if (it0 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F10, op.name});
+    //     return rv::rvFREG::F10;
+    // }
+    // auto it1 = rvfreg.find(rv::rvFREG::F11);
+    // if (it1 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F11, op.name});
+    //     return rv::rvFREG::F11;
+    // }
+    // auto it2 = rvfreg.find(rv::rvFREG::F12);
+    // if (it2 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F12, op.name});
+    //     return rv::rvFREG::F12;
+    // }
+    // auto it3 = rvfreg.find(rv::rvFREG::F13);
+    // if (it3 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F13, op.name});
+    //     return rv::rvFREG::F13;
+    // }
+    // auto it4 = rvfreg.find(rv::rvFREG::F14);
+    // if (it4 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F14, op.name});
+    //     return rv::rvFREG::F14;
+    // }
+    // auto it5 = rvfreg.find(rv::rvFREG::F15);
+    // if (it5 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F15, op.name});
+    //     return rv::rvFREG::F15;
+    // }
+    // auto it6 = rvfreg.find(rv::rvFREG::F16);
+    // if (it6 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F16, op.name});
+    //     return rv::rvFREG::F16;
+    // }
+    // auto it7 = rvfreg.find(rv::rvFREG::F17);
+    // if (it7 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F17, op.name});
+    //     return rv::rvFREG::F17;
+    // }
+    return rv::rvFREG::F29;
+}
+// 这个函数用于获取给定操作数的第二个浮点寄存器目标（rv::rvFREG）。根据给定的操作数，它返回适当的浮点寄存器目标，表示操作数应存储在哪个浮点寄存器中。
+rv::rvFREG backend::Generator::fgetRs2(ir::Operand op)
+{
+    // fa0~fa7-->F10~F17
+    // auto it0 = rvfreg.find(rv::rvFREG::F10);
+    // if (it0 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F10, op.name});
+    //     return rv::rvFREG::F10;
+    // }
+    // auto it1 = rvfreg.find(rv::rvFREG::F11);
+    // if (it1 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F11, op.name});
+    //     return rv::rvFREG::F11;
+    // }
+    // auto it2 = rvfreg.find(rv::rvFREG::F12);
+    // if (it2 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F12, op.name});
+    //     return rv::rvFREG::F12;
+    // }
+    // auto it3 = rvfreg.find(rv::rvFREG::F13);
+    // if (it3 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F13, op.name});
+    //     return rv::rvFREG::F13;
+    // }
+    // auto it4 = rvfreg.find(rv::rvFREG::F14);
+    // if (it4 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F14, op.name});
+    //     return rv::rvFREG::F14;
+    // }
+    // auto it5 = rvfreg.find(rv::rvFREG::F15);
+    // if (it5 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F15, op.name});
+    //     return rv::rvFREG::F15;
+    // }
+    // auto it6 = rvfreg.find(rv::rvFREG::F16);
+    // if (it6 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F16, op.name});
+    //     return rv::rvFREG::F16;
+    // }
+    // auto it7 = rvfreg.find(rv::rvFREG::F17);
+    // if (it7 == rvfreg.end())
+    // {
+    //     rvfreg.insert({rv::rvFREG::F17, op.name});
+    //     return rv::rvFREG::F17;
+    // }
+    return rv::rvFREG::F30;
+}
+
+void backend::Generator::gen()
+{
+    // 例子
+    // fout << "    	.text\n"
+    //      << "	.global	global\n"
+    //      << "	.type	global, @function\n"
+    //      << "global:\n"
+    //      << "	jr	ra\n"
+    //      << "	.global	main\n"
+    //      << "	.type	main, @function\n"
+    //      << "main:\n"
+    //      << "	call	t0,global\n"
+    //      << "	li	a1, 3\n"
+    //      << "	ret\n";
+
+    fout << "\t\t.text\n";
+
+    // 遍历所有全局变量
+    for (auto globalval : program.globalVal)
+    {
+        if (globalval.maxlen > 0)
+            fout << "\t.comm\t" + globalval.val.name + "," + std::to_string(globalval.maxlen * 4) + ",4\n";
+        else
+            fout << "\t.comm\t" + globalval.val.name + ",4,4\n";
+        globalvs.insert(globalval.val.name);
+    }
+
+    // 遍历所有函数
+    for (auto &function : program.functions)
+    {
+        gen_func(function);
+    }
+}
+void backend::Generator::gen_func(const ir::Function &function)
+{
+    fout << "\t.global\t" << function.name << "\n"
+         << "\t.type\t" << function.name << ", @function\n"
+         << function.name << ":\n";
+
+    delt = 0;         // 清零位置
+    stackvarmap = {}; // 清空栈帧
+    Instr = {};
+    rvreg = {};
+    rvfreg = {};
+
+    // 遍历所有指令
+    for (auto &instPtr : function.InstVec)
+    {
+        ir::Instruction &instuction = *instPtr;
+        gen_instr(instuction);
+    }
+
+    if (delt > 0) // 说明确实有存寄存器值进栈，需要对sp进行扩容和恢复原状
+    {
+        Instr.emplace(Instr.begin(), rv::rv_inst(rv::rvOPCODE::ADDI, rv::rvREG::X2, rv::rvREG::X2, -delt)); // sp=sp-delt
+
+        // 找到return指令的前一条指令，修改其立即数
+        for (int i = 0; i < function.InstVec.size(); i++)
+        {
+            if (function.InstVec[i]->op == ir::Operator::_return)
+            {
+                int rb = Instr.size() - 1;
+                Instr[rb - 1].imm = delt;
+            }
+        }
+    }
+    else
+    {
+        // 删除Instr数组中所有的恢复原状的addi sp指令
+        for (int i = 0; i < Instr.size(); i++)
+        {
+            if (Instr[i].op == rv::rvOPCODE::ADDI && Instr[i].rd == rv::rvREG::X2 && Instr[i].rs1 == rv::rvREG::X2)
+            {
+                Instr.erase(Instr.begin() + i);
+                i--;
+            }
+        }
+    }
+
+    for (auto &inst : Instr)
+    {
+        cout << "TEST: " << toString(inst.op) << "\n"
+             << inst.draw() << endl;
+        fout << inst.draw();
+    }
+}
+void backend::Generator::gen_instr(const ir::Instruction &inst)
+{
+    cout << "---gen_instr OP DES OP1 OP2---" << endl;
+    cout << "gen_instr " << toString(inst.op) << " " << toString(inst.des.type) << " " << inst.des.name << " "
+         << toString(inst.op1.type) << " " << inst.op1.name << " " << toString(inst.op2.type) << " " << inst.op2.name << endl;
+    switch (inst.op)
+    {
+    case Operator::_return:
+    {
+        cout << "*return" << endl;
+        switch (inst.op1.type)
+        {
+        case Type::IntLiteral: //(done)
+        {
+            // li op rd imm
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X2, stackvarmap.add_operand(inst.op1))); // lw a0,4(sp)
+            // li op rd imm
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rv::rvREG::X10, std::stoi(inst.op1.name))); // li a0,3
+            // sw op rd imm(rs1)
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rv::rvREG::X10, rv::rvREG::X2, stackvarmap.find_operand(inst.op1))); // sw a0,4(sp)
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::ADDI, rv::rvREG::X2, rv::rvREG::X2, 0));                                // addi sp,sp,0-->待修改
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::JR, rv::rvREG::X1));                                                    // jr ra
+        }
+        break;
+        case Type::FloatLiteral:
+            break;
+        case Type::Int:
+        {
+            if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
+            {
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
+            }
+            else
+            {
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X10, 0));
+            }
+        }
+        break;
+        case Type::Float:
+            break;
+        case Type::null:                                                                       // 返回null则不操作
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::ADDI, rv::rvREG::X2, rv::rvREG::X2, 0)); // addi sp,sp,0-->待修改
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::JR, rv::rvREG::X1));                     // jr ra
+            break;
+        default:
+            assert(0 && "invalid return value type");
+            break;
+        }
+    }
+    break;
+    case Operator::call:
+    {
+        cout << "*call" << endl;
+        auto callinst = static_cast<const ir::CallInst &>(inst);
+        auto fn = callinst.op1.name;
+        // op label
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::CALL, fn)); // call function
+    }
+    break;
+    case ir::Operator::def:
+    {
+        switch (inst.op1.type)
+        {
+        case Type::IntLiteral: //(done)
+        {
+            // op rs1 imm rs2
+            // lw op rd imm(rs1)
+            rv::rvREG rd = getRd(inst.des);
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.op1))); // lw a0,4(sp)
+            // li op rd imm
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, std::stoi(inst.op1.name))); // li a0,3
+            // sw op rd imm(rs1)
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.op1))); // sw a0,4(sp)
+        }
+        break;
+        case Type::FloatLiteral:
+            break;
+        case Type::Int:
+        {
+            if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
+            {
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
+            }
+            else
+            {
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X10, 0));
+            }
+        }
+        break;
+        case Type::Float:
+            break;
+        case Type::null: // 返回null则不操作
+            break;
+        default:
+            assert(0 && "invalid return value type");
+            break;
+        }
+    }
+    }
+    cout << "---gen_instr end---" << endl;
+}

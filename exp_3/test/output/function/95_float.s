@@ -1,38 +1,24 @@
+	.data
+MAX:
+	.word	1000000000
+	.bss
 	.text
-	.comm	CONV1,4,4
-	.comm	CONV2,4,4
-	.comm	EPS,4,4
-	.comm	EVAL1,4,4
-	.comm	EVAL2,4,4
-	.comm	EVAL3,4,4
-	.comm	FACT,4,4
-	.comm	FIVE,4,4
-	.comm	HEX2,4,4
-	.comm	MAX,4,4
-	.comm	PI,4,4
-	.comm	PI_HEX,4,4
-	.comm	RADIUS,4,4
-	.comm	THREE,4,4
-	.comm	TWO,4,4
-	.comm	t0,4,4
-	.comm	t1,4,4
-	.comm	t14,4,4
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-8
+	addi	sp,sp,-12
 	sw	ra,0(sp)
 	lw	t3,4(sp)
 	li	t3,1000000000
 	sw	t3,4(sp)
-	la	a0,t12
-	lw	a0,0(a0)
-	la	a0,t13
-	lw	a0,0(a0)
-	la	a0,t14
-	lw	a0,0(a0)
+	la	t4,TWO
+	lw	t4,0(t4)
+	la	t5,THREE
+	lw	t5,0(t5)
+	add	t3,t4,t5
+	sw	t3,8(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,8
+	addi	sp,sp,12
 	jr	ra
 	.global	float_abs
 	.type	float_abs, @function
@@ -160,8 +146,6 @@ main:
 	li	t3,10
 	sw	t3,32(sp)
 	call	getfarray
-	la	a0,t102
-	lw	a0,0(a0)
 	call	getfloat
 	call	circle_area
 	call	putfloat

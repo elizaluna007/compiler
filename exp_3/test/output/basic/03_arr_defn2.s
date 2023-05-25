@@ -1,7 +1,10 @@
+	.data
+t1:
+	.word	10
+t3:
+	.word	10
+	.bss
 	.text
-	.comm	a,400,4
-	.comm	t1,4,4
-	.comm	t3,4,4
 	.global	global
 	.type	global, @function
 global:

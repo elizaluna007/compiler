@@ -1,3 +1,5 @@
+	.data
+	.bss
 	.text
 	.global	global
 	.type	global, @function
@@ -28,8 +30,7 @@ main:
 	lw	t3,20(sp)
 	li	t3,0
 	sw	t3,20(sp)
-	la	a0,a
-	lw	a0,0(a0)
+	lw	a0,4(sp)
 	lw	ra,0(sp)
 	addi	sp,sp,24
 	jr	ra

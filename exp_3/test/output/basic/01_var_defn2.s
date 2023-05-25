@@ -1,6 +1,10 @@
+	.data
+a:
+	.word	3
+b:
+	.word	5
+	.bss
 	.text
-	.comm	a,4,4
-	.comm	b,4,4
 	.global	global
 	.type	global, @function
 global:
@@ -18,14 +22,18 @@ global:
 	.global	main
 	.type	main, @function
 main:
-	addi	sp,sp,-8
+	addi	sp,sp,-12
 	sw	ra,0(sp)
 	call	global
 	lw	t3,4(sp)
 	li	t3,5
 	sw	t3,4(sp)
-	la	a0,t0
-	lw	a0,0(a0)
+	lw	t4,4(sp)
+	la	t5,b
+	lw	t5,0(t5)
+	add	t3,t4,t5
+	sw	t3,8(sp)
+	lw	a0,8(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,8
+	addi	sp,sp,12
 	jr	ra

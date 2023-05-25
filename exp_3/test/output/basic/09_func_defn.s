@@ -1,5 +1,8 @@
+	.data
+a:
+	.word	0
+	.bss
 	.text
-	.comm	a,4,4
 	.global	global
 	.type	global, @function
 global:
@@ -31,8 +34,7 @@ main:
 	li	t3,0
 	sw	t3,4(sp)
 	call	func
-	la	a0,b
-	lw	a0,0(a0)
+	lw	a0,4(sp)
 	lw	ra,0(sp)
 	addi	sp,sp,8
 	jr	ra

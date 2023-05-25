@@ -1,3 +1,5 @@
+	.data
+	.bss
 	.text
 	.global	global
 	.type	global, @function
@@ -24,8 +26,7 @@ if_ifElse_:
 	lw	t3,16(sp)
 	li	t3,10
 	sw	t3,16(sp)
-	la	a0,a
-	lw	a0,0(a0)
+	lw	a0,4(sp)
 	lw	ra,0(sp)
 	addi	sp,sp,20
 	jr	ra

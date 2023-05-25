@@ -1,3 +1,5 @@
+	.data
+	.bss
 	.text
 	.global	global
 	.type	global, @function
@@ -10,7 +12,7 @@ global:
 	.global	main
 	.type	main, @function
 main:
-	addi	sp,sp,-16
+	addi	sp,sp,-20
 	sw	ra,0(sp)
 	call	global
 	lw	t3,4(sp)
@@ -22,8 +24,11 @@ main:
 	lw	t3,12(sp)
 	li	t3,50
 	sw	t3,12(sp)
-	la	a0,sum
-	lw	a0,0(a0)
+	lw	t4,8(sp)
+	lw	t5,4(sp)
+	add	t3,t4,t5
+	sw	t3,16(sp)
+	lw	a0,8(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,16
+	addi	sp,sp,20
 	jr	ra

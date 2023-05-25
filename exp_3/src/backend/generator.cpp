@@ -20,17 +20,26 @@ std::map<rv::rvREG, std::string> rvreg = {};   // 寄存器集合
 std::map<rv::rvFREG, std::string> rvfreg = {}; // 寄存器集合
 int inst_num = 0;
 
+//.data 表示数据段开始，接下来可以使用 .word .byte .commn 数据相关的伪指令来记录数据，通常是指用来存放程序中已初始化的全局变量的一块内存区域，数据段属于静态内存分配
+string data = "\t.data\n";
+//.bss 表示 bss(Block Started by Symbol) 段开始，可以使用 .space 等指令分配初始化为 0 的一块区域，属于静态内存分配
+string bss = "\t.bss\n";
+//.text 表示代码段开始，通常是指用来存放程序执行代码的一块内存区域。这部分区域的大小在程序运行前就已经确定，并且内存区域通常属于只读, 某些架构也允许代码段为可写，即允许修改程序。在代码段中，也有可能包含一些只读的常数变量，例如字符串常量等。
+string text = "\t.text\n";
+string func = "";
 backend::Generator::Generator(ir::Program &p, std::ofstream &f) : program(p), fout(f) {}
 
 // 这个函数用于查找给定操作数（Operand）的地址偏移。它通过访问_table成员变量，并根据给定的操作数执行必要的操作来找到操作数的地址，并返回偏移量。
 int backend::stackVarMap::find_operand(ir::Operand op)
 {
+    assert(_table.find(op) != _table.end());
     return _table[op];
 }
 // 这个函数用于将操作数添加到当前的映射表中，并为该变量在内存中分配空间。它通过更新_table成员变量，并根据给定的操作数和大小（以字节为单位）分配内存空间，并返回偏移量。
 int backend::stackVarMap::add_operand(ir::Operand op, uint32_t size)
 {
-    _table[op] = delt;
+    _table.insert({op, delt});
+    cout << "_table成功插入" << op.name << " " << delt << endl;
     delt += size;
     return _table[op];
 }
@@ -68,16 +77,11 @@ rv::rvFREG backend::Generator::fgetRs2(ir::Operand op)
 
 void backend::Generator::gen()
 {
-    fout << "\t.text\n";
-
     // 遍历所有全局变量
     for (auto globalval : program.globalVal)
     {
-        if (globalval.maxlen > 0)
-            fout << "\t.comm\t" + globalval.val.name + "," + std::to_string(globalval.maxlen * 4) + ",4\n";
-        else
-            fout << "\t.comm\t" + globalval.val.name + ",4,4\n";
-        globalvs.insert(globalval.val.name);
+        globalvs.insert(globalval.val.name); // 先得知哪些是全局变量
+        cout << "add globalval " << globalval.val.name << "in globalvs" << endl;
     }
 
     // 遍历所有函数
@@ -85,12 +89,13 @@ void backend::Generator::gen()
     {
         gen_func(function);
     }
+
+    fout << data << bss << text;
 }
 void backend::Generator::gen_func(const ir::Function &function)
 {
-    fout << "\t.global\t" << function.name << "\n"
-         << "\t.type\t" << function.name << ", @function\n"
-         << function.name << ":\n";
+    func = ""; // 初始化函数字符串
+    func = "\t.global\t" + function.name + "\n" + "\t.type\t" + function.name + ", @function\n" + function.name + ":\n";
 
     delt = 0;         // 清零位置
     stackvarmap = {}; // 清空栈帧
@@ -126,8 +131,9 @@ void backend::Generator::gen_func(const ir::Function &function)
     {
         cout << "TEST: " << toString(inst.op) << "\n"
              << inst.draw() << endl;
-        fout << inst.draw();
+        func += inst.draw();
     }
+    text += func;
 }
 void backend::Generator::gen_instr(const ir::Instruction &inst)
 {
@@ -138,7 +144,6 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
     {
     case Operator::_return:
     {
-        cout << "*return" << endl;
         switch (inst.op1.type)
         {
         case Type::IntLiteral: //(done)
@@ -186,44 +191,79 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
     break;
     case ir::Operator::def:
     {
-        switch (inst.op1.type)
+        switch (inst.op1.type) // 要么int要么intliteral
         {
         case Type::IntLiteral: //(done)
         {
-            // op rs1 imm rs2
-            // lw op rd imm(rs1)
+            auto it = globalvs.find(inst.des.name); // 是否是全局变量
+            if (it != globalvs.end())               // 是全局变量，需要写入data
+            {
+                data += inst.des.name + ":\n" + "\t.word\t" + inst.op1.name + "\n";
+            }
+
+            // 存入栈中
+            //  op rs1 imm rs2
+            //  lw op rd imm(rs1)
             rv::rvREG rd = getRd(inst.des);
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.op1))); // lw a0,4(sp)
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.des))); // lw a0,4(sp)
             // li op rd imm
             Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, std::stoi(inst.op1.name))); // li a0,3
             // sw op rd imm(rs1)
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.op1))); // sw a0,4(sp)
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.des))); // sw a0,4(sp)
         }
         break;
-        case Type::FloatLiteral:
-            break;
         case Type::Int:
         {
-            if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
-            }
-            else
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X10, 0));
-            }
         }
         break;
-        case Type::Float:
-            break;
-        case Type::null: // 返回null则不操作
-            break;
         default:
-            assert(0 && "invalid return value type");
+            assert(0 && "def wrong type of op1");
             break;
         }
     }
+    break;
+    case ir::Operator::add: // 都不是常量
+    {
+        cout << "add " << inst.des.name << " " << inst.op1.name << " " << inst.op2.name << endl;
+        rv::rvREG rd = getRd(inst.des);
+        rv::rvREG rs1 = getRs1(inst.op1);
+        rv::rvREG rs2 = getRs2(inst.op2);
+        auto it1 = globalvs.find(inst.op1.name);
+        if (it1 != globalvs.end()) // 如果是全局变量
+        {
+            cout << inst.op1.name << " is global var" << endl;
+            // la op rd label
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rs1, inst.op1.name)); // la a0,a
+            // lw
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rs1, 0)); // lw a0,0(a0)
+        }
+        else
+        {
+            cout << inst.op1.name << " is not global var" << endl;
+            // lw op rd rs1
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X2, stackvarmap.find_operand(inst.op1))); // lw a0,4(sp)
+        }
+        auto it2 = globalvs.find(inst.op2.name);
+        if (it2 != globalvs.end()) // 如果是全局变量
+        {
+            cout << inst.op2.name << " is global var" << endl;
+            // la op rd label
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rs2, inst.op2.name)); // la a0,a
+            // lw
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rs2, 0)); // lw a0,0(a0)
+        }
+        else
+        {
+            cout << inst.op2.name << " is not global var" << endl;
+            // mov op rd rs1
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X2, stackvarmap.find_operand(inst.op2))); // lw a0,4(sp)
+        }
+        // add op rd rs1 rs2
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::ADD, rd, rs1, rs2));
+        // sw op rd imm(rs1)
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.des)));
+    }
+    break;
     }
     cout << "---gen_instr end---" << endl;
 }

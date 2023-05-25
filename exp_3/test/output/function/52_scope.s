@@ -1,5 +1,8 @@
+	.data
+a:
+	.word	7
+	.bss
 	.text
-	.comm	a,4,4
 	.global	global
 	.type	global, @function
 global:
@@ -16,8 +19,6 @@ global:
 func:
 	addi	sp,sp,-8
 	sw	ra,0(sp)
-	la	a0,a
-	lw	a0,0(a0)
 	lw	t3,4(sp)
 	li	t3,1
 	sw	t3,4(sp)

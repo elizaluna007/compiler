@@ -1,5 +1,6 @@
+	.data
+	.bss
 	.text
-	.comm	a,20,4
 	.global	global
 	.type	global, @function
 global:

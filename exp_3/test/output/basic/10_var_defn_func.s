@@ -1,3 +1,5 @@
+	.data
+	.bss
 	.text
 	.global	global
 	.type	global, @function
@@ -23,8 +25,6 @@ main:
 	sw	ra,0(sp)
 	call	global
 	call	defn
-	la	a0,t0
-	lw	a0,0(a0)
 	la	a0,a
 	lw	a0,0(a0)
 	lw	ra,0(sp)

@@ -1,8 +1,10 @@
+	.data
+t0:
+	.word	0
+b:
+	.word	1
+	.bss
 	.text
-	.comm	a,4,4
-	.comm	b,4,4
-	.comm	t0,4,4
-	.comm	t1,4,4
 	.global	global
 	.type	global, @function
 global:
@@ -11,8 +13,6 @@ global:
 	lw	t3,4(sp)
 	li	t3,0
 	sw	t3,4(sp)
-	la	a0,t1
-	lw	a0,0(a0)
 	lw	t3,8(sp)
 	li	t3,1
 	sw	t3,8(sp)
@@ -24,8 +24,6 @@ global:
 inc_a:
 	addi	sp,sp,-4
 	sw	ra,0(sp)
-	la	a0,a
-	lw	a0,0(a0)
 	la	a0,a
 	lw	a0,0(a0)
 	lw	ra,0(sp)

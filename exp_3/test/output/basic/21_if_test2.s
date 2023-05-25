@@ -1,3 +1,5 @@
+	.data
+	.bss
 	.text
 	.global	global
 	.type	global, @function
@@ -24,8 +26,7 @@ ifElseIf:
 	lw	t3,16(sp)
 	li	t3,0
 	sw	t3,16(sp)
-	la	a0,a
-	lw	a0,0(a0)
+	lw	a0,4(sp)
 	lw	ra,0(sp)
 	addi	sp,sp,4
 	jr	ra
@@ -44,8 +45,7 @@ ifElseIf:
 	lw	t3,36(sp)
 	li	t3,0
 	sw	t3,36(sp)
-	la	a0,a
-	lw	a0,0(a0)
+	lw	a0,4(sp)
 	lw	ra,0(sp)
 	addi	sp,sp,40
 	jr	ra

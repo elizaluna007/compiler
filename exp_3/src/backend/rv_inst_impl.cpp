@@ -163,7 +163,13 @@ std::string rv::rv_inst::draw() const
         assert(0);
     }
 }
+rv::rv_inst::rv_inst(rvOPCODE op, rvREG rs1) : op(op), rs1(rs1){};
+rv::rv_inst::rv_inst(rvOPCODE op, std::string label) : op(op), label(label){};
+rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, rvREG rs1) : op(op), rd(rd), rs1(rs1){};
+rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, uint32_t imm) : op(op), rd(rd), imm(imm){};
+rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, std::string label) : op(op), rd(rd), label(label){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, rvREG rs2) : op(op), rd(rd), rs1(rs1), rs2(rs2){};
+
 rv::rv_inst::rv_inst(rvOPCODE op, rvFREG frd, rvFREG frs1, rvFREG frs2) : op(op), frd(frd), frs1(frs1), frs2(frs2){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, rvFREG frs1, rvFREG frs2) : op(op), rd(rd), frs1(frs1), frs2(frs2){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, uint32_t imm) : op(op), rd(rd), rs1(rs1), imm(imm){};
@@ -172,8 +178,5 @@ rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, rvFREG frs1, uint32_t imm) : op(op),
 rv::rv_inst::rv_inst(rvOPCODE op, rvREG rs1, uint32_t imm, rvREG rs2) : op(op), rs1(rs1), rs2(rs2), imm(imm){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvREG rs1, rvREG rs2, std::string label) : op(op), rs1(rs1), rs2(rs2), label(label){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvREG rs1, uint32_t imm, rvFREG frs2) : op(op), rs1(rs1), frs2(frs2), imm(imm){};
-rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, uint32_t imm) : op(op), rd(rd), imm(imm){};
-rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, std::string label) : op(op), rd(rd), label(label){};
-rv::rv_inst::rv_inst(rvOPCODE op, rvREG rs1) : op(op), rs1(rs1){};
-rv::rv_inst::rv_inst(rvOPCODE op, std::string label) : op(op), label(label){};
+
 // rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, rvREG rs2, uint32_t imm, rvFREG frd, rvFREG frs1, rvFREG frs2, std::string label) : op(op), rs1(rs1), rs2(rs2), imm(imm), frd(frd), frs1(frs1), frs2(frs2), label(label){};

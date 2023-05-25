@@ -1,11 +1,16 @@
-import os, platform, subprocess, shutil, sys
+import os
+import platform
+import subprocess
+import shutil
+import sys
+
 
 def score_compiler(arg1):
     record = {}
 
     is_windows = platform.system() == "Windows"
 
-    assert(len(sys.argv) == 2)
+    assert (len(sys.argv) == 2)
 
     oftype = ""
     step = "-" + arg1
@@ -17,7 +22,7 @@ def score_compiler(arg1):
         oftype = "out"
     elif step == "-S":
         oftype = "out"
-        
+
     else:
         print("illegal input")
         exit()
@@ -38,18 +43,20 @@ def score_compiler(arg1):
                 for file in files:
                     if not (file[-3:] == ".tk"):
                         continue
-                    cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-w'])
+                    cmd = ' '.join(
+                        ["diff", ref_dir + file, output_dir + file, '-w'])
                     if is_windows:
-                        cmd = cmd.replace('/','\\')
-                    # print(cmd)
-                    cp = subprocess.run(cmd, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE)
+                        cmd = cmd.replace('/', '\\')
+                    cp = subprocess.run(
+                        cmd, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE)
                     if cp.returncode != 0:
-                        record[file] = {"retval": cp.returncode, "err_detail": "diff test failed"}
+                        record[file] = {"retval": cp.returncode,
+                            "err_detail": "diff test failed"}
                     else:
                         score += 1
                         record[file] = {"retval": 0}
                     print(file, record[file])
-        print("score:",score,"/",total)
+        print("score:", score, "/", total)
     elif step == "-s1":
         for i in ["basic", "function"]:
             output_dir = output_base + i + '/'
@@ -59,17 +66,20 @@ def score_compiler(arg1):
                 for file in files:
                     if not (file[-5:] == ".json"):
                         continue
-                    cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-w'])
+                    cmd = ' '.join(
+                        ["diff", ref_dir + file, output_dir + file, '-w'])
                     if is_windows:
-                        cmd = cmd.replace('/','\\')
-                    cp = subprocess.run(cmd, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE)
+                        cmd = cmd.replace('/', '\\')
+                    cp = subprocess.run(
+                        cmd, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE)
                     if cp.returncode != 0:
-                        record[file] = {"retval": cp.returncode, "err_detail": cp.stdout}
+                        record[file] = {"retval": cp.returncode,
+                            "err_detail": cp.stdout}
                     else:
                         score += 1
                         record[file] = {"retval": 0}
                     print(file, record[file])
-        print("score:",score,"/",total)
+        print("score:", score, "/", total)
     elif step == "-s2":
         for i in ["basic", "function"]:
             output_dir = output_base + i + '/'
@@ -79,18 +89,21 @@ def score_compiler(arg1):
                 for file in files:
                     if not (file[-4:] == ".out"):
                         continue
-                    cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-wB'])
+                    cmd = ' '.join(
+                        ["diff", ref_dir + file, output_dir + file, '-wB'])
                     if is_windows:
-                        cmd = cmd.replace('/','\\')
+                        cmd = cmd.replace('/', '\\')
                     # print(cmd)
-                    cp = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL)
+                    cp = subprocess.run(
+                        cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL)
                     if cp.returncode != 0:
-                        record[file] = {"retval": cp.returncode, "err_detail": cp.stderr}
+                        record[file] = {"retval": cp.returncode,
+                            "err_detail": cp.stderr}
                     else:
                         score += 1
                         record[file] = {"retval": 0}
                     print(file, record[file])
-        print("score:",score,"/",total)
+        print("score:", score, "/", total)
     elif step == "-S":
         for i in ["basic", "function"]:
             testcase_dir = testcase_base + i + '/'
@@ -105,9 +118,11 @@ def score_compiler(arg1):
                     # gcc
                     fname, ftype = file.split('.')
                     ref_file = ref_dir + fname + ".out"
-                    output_file = output_dir + fname + ".out" 
+                    output_file = output_dir + fname + ".out"
                     exec_file = output_dir + fname + ".exe"
-                    cmd = ' '.join(["riscv32-unknown-linux-gnu-gcc", output_dir + file, "sylib-riscv-linux.a", '-o', exec_file])
+                    cmd = ' '.join(["riscv32-unknown-linux-gnu-gcc", output_dir +
+                                   file, "sylib-riscv-linux.a", '-o', exec_file])
+                    print("1***",cmd)
                     os.system(cmd)
                     if not os.path.exists(exec_file):
                         record[file] = {"retval": -1, "err_detail": "executing cmd [" + cmd + "] failed, your assmbly can not produce a executable"}
@@ -119,6 +134,7 @@ def score_compiler(arg1):
                     if os.path.exists(input_file):
                         cmd = ' '.join([cmd, "<", input_file])
                     cmd = ' '.join([cmd, ">", output_file])
+                    print("2***",cmd)
                     cp = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL)
                     with open(output_file, "a") as f:
                         f.write("\n" + str(cp.returncode))

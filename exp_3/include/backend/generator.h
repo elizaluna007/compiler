@@ -43,8 +43,6 @@ namespace backend
     {
         const ir::Program &program; // the program to gen
         std::ofstream &fout;        // output file
-        stackVarMap stackvarmap;
-        std::vector<rv::rv_inst> Inst; // 汇编的指令集合
 
         Generator(ir::Program &, std::ofstream &);
 

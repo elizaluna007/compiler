@@ -1,0 +1,8 @@
+/home/xiaoye/Documents/Learning/compiler/lab3/build/CMakeFiles/jsoncpp.dir
+/home/xiaoye/Documents/Learning/compiler/lab3/build/CMakeFiles/Front.dir
+/home/xiaoye/Documents/Learning/compiler/lab3/build/CMakeFiles/Backend.dir
+/home/xiaoye/Documents/Learning/compiler/lab3/build/CMakeFiles/IR.dir
+/home/xiaoye/Documents/Learning/compiler/lab3/build/CMakeFiles/Tools.dir
+/home/xiaoye/Documents/Learning/compiler/lab3/build/CMakeFiles/compiler.dir
+/home/xiaoye/Documents/Learning/compiler/lab3/build/CMakeFiles/edit_cache.dir
+/home/xiaoye/Documents/Learning/compiler/lab3/build/CMakeFiles/rebuild_cache.dir

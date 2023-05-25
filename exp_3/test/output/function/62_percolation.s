@@ -5,16 +5,33 @@
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-4
+	addi	sp,sp,-16
 	sw	ra,0(sp)
-	addi	sp,sp,4
+	lw	t3,4(sp)
+	li	t3,1
+	sw	t3,4(sp)
+	lw	t3,8(sp)
+	li	t3,110
+	sw	t3,8(sp)
+	lw	t3,12(sp)
+	li	t3,0
+	sw	t3,12(sp)
+	lw	ra,0(sp)
+	addi	sp,sp,16
 	jr	ra
 	.global	init
 	.type	init, @function
 init:
-	addi	sp,sp,-4
+	addi	sp,sp,-12
 	sw	ra,0(sp)
-	addi	sp,sp,4
+	lw	t3,4(sp)
+	li	t3,1
+	sw	t3,4(sp)
+	lw	t3,8(sp)
+	li	t3,0
+	sw	t3,8(sp)
+	lw	ra,0(sp)
+	addi	sp,sp,12
 	jr	ra
 	.global	findfa
 	.type	findfa, @function
@@ -23,11 +40,13 @@ findfa:
 	sw	ra,0(sp)
 	la	a0,a
 	lw	a0,0(a0)
-	addi	sp,sp,0
+	lw	ra,0(sp)
+	addi	sp,sp,4
 	jr	ra
 	call	findfa
 	la	a0,t123
 	lw	a0,0(a0)
+	lw	ra,0(sp)
 	addi	sp,sp,4
 	jr	ra
 	.global	mmerge
@@ -36,33 +55,90 @@ mmerge:
 	addi	sp,sp,-4
 	sw	ra,0(sp)
 	call	findfa
+	la	a0,t124
+	lw	a0,0(a0)
 	call	findfa
+	la	a0,t125
+	lw	a0,0(a0)
+	lw	ra,0(sp)
 	addi	sp,sp,4
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
-	addi	sp,sp,-8
+	addi	sp,sp,-68
 	sw	ra,0(sp)
 	call	global
+	lw	t3,4(sp)
+	li	t3,0
+	sw	t3,4(sp)
+	lw	t3,8(sp)
+	li	t3,0
+	sw	t3,8(sp)
+	lw	t3,12(sp)
+	li	t3,0
+	sw	t3,12(sp)
+	lw	t3,16(sp)
+	li	t3,0
+	sw	t3,16(sp)
+	lw	t3,20(sp)
+	li	t3,0
+	sw	t3,20(sp)
+	lw	t3,24(sp)
+	li	t3,0
+	sw	t3,24(sp)
 	call	init
+	la	a0,t130
+	lw	a0,0(a0)
 	call	getint
 	call	getint
+	la	a0,t137
+	lw	a0,0(a0)
+	lw	t3,28(sp)
+	li	t3,1
+	sw	t3,28(sp)
+	lw	t3,32(sp)
+	li	t3,0
+	sw	t3,32(sp)
 	call	mmerge
 	call	mmerge
+	lw	t3,36(sp)
+	li	t3,0
+	sw	t3,36(sp)
 	call	mmerge
+	lw	t3,40(sp)
+	li	t3,0
+	sw	t3,40(sp)
 	call	mmerge
+	lw	t3,44(sp)
+	li	t3,0
+	sw	t3,44(sp)
 	call	mmerge
+	lw	t3,48(sp)
+	li	t3,0
+	sw	t3,48(sp)
 	call	mmerge
+	lw	t3,52(sp)
+	li	t3,0
+	sw	t3,52(sp)
+	lw	t3,56(sp)
+	li	t3,0
+	sw	t3,56(sp)
+	lw	t3,60(sp)
+	li	t3,0
+	sw	t3,60(sp)
 	call	findfa
 	call	findfa
+	la	a0,t194
+	lw	a0,0(a0)
 	call	putint
 	call	putch
+	lw	t3,64(sp)
+	li	t3,0
+	sw	t3,64(sp)
 	call	putint
 	call	putch
-	lw	a0,4(sp)
 	li	a0,0
-	sw	a0,4(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,8
+	addi	sp,sp,68
 	jr	ra

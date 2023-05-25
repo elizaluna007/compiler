@@ -3,9 +3,13 @@
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-4
+	addi	sp,sp,-8
 	sw	ra,0(sp)
-	addi	sp,sp,4
+	lw	t3,4(sp)
+	li	t3,0
+	sw	t3,4(sp)
+	lw	ra,0(sp)
+	addi	sp,sp,8
 	jr	ra
 	.global	func
 	.type	func, @function
@@ -15,6 +19,7 @@ func:
 	call	putint
 	la	a0,g
 	lw	a0,0(a0)
+	lw	ra,0(sp)
 	addi	sp,sp,4
 	jr	ra
 	.global	main
@@ -23,6 +28,9 @@ main:
 	addi	sp,sp,-8
 	sw	ra,0(sp)
 	call	global
+	lw	t3,4(sp)
+	li	t3,0
+	sw	t3,4(sp)
 	call	getint
 	call	func
 	call	getint
@@ -33,9 +41,7 @@ main:
 	call	func
 	call	func
 	call	func
-	lw	a0,4(sp)
 	li	a0,0
-	sw	a0,4(sp)
 	lw	ra,0(sp)
 	addi	sp,sp,8
 	jr	ra

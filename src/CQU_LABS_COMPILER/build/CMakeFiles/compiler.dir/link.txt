@@ -1,0 +1,1 @@
+/usr/bin/c++ -Wall CMakeFiles/compiler.dir/main.cpp.o -o ../bin/compiler  ../bin/libBackend.a ../bin/libTools.a ../bin/libFront.a ../bin/libIR.a ../bin/libjsoncpp.a 

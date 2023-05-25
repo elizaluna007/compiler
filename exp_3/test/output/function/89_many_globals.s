@@ -42,9 +42,130 @@
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-4
+	addi	sp,sp,-164
 	sw	ra,0(sp)
-	addi	sp,sp,4
+	lw	t3,4(sp)
+	li	t3,0
+	sw	t3,4(sp)
+	lw	t3,8(sp)
+	li	t3,0
+	sw	t3,8(sp)
+	lw	t3,12(sp)
+	li	t3,0
+	sw	t3,12(sp)
+	lw	t3,16(sp)
+	li	t3,0
+	sw	t3,16(sp)
+	lw	t3,20(sp)
+	li	t3,0
+	sw	t3,20(sp)
+	lw	t3,24(sp)
+	li	t3,0
+	sw	t3,24(sp)
+	lw	t3,28(sp)
+	li	t3,0
+	sw	t3,28(sp)
+	lw	t3,32(sp)
+	li	t3,0
+	sw	t3,32(sp)
+	lw	t3,36(sp)
+	li	t3,0
+	sw	t3,36(sp)
+	lw	t3,40(sp)
+	li	t3,0
+	sw	t3,40(sp)
+	lw	t3,44(sp)
+	li	t3,0
+	sw	t3,44(sp)
+	lw	t3,48(sp)
+	li	t3,0
+	sw	t3,48(sp)
+	lw	t3,52(sp)
+	li	t3,0
+	sw	t3,52(sp)
+	lw	t3,56(sp)
+	li	t3,0
+	sw	t3,56(sp)
+	lw	t3,60(sp)
+	li	t3,0
+	sw	t3,60(sp)
+	lw	t3,64(sp)
+	li	t3,0
+	sw	t3,64(sp)
+	lw	t3,68(sp)
+	li	t3,0
+	sw	t3,68(sp)
+	lw	t3,72(sp)
+	li	t3,0
+	sw	t3,72(sp)
+	lw	t3,76(sp)
+	li	t3,0
+	sw	t3,76(sp)
+	lw	t3,80(sp)
+	li	t3,0
+	sw	t3,80(sp)
+	lw	t3,84(sp)
+	li	t3,0
+	sw	t3,84(sp)
+	lw	t3,88(sp)
+	li	t3,0
+	sw	t3,88(sp)
+	lw	t3,92(sp)
+	li	t3,0
+	sw	t3,92(sp)
+	lw	t3,96(sp)
+	li	t3,0
+	sw	t3,96(sp)
+	lw	t3,100(sp)
+	li	t3,0
+	sw	t3,100(sp)
+	lw	t3,104(sp)
+	li	t3,0
+	sw	t3,104(sp)
+	lw	t3,108(sp)
+	li	t3,0
+	sw	t3,108(sp)
+	lw	t3,112(sp)
+	li	t3,0
+	sw	t3,112(sp)
+	lw	t3,116(sp)
+	li	t3,0
+	sw	t3,116(sp)
+	lw	t3,120(sp)
+	li	t3,0
+	sw	t3,120(sp)
+	lw	t3,124(sp)
+	li	t3,0
+	sw	t3,124(sp)
+	lw	t3,128(sp)
+	li	t3,0
+	sw	t3,128(sp)
+	lw	t3,132(sp)
+	li	t3,0
+	sw	t3,132(sp)
+	lw	t3,136(sp)
+	li	t3,0
+	sw	t3,136(sp)
+	lw	t3,140(sp)
+	li	t3,0
+	sw	t3,140(sp)
+	lw	t3,144(sp)
+	li	t3,0
+	sw	t3,144(sp)
+	lw	t3,148(sp)
+	li	t3,0
+	sw	t3,148(sp)
+	lw	t3,152(sp)
+	li	t3,0
+	sw	t3,152(sp)
+	lw	t3,156(sp)
+	li	t3,0
+	sw	t3,156(sp)
+	lw	t3,160(sp)
+	li	t3,0
+	sw	t3,160(sp)
+	lw	ra,0(sp)
+	addi	sp,sp,164
 	jr	ra
 	.global	testParam8
 	.type	testParam8, @function
@@ -53,6 +174,7 @@ testParam8:
 	sw	ra,0(sp)
 	la	a0,t6
 	lw	a0,0(a0)
+	lw	ra,0(sp)
 	addi	sp,sp,4
 	jr	ra
 	.global	testParam16
@@ -62,6 +184,7 @@ testParam16:
 	sw	ra,0(sp)
 	la	a0,t21
 	lw	a0,0(a0)
+	lw	ra,0(sp)
 	addi	sp,sp,4
 	jr	ra
 	.global	testParam32
@@ -71,12 +194,13 @@ testParam32:
 	sw	ra,0(sp)
 	la	a0,t52
 	lw	a0,0(a0)
+	lw	ra,0(sp)
 	addi	sp,sp,4
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
-	addi	sp,sp,-8
+	addi	sp,sp,-4
 	sw	ra,0(sp)
 	call	global
 	call	testParam8
@@ -85,9 +209,7 @@ main:
 	call	putint
 	call	testParam32
 	call	putint
-	lw	a0,4(sp)
 	li	a0,0
-	sw	a0,4(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,8
+	addi	sp,sp,4
 	jr	ra

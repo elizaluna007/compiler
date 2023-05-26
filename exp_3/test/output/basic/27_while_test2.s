@@ -4,18 +4,19 @@
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-4
+	addi	sp,sp,-68
 	sw	ra,0(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,4
 	jr	ra
 	.global	FourWhile
 	.type	FourWhile, @function
 FourWhile:
-	addi	sp,sp,-36
 	sw	ra,0(sp)
 	lw	t3,4(sp)
 	li	t3,0
+	sw	t3,4(sp)
+	lw	t3,4(sp)
+	li	t3,5
 	sw	t3,4(sp)
 	lw	t3,8(sp)
 	li	t3,0
@@ -23,37 +24,89 @@ FourWhile:
 	lw	t3,12(sp)
 	li	t3,0
 	sw	t3,12(sp)
+	lw	t3,8(sp)
+	li	t3,6
+	sw	t3,8(sp)
+	lw	t3,12(sp)
+	li	t3,7
+	sw	t3,12(sp)
 	lw	t3,16(sp)
 	li	t3,0
 	sw	t3,16(sp)
+	lw	t3,16(sp)
+	li	t3,10
+	sw	t3,16(sp)
+	lw	t4,4(sp)
 	lw	t3,20(sp)
-	li	t3,7
+	addi	t3,t4,3
 	sw	t3,20(sp)
+	lw	t3,20(sp)
+	sw	t3,4(sp)
+	lw	t4,8(sp)
+	lw	t3,24(sp)
+	addi	t3,t4,1
+	sw	t3,24(sp)
+	lw	t3,24(sp)
+	sw	t3,8(sp)
+	lw	t3,28(sp)
+	li	t3,7
+	sw	t3,28(sp)
+	lw	t4,12(sp)
+	lw	t3,32(sp)
+	addi	t3,t4,-1
+	sw	t3,32(sp)
+	lw	t3,32(sp)
+	sw	t3,12(sp)
+	lw	t4,16(sp)
+	lw	t3,36(sp)
+	addi	t3,t4,3
+	sw	t3,36(sp)
+	lw	t3,36(sp)
+	sw	t3,16(sp)
+	lw	t4,16(sp)
+	lw	t3,40(sp)
+	addi	t3,t4,-1
+	sw	t3,40(sp)
+	lw	t3,40(sp)
+	sw	t3,16(sp)
+	lw	t4,12(sp)
+	lw	t3,44(sp)
+	addi	t3,t4,1
+	sw	t3,44(sp)
+	lw	t3,44(sp)
+	sw	t3,12(sp)
+	lw	t4,8(sp)
+	lw	t3,48(sp)
+	addi	t3,t4,-2
+	sw	t3,48(sp)
+	lw	t3,48(sp)
+	sw	t3,8(sp)
 	lw	t4,8(sp)
 	lw	t5,16(sp)
+	lw	t3,52(sp)
 	add	t3,t4,t5
-	sw	t3,24(sp)
+	sw	t3,52(sp)
 	lw	t4,4(sp)
-	lw	t5,24(sp)
+	lw	t5,52(sp)
+	lw	t3,56(sp)
 	add	t3,t4,t5
-	sw	t3,28(sp)
-	lw	t4,28(sp)
+	sw	t3,56(sp)
+	lw	t4,56(sp)
 	lw	t5,12(sp)
+	lw	t3,60(sp)
 	add	t3,t4,t5
-	sw	t3,32(sp)
-	lw	a0,32(sp)
+	sw	t3,60(sp)
+	lw	a0,60(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,36
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
-	addi	sp,sp,-4
 	sw	ra,0(sp)
 	call	global
 	call	FourWhile
-	la	a0,t15
-	lw	a0,0(a0)
+	sw	a0,64(sp)
+	lw	a0,64(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,4
+	addi	sp,sp,68
 	jr	ra

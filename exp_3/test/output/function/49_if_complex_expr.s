@@ -4,15 +4,13 @@
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-4
+	addi	sp,sp,-108
 	sw	ra,0(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,4
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
-	addi	sp,sp,-64
 	sw	ra,0(sp)
 	call	global
 	lw	t3,4(sp)
@@ -30,39 +28,109 @@ main:
 	lw	t3,20(sp)
 	li	t3,0
 	sw	t3,20(sp)
+	lw	t3,4(sp)
+	li	t3,5
+	sw	t3,4(sp)
+	lw	t3,8(sp)
+	li	t3,5
+	sw	t3,8(sp)
+	lw	t3,12(sp)
+	li	t3,1
+	sw	t3,12(sp)
 	lw	t3,24(sp)
 	li	t3,0
 	sw	t3,24(sp)
+	lw	t4,24(sp)
 	lw	t3,28(sp)
-	li	t3,1
+	addi	t3,t4,-2
 	sw	t3,28(sp)
-	lw	t3,32(sp)
+	lw	t3,28(sp)
+	sw	t3,16(sp)
+	lw	t3,20(sp)
 	li	t3,2
+	sw	t3,20(sp)
+	lw	t3,32(sp)
+	li	t3,1
 	sw	t3,32(sp)
+	lw	t4,16(sp)
+	lw	t5,32(sp)
 	lw	t3,36(sp)
-	li	t3,0
+	mul	t3,t4,t5
 	sw	t3,36(sp)
 	lw	t3,40(sp)
 	li	t3,2
 	sw	t3,40(sp)
+	lw	t4,36(sp)
+	lw	t5,40(sp)
 	lw	t3,44(sp)
-	li	t3,0
+	div	t3,t4,t5
 	sw	t3,44(sp)
-	call	putint
+	lw	t4,4(sp)
+	lw	t5,8(sp)
 	lw	t3,48(sp)
-	li	t3,2
+	sub	t3,t4,t5
 	sw	t3,48(sp)
 	lw	t3,52(sp)
 	li	t3,0
 	sw	t3,52(sp)
+	lw	t4,12(sp)
 	lw	t3,56(sp)
-	li	t3,2
+	addi	t3,t4,3
 	sw	t3,56(sp)
 	lw	t3,60(sp)
-	li	t3,0
+	li	t3,2
 	sw	t3,60(sp)
+	lw	t4,56(sp)
+	lw	t5,60(sp)
+	lw	t3,64(sp)
+	rem	t3,t4,t5
+	sw	t3,64(sp)
+	lw	t3,68(sp)
+	li	t3,0
+	sw	t3,68(sp)
+	lw	a0,20(sp)
+	call	putint
+	lw	t3,72(sp)
+	li	t3,2
+	sw	t3,72(sp)
+	lw	t4,16(sp)
+	lw	t5,72(sp)
+	lw	t3,76(sp)
+	rem	t3,t4,t5
+	sw	t3,76(sp)
+	lw	t4,76(sp)
+	lw	t3,80(sp)
+	addi	t3,t4,67
+	sw	t3,80(sp)
+	lw	t4,4(sp)
+	lw	t5,8(sp)
+	lw	t3,84(sp)
+	sub	t3,t4,t5
+	sw	t3,84(sp)
+	lw	t3,88(sp)
+	li	t3,0
+	sw	t3,88(sp)
+	lw	t4,12(sp)
+	lw	t3,92(sp)
+	addi	t3,t4,2
+	sw	t3,92(sp)
+	lw	t3,96(sp)
+	li	t3,2
+	sw	t3,96(sp)
+	lw	t4,92(sp)
+	lw	t5,96(sp)
+	lw	t3,100(sp)
+	rem	t3,t4,t5
+	sw	t3,100(sp)
+	lw	t3,104(sp)
+	li	t3,0
+	sw	t3,104(sp)
+	lw	t3,20(sp)
+	li	t3,4
+	sw	t3,20(sp)
+	lw	a0,20(sp)
 	call	putint
 	li	a0,0
 	lw	ra,0(sp)
-	addi	sp,sp,64
+	addi	sp,sp,108
 	jr	ra

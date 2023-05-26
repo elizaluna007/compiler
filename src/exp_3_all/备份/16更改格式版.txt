@@ -1,0 +1,427 @@
+#include "backend/generator.h"
+#include "backend/rv_def.h"
+#include "backend/rv_inst_impl.h"
+#include <iostream>
+#include <assert.h>
+#include "front/semantic.h"
+using ir::Function;
+using ir::Instruction;
+using ir::Operand;
+using ir::Operator;
+using namespace std;
+#include "ir/ir.h"
+#define TODO assert(0 && "todo")
+
+uint32_t delt = 0;
+backend::stackVarMap stackvarmap = {};
+std::vector<rv::rv_inst> Instr = {};                  // 汇编的指令集合
+std::vector<std::vector<rv::rv_inst>> Instr_all = {}; // 汇编的指令的集合和集合
+std::set<std::string> globalvs = {};                  // 全局变量集合
+int key = 0;                                          // 判断是否在main函数里面
+
+//.data 表示数据段开始，接下来可以使用 .word .byte .commn 数据相关的伪指令来记录数据，通常是指用来存放程序中已初始化的全局变量的一块内存区域，数据段属于静态内存分配
+string data = "\t.data\n";
+//.bss 表示 bss(Block Started by Symbol) 段开始，可以使用 .space 等指令分配初始化为 0 的一块区域，属于静态内存分配
+string bss = "\t.bss\n";
+//.text 表示代码段开始，通常是指用来存放程序执行代码的一块内存区域。这部分区域的大小在程序运行前就已经确定，并且内存区域通常属于只读, 某些架构也允许代码段为可写，即允许修改程序。在代码段中，也有可能包含一些只读的常数变量，例如字符串常量等。
+string text = "\t.text\n";
+std::vector<std::string> text_func_name = {}; // 用于记录函数名字
+backend::Generator::Generator(ir::Program &p, std::ofstream &f) : program(p), fout(f) {}
+
+// 这个函数用于查找给定操作数（Operand）的地址偏移。它通过访问_table成员变量，并根据给定的操作数执行必要的操作来找到操作数的地址，并返回偏移量。
+int backend::stackVarMap::find_operand(ir::Operand op)
+{
+    assert(_table.find(op) != _table.end());
+    return _table[op];
+}
+// 这个函数用于将操作数添加到当前的映射表中，并为该变量在内存中分配空间。它通过更新_table成员变量，并根据给定的操作数和大小（以字节为单位）分配内存空间，并返回偏移量。
+int backend::stackVarMap::add_operand(ir::Operand op, uint32_t size)
+{
+    _table.insert({op, delt});
+    cout << "_table成功插入" << op.name << " " << delt << endl;
+    delt += size;
+    return _table[op];
+}
+// 这个函数用于获取给定操作数（Operand）的寄存器目标（rvREG）。根据给定的操作数，它返回适当的rvREG值，表示操作数的寄存器目标。
+rv::rvREG backend::Generator::getRd(ir::Operand op)
+{
+    return rv::rvREG::X28;
+}
+// 这个函数用于获取给定操作数的整数类型源寄存器（rvREG）。根据给定的操作数，它返回适当的整数寄存器对象，表示操作数的源寄存器。
+rv::rvREG backend::Generator::getRs1(ir::Operand op)
+{
+    return rv::rvREG::X29;
+}
+// 这个函数用于获取给定操作数的整数类型源寄存器（rvREG）。根据给定的操作数，它返回适当的整数寄存器对象，表示操作数的源寄存器。
+rv::rvREG backend::Generator::getRs2(ir::Operand op)
+{
+    return rv::rvREG::X30;
+}
+// 这个函数用于获取给定操作数（Operand）的浮点寄存器目标（rvFREG）。根据给定的操作数，它返回适当的rvFREG值，表示操作数的浮点寄存器目标。
+rv::rvFREG backend::Generator::fgetRd(ir::Operand op)
+{
+    return rv::rvFREG::F28;
+}
+
+// 这个函数用于获取给定操作数的浮点寄存器目标（rv::rvFREG）。根据给定的操作数，它返回适当的浮点寄存器目标，表示操作数应存储在哪个浮点寄存器中。
+rv::rvFREG backend::Generator::fgetRs1(ir::Operand op)
+{
+    return rv::rvFREG::F29;
+}
+// 这个函数用于获取给定操作数的第二个浮点寄存器目标（rv::rvFREG）。根据给定的操作数，它返回适当的浮点寄存器目标，表示操作数应存储在哪个浮点寄存器中。
+rv::rvFREG backend::Generator::fgetRs2(ir::Operand op)
+{
+    return rv::rvFREG::F30;
+}
+
+void backend::Generator::gen()
+{
+    // 遍历所有全局变量
+    for (auto globalval : program.globalVal)
+    {
+        globalvs.insert(globalval.val.name); // 先得知哪些是全局变量
+        cout << "add globalval " << globalval.val.name << "in globalvs" << endl;
+    }
+
+    // 遍历所有函数
+    for (auto &function : program.functions)
+    {
+        gen_func(function);
+    }
+    // 将函数名的定义和代码写入文件
+    for (int i = 0; i < text_func_name.size(); i++)
+    {
+        text += text_func_name[i];
+        for (int j = 0; j < Instr_all[i].size(); j++)
+        {
+            text += Instr_all[i][j].draw();
+        }
+    }
+
+    fout << data << bss << text;
+}
+void backend::Generator::gen_func(const ir::Function &function)
+{
+    std::string func = "\t.global\t" + function.name + "\n" + "\t.type\t" + function.name + ", @function\n" + function.name + ":\n";
+    text_func_name.push_back(func);
+
+    // delt = 0;         // 清零位置
+    // stackvarmap = {}; // 清空栈帧
+    Instr = {}; // 指令清零
+
+    if (function.name == "global") // 只在global里面进行扩容
+    {
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::ADDI, rv::rvREG::X2, rv::rvREG::X2, 0));                                               // sp=sp+0-->待修改
+                                                                                                                                         // sw op rd imm(rs1)
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rv::rvREG::X1, rv::rvREG::X2, stackvarmap.add_operand(Operand("ra", Type::Int)))); // sw ra,0(sp)
+    }
+    else
+    {
+        // sw op rd imm(rs1)
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rv::rvREG::X1, rv::rvREG::X2, stackvarmap.find_operand(Operand("ra", Type::Int)))); // sw ra,0(sp)
+    }
+    if (function.name == "main")
+    {
+        key = 1;
+    }
+
+    // 遍历所有指令
+    for (auto &instPtr : function.InstVec)
+    {
+        ir::Instruction &instuction = *instPtr;
+        gen_instr(instuction);
+    }
+
+    if (function.name == "main")
+    {
+        Instr_all[0][0].imm = -delt;
+
+        // 找到return指令的前一条指令，修改其立即数
+        for (int i = 0; i < Instr.size(); i++)
+        {
+            if (Instr[i].op == rv::rvOPCODE::JR)
+            {
+                Instr[i - 1].imm = delt;
+            }
+        }
+    }
+
+    // 如果delt为0，将涉及的addi sp删除
+
+    for (auto &inst : Instr)
+    {
+        cout << "TEST: " << toString(inst.op) << "\n"
+             << inst.draw() << endl;
+    }
+    Instr_all.push_back(Instr);
+}
+void backend::Generator::gen_instr(const ir::Instruction &inst)
+{
+    cout << "---gen_instr OP DES OP1 OP2---" << endl;
+    cout << "gen_instr " << toString(inst.op) << " " << toString(inst.des.type) << " " << inst.des.name << " "
+         << toString(inst.op1.type) << " " << inst.op1.name << " " << toString(inst.op2.type) << " " << inst.op2.name << endl;
+    switch (inst.op)
+    {
+    case ir::Operator::_return:
+    {
+        switch (inst.op1.type)
+        {
+        case Type::IntLiteral: //(done)
+        {
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rv::rvREG::X10, std::stoi(inst.op1.name))); // li a0,3
+        }
+        break;
+        case Type::FloatLiteral:
+            break;
+        case Type::Int:
+        {
+            if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
+            {
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
+            }
+            else
+            {
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X10, 0));
+            }
+        }
+        break;
+        case Type::Float:
+            break;
+        case Type::null: // 返回null则不操作
+            break;
+        default:
+            assert(0 && "invalid return value type");
+            break;
+        }
+
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X1, rv::rvREG::X2, stackvarmap.find_operand(Operand("ra", Type::Int)))); // lw ra,0(sp)
+        if (key == 1)                                                                                                                     // 只有main函数里面的return才有收缩栈帧的操作
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::ADDI, rv::rvREG::X2, rv::rvREG::X2, 0));                                            // addi sp,sp,0-->待修改
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::JR, rv::rvREG::X1));                                                                    // jr ra
+    }
+    break;
+    case ir::Operator::call:
+    {
+        cout << "*call" << endl;
+        auto callinst = static_cast<const ir::CallInst &>(inst);
+        auto fn = callinst.op1.name;
+        // op label
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::CALL, fn)); // call function
+    }
+    break;
+    case Operator::mov: // 必须是再定义，改变原先的值
+    {
+        switch (inst.op1.type) // 要么int要么intliteral
+        {
+        case Type::IntLiteral: //(done)
+        {
+            // 存入栈中
+            //  op rs1 imm rs2
+            //  lw op rd imm(rs1)
+            rv::rvREG rd = getRd(inst.des);
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.des))); // lw a0,4(sp)
+            // li op rd imm
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, std::stoi(inst.op1.name))); // li a0,3
+            // sw op rd imm(rs1)
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.des))); // sw a0,4(sp)
+        }
+        break;
+        case Type::Int:
+        {
+        }
+        break;
+        default:
+            assert(0 && "def wrong type of op1");
+            break;
+        }
+    }
+    break;
+    case ir::Operator::def: // 定义肯定要么是全局变量要么是局部变量
+    {
+        switch (inst.op1.type) // 要么int要么intliteral
+        {
+        case Type::IntLiteral: //(done)
+        {
+            auto it = globalvs.find(inst.des.name);
+            if (it != globalvs.end()) // 是全局变量，需要写入data
+            {
+                data += inst.des.name + ":\n" + "\t.word\t" + inst.op1.name + "\n";
+            }
+
+            // 存入栈中
+            //  op rs1 imm rs2
+            //  lw op rd imm(rs1)
+            rv::rvREG rd = getRd(inst.des);
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.des))); // lw a0,4(sp)
+            // li op rd imm
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, std::stoi(inst.op1.name))); // li a0,3
+            // sw op rd imm(rs1)
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.des))); // sw a0,4(sp)
+        }
+        break;
+        case Type::Int:
+        {
+        }
+        break;
+        default:
+            assert(0 && "def wrong type of op1");
+            break;
+        }
+    }
+    break;
+    case ir::Operator::add: // 都不是常量
+    case ir::Operator::sub: // 都不是常量
+    case ir::Operator::mul: // 都不是常量
+    case ir::Operator::div: // 都不是常量
+    case ir::Operator::mod: // 都不是常量
+    {
+        cout << "add/…… " << inst.des.name << " " << inst.op1.name << " " << inst.op2.name << endl;
+        rv::rvREG rd = getRd(inst.des);
+        rv::rvREG rs1 = getRs1(inst.op1);
+        rv::rvREG rs2 = getRs2(inst.op2);
+        auto it0 = stackvarmap._table.find(inst.op1);
+        auto it1 = globalvs.find(inst.op1.name);
+        if (it0 != stackvarmap._table.end()) // 就是当前函数里面的变量或者已经改变过的全局变量
+        {
+        }
+        if (it1 != globalvs.end()) // 如果是全局变量
+        {
+            cout << inst.op1.name << " is global var" << endl;
+            // la op rd label
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rs1, inst.op1.name)); // la a0,a
+            // lw
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rs1, 0)); // lw a0,0(a0)
+        }
+        else
+        {
+            cout << inst.op1.name << " is not global var" << endl;
+            // lw op rd rs1
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X2, stackvarmap.find_operand(inst.op1))); // lw a0,4(sp)
+        }
+        auto it2 = globalvs.find(inst.op2.name);
+        if (it2 != globalvs.end()) // 如果是全局变量
+        {
+            cout << inst.op2.name << " is global var" << endl;
+            // la op rd label
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rs2, inst.op2.name)); // la a0,a
+            // lw
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rs2, 0)); // lw a0,0(a0)
+        }
+        else
+        {
+            cout << inst.op2.name << " is not global var" << endl;
+            // mov op rd rs1
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X2, stackvarmap.find_operand(inst.op2))); // lw a0,4(sp)
+        }
+        rv::rvOPCODE op;
+        switch (inst.op)
+        {
+        case ir::Operator::add:
+            op = rv::rvOPCODE::ADD;
+            break;
+        case ir::Operator::sub:
+            op = rv::rvOPCODE::SUB;
+            break;
+        case ir::Operator::mul:
+            op = rv::rvOPCODE::MUL;
+            break;
+        case ir::Operator::div:
+            op = rv::rvOPCODE::DIV;
+            break;
+        case ir::Operator::mod:
+            op = rv::rvOPCODE::REM;
+            break;
+        }
+        // add op rd rs1 rs2
+        Instr.push_back(rv::rv_inst(op, rd, rs1, rs2));
+        // sw op rd imm(rs1)
+        Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.des)));
+    }
+    break;
+        // case Operator::alloc:
+        // {
+        //     cout << "add/…… " << inst.des.name << " " << inst.op1.name << " " << inst.op2.name << endl;
+        //     rv::rvREG rd = getRd(inst.des);
+        //     rv::rvREG rs1 = getRs1(inst.op1);
+        //     rv::rvREG rs2 = getRs2(inst.op2);
+        //     Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.des)));
+        //     int size;
+        //     if (IS_INT_OPERAND(inst->op1))
+        //     {
+        //         size = find_src_operand(inst->op1)._val.ival;
+        //     }
+        //     else
+        //     {
+        //         assert(0 && "in Operator::alloc, op1 should be integer");
+        //     }
+
+        //     if (inst->des.type == Type::IntPtr)
+        //     {
+        //         get_des_operand(inst->des)->_val.iptr = new int[size];
+        //     }
+        //     else if (inst->des.type == Type::FloatPtr)
+        //     {
+        //         get_des_operand(inst->des)->_val.fptr = new float[size];
+        //     }
+        //     else
+        //     {
+        //         assert(0 && "in Operator::alloc, des should be pointer");
+        //     }
+        // }
+        // break;
+        // case Operator::store:
+        // {
+        //     int off;
+        //     if (IS_INT_OPERAND(inst->op2))
+        //     {
+        //         off = find_src_operand(inst->op2)._val.ival;
+        //     }
+        //     else
+        //     {
+        //         assert(0 && "in Operator::store, op2 should be integer");
+        //     }
+
+        //     if (IS_INT_OPERAND(inst->des) && inst->op1.type == Type::IntPtr)
+        //     {
+        //         find_src_operand(inst->op1)._val.iptr[off] = find_src_operand(inst->des)._val.ival;
+        //     }
+        //     else if (IS_FLOAT_OPERAND(inst->des) && inst->op1.type == Type::FloatPtr)
+        //     {
+        //         find_src_operand(inst->op1)._val.fptr[off] = find_src_operand(inst->des)._val.fval;
+        //     }
+        //     else
+        //     {
+        //         assert(0 && "in Operator::store, op1 should be a pointer and des should be the matched type");
+        //     }
+        // }
+        // break;
+        // case Operator::load:
+        // {
+        //     int off;
+        //     if (IS_INT_OPERAND(inst->op2))
+        //     {
+        //         off = find_src_operand(inst->op2)._val.ival;
+        //     }
+        //     else
+        //     {
+        //         assert(0 && "in Operator::load, op2 should be integer");
+        //     }
+
+        //     if (IS_INT_OPERAND(inst->des) && inst->op1.type == Type::IntPtr)
+        //     {
+        //         get_des_operand(inst->des)->_val.ival = find_src_operand(inst->op1)._val.iptr[off];
+        //     }
+        //     else if (IS_FLOAT_OPERAND(inst->des) && inst->op1.type == Type::FloatPtr)
+        //     {
+        //         get_des_operand(inst->des)->_val.fval = find_src_operand(inst->op1)._val.fptr[off];
+        //     }
+        //     else
+        //     {
+        //         assert(0 && "in Operator::load, op1 should be a pointer and des should be the matched type");
+        //     }
+        // }
+        // break;
+    }
+    cout << "---gen_instr end---" << endl;
+}

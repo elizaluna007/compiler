@@ -22,17 +22,22 @@ namespace rv
         rv_inst(rvOPCODE op, rvREG rd, uint32_t imm);
         rv_inst(rvOPCODE op, rvREG rd, std::string label);
         rv_inst(rvOPCODE op, rvREG rd, rvREG rs1);
-        rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, rvREG rs2);    // 整型 整型 整型
+        rv_inst(rvOPCODE op, rvFREG rd, rvREG rs1, uint32_t imm);
+        rv_inst(rvOPCODE op, rvREG rd, std::string label, rvREG rs1);
+        rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, rvREG rs2); // 整型 整型 整型
+        rv_inst(rvOPCODE op, rvFREG frd, std::string label, rvREG rs1);
+        rv_inst(rvOPCODE op, rvFREG frd, uint32_t imm);
         rv_inst(rvOPCODE op, rvFREG rd, rvFREG rs1, rvFREG rs2); // 浮点型 浮点型 浮点型
         rv_inst(rvOPCODE op, rvREG rd, rvFREG rs1, rvFREG rs2);  // 整型 浮点型 浮点型
         rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, uint32_t imm);
-        rv_inst(rvOPCODE op, rvFREG rd, rvREG rs1, uint32_t imm);
+        rv_inst(rvOPCODE op, rvFREG frd, rvFREG frs1, uint32_t imm);
         rv_inst(rvOPCODE op, rvREG rd, rvFREG rs1, uint32_t imm);
         rv_inst(rvOPCODE op, rvREG rs1, uint32_t imm, rvREG rs2);
+        rv_inst(rvOPCODE op, rvFREG frd, std::string label);
         rv_inst(rvOPCODE op, rvREG rs1, rvREG rs2, std::string label);
         rv_inst(rvOPCODE op, rvREG rs1, uint32_t imm, rvFREG rs2);
 
-                // rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, rvREG rs2, uint32_t imm, rvFREG frd, rvFREG frs1, rvFREG frs2, std::string label);
+        // rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, rvREG rs2, uint32_t imm, rvFREG frd, rvFREG frs1, rvFREG frs2, std::string label);
     };
 
 };

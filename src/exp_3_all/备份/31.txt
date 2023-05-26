@@ -24,32 +24,6 @@ std::map<std::string, int> int_result = {};
 std::vector<int> first_instr_id = {};
 std::vector<rv::rv_inst> real_instr = {};
 int local_tag = 0;
-
-// 字符串变为整数
-int get_int(string name)
-{
-    if (name[0] == '0' && name[1] == 'x')
-    {
-        return stoi(name, nullptr, 16);
-    }
-    else if (name[0] == '0' && name[1] == 'b')
-    {
-        return stoi(name, nullptr, 2);
-    }
-    else if (name[0] == '0' && name[1] == 'o')
-    {
-        return stoi(name, nullptr, 8);
-    }
-    else if (name[0] == '0' && name[1] == 'd')
-    {
-        return stoi(name);
-    }
-    else
-    {
-        return stoi(name);
-    }
-}
-
 //.data 表示数据段开始，接下来可以使用 .word .byte .commn 数据相关的伪指令来记录数据，通常是指用来存放程序中已初始化的全局变量的一块内存区域，数据段属于静态内存分配
 string data = "\t.data\n";
 //.bss 表示 bss(Block Started by Symbol) 段开始，可以使用 .space 等指令分配初始化为 0 的一块区域，属于静态内存分配
@@ -182,7 +156,7 @@ void backend::Generator::gen_func(const ir::Function &function)
         gen_instr(instuction);
         if (instuction.op == ir::Operator::_goto) // 跳转指令
         {
-            goto_rcd[i + get_int(instuction.des.name)].push_back(Instr.size() - 1); // 记录跳转指令的位置,Instr.size() - 1位置的汇编会跳到程序指令处
+            goto_rcd[i + stoi(instuction.des.name)].push_back(Instr.size() - 1); // 记录跳转指令的位置,Instr.size() - 1位置的汇编会跳到程序指令处
         }
     }
 
@@ -253,7 +227,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         {
         case Type::IntLiteral: //(done)
         {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rv::rvREG::X10, get_int(inst.op1.name))); // li a0,3
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rv::rvREG::X10, std::stoi(inst.op1.name))); // li a0,3
         }
         break;
         case Type::FloatLiteral:
@@ -297,11 +271,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         int param_freg = 10;
         for (auto param : callinst.argumentList)
         {
-            if (param.type == ir::Type::IntLiteral)
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rv::rvREG(param_reg), get_int(param.name)));
-            }
-            else if (param.type == ir::Type::Int || param.type == ir::Type::IntPtr || param.type == ir::Type::FloatPtr)
+            if (param.type == ir::Type::Int || param.type == ir::Type::IntPtr || param.type == ir::Type::FloatPtr)
             {
                 if (globalvs.find(param.name) != globalvs.end())
                 {
@@ -369,7 +339,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         {
         case Type::IntLiteral: //(done)
         {
-            int_result[inst.des.name] = get_int(inst.op1.name);
+            int_result[inst.des.name] = stoi(inst.op1.name);
             cout << "将" << inst.des.name << " " << inst.op1.name << "插入整数表" << endl;
             // 存入栈中
             //  op rs1 imm rs2
@@ -379,7 +349,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             {
                 rv::rvREG rd = getRd(inst.des);
                 rv::rvREG rs1 = getRs1(inst.op1);
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, get_int(inst.op1.name))); // li a0,3
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, std::stoi(inst.op1.name))); // li a0,3
                 Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rd, inst.des.name));
                 Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rs1, rd, 0));
             }
@@ -388,9 +358,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
                 rv::rvREG rd = getRd(inst.des);
                 Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.des))); // lw a0,4(sp)
                 // li op rd imm
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, get_int(inst.op1.name))); // li a0,3
-
-                cout << "mov成功将op1=" << inst.op1.name << "转变为" << to_string(stoi(inst.op1.name, nullptr, 16)) << endl;
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, std::stoi(inst.op1.name))); // li a0,3
                 // sw op rd imm(rs1)
                 Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.des))); // sw a0,4(sp)
             }
@@ -451,7 +419,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         {
         case Type::IntLiteral: //(done)
         {
-            int_result.insert({inst.des.name, get_int(inst.op1.name)});
+            int_result.insert({inst.des.name, stoi(inst.op1.name)});
             cout << "将" << inst.des.name << " " << inst.op1.name << "插入整数表" << endl;
 
             auto it = globalvs.find(inst.des.name);
@@ -467,7 +435,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
                 rv::rvREG rd = getRd(inst.des);
                 Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.des))); // lw a0,4(sp)
                 // li op rd imm
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, get_int(inst.op1.name))); // li a0,3
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, std::stoi(inst.op1.name))); // li a0,3
                 // sw op rd imm(rs1)
                 Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rv::rvREG::X2, stackvarmap.find_operand(inst.des))); // sw a0,4(sp)
             }
@@ -621,13 +589,13 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         {
         case ir::Operator::addi:
             op = rv::rvOPCODE::ADDI;
-            result = iter1->second + get_int(inst.op2.name);
-            second = get_int(inst.op2.name);
+            result = iter1->second + std::stoi(inst.op2.name);
+            second = std::stoi(inst.op2.name);
             break;
         case ir::Operator::subi:
             op = rv::rvOPCODE::ADDI;
-            result = iter1->second - get_int(inst.op2.name);
-            second = -get_int(inst.op2.name);
+            result = iter1->second - std::stoi(inst.op2.name);
+            second = -std::stoi(inst.op2.name);
             break;
         }
         int_result.insert({inst.des.name, result});
@@ -659,43 +627,30 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         auto rs2 = getRs2(inst.op2);
         auto rd = getRd(inst.des);
 
-        if (inst.op1.type == Type::IntLiteral)
+        if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
         {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, get_int(inst.op1.name)));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
+        }
+        else if (globalvs.find(inst.op1.name) != globalvs.end())
+        {
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X10, 0));
         }
         else
-        {
+            assert(0);
 
-            if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
-            }
-            else if (globalvs.find(inst.op1.name) != globalvs.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X10, 0));
-            }
-            else
-                assert(0);
-        }
-        if (inst.op2.type == Type::IntLiteral)
+        if (stackvarmap._table.find(inst.op2) != stackvarmap._table.end())
         {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs2, get_int(inst.op2.name)));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X2, stackvarmap.find_operand(inst.op2)));
+        }
+        else if (globalvs.find(inst.op2.name) != globalvs.end())
+        {
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op2.name));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X10, 0));
         }
         else
-        {
-            if (stackvarmap._table.find(inst.op2) != stackvarmap._table.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X2, stackvarmap.find_operand(inst.op2)));
-            }
-            else if (globalvs.find(inst.op2.name) != globalvs.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op2.name));
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X10, 0));
-            }
-            else
-                assert(0);
-        }
+            assert(0);
+
         Instr.push_back(rv::rv_inst(rv::rvOPCODE::SLT, rd, rs1, rs2));
 
         if (stackvarmap._table.find(inst.des) != stackvarmap._table.end())
@@ -867,43 +822,30 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         auto rs1 = getRs1(inst.op1);
         auto rs2 = getRs2(inst.op2);
         auto rd = getRd(inst.des);
-        if (inst.op1.type == Type::IntLiteral)
-        {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, get_int(inst.op1.name)));
-        }
-        else
-        {
 
-            if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
-            }
-            else if (globalvs.find(inst.op1.name) != globalvs.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X10, 0));
-            }
-            else
-                assert(0);
-        }
-        if (inst.op2.type == Type::IntLiteral)
+        if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
         {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs2, get_int(inst.op2.name)));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
+        }
+        else if (globalvs.find(inst.op1.name) != globalvs.end())
+        {
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X10, 0));
         }
         else
+            assert(0);
+
+        if (stackvarmap._table.find(inst.op2) != stackvarmap._table.end())
         {
-            if (stackvarmap._table.find(inst.op2) != stackvarmap._table.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X2, stackvarmap.find_operand(inst.op2)));
-            }
-            else if (globalvs.find(inst.op2.name) != globalvs.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op2.name));
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X10, 0));
-            }
-            else
-                assert(0);
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X2, stackvarmap.find_operand(inst.op2)));
         }
+        else if (globalvs.find(inst.op2.name) != globalvs.end())
+        {
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op2.name));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X10, 0));
+        }
+        else
+            assert(0);
 
         Instr.push_back(rv::rv_inst(rv::rvOPCODE::SLT, rd, rs2, rs1));
 
@@ -963,7 +905,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             // 地址
             if (inst.op2.type == Type::IntLiteral)
             {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, get_int(inst.op2.name))); // li a0,3
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, stoi(inst.op2.name))); // li a0,3
             }
             else // 肯定不是第一次赋值
             {
@@ -972,7 +914,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             // 数组赋值的变量
             if (inst.des.type == Type::IntLiteral)
             {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, get_int(inst.des.name))); // li a0,3
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, stoi(inst.des.name))); // li a0,3
             }
             else if (inst.des.type == Type::Int)
             {
@@ -993,7 +935,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             // 地址
             if (inst.op2.type == Type::IntLiteral)
             {
-                addr = get_int(inst.op2.name);
+                addr = std::stoi(inst.op2.name);
             }
             else // 肯定不是第一次赋值
             {
@@ -1015,7 +957,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             if (inst.des.type == Type::IntLiteral)
             {
                 Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.find_operand(op1))); // lw a0,4(sp));
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, get_int(inst.des.name)));                       // li a0,3
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rd, stoi(inst.des.name)));                          // li a0,3
             }
             else if (inst.des.type == Type::Int)
             {
@@ -1033,42 +975,30 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         auto rs2 = getRs2(inst.op2);
         auto rd = getRd(inst.des);
 
-        if (inst.op1.type == Type::IntLiteral)
+        if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
         {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, get_int(inst.op1.name)));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
+        }
+        else if (globalvs.find(inst.op1.name) != globalvs.end())
+        {
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X10, 0));
         }
         else
+            assert(0);
+
+        if (stackvarmap._table.find(inst.op2) != stackvarmap._table.end())
         {
-            if (stackvarmap._table.find(inst.op1) != stackvarmap._table.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X2, stackvarmap.find_operand(inst.op1)));
-            }
-            else if (globalvs.find(inst.op1.name) != globalvs.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs1, rv::rvREG::X10, 0));
-            }
-            else
-                assert(0);
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X2, stackvarmap.find_operand(inst.op2)));
         }
-        if (inst.op2.type == Type::IntLiteral)
+        else if (globalvs.find(inst.op2.name) != globalvs.end())
         {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs2, get_int(inst.op2.name)));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op2.name));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X10, 0));
         }
         else
-        {
-            if (stackvarmap._table.find(inst.op2) != stackvarmap._table.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X2, stackvarmap.find_operand(inst.op2)));
-            }
-            else if (globalvs.find(inst.op2.name) != globalvs.end())
-            {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op2.name));
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rs2, rv::rvREG::X10, 0));
-            }
-            else
-                assert(0);
-        }
+            assert(0);
+
         Instr.push_back(rv::rv_inst(rv::rvOPCODE::SUB, rd, rs1, rs2));
         Instr.push_back(rv::rv_inst(rv::rvOPCODE::SEQZ, rd, rd, rv::rvREG::X0));
 
@@ -1198,7 +1128,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         {
             if (inst.op2.type == Type::IntLiteral)
             {
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, get_int(inst.op2.name))); // li a0,3
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, stoi(inst.op2.name))); // li a0,3
             }
             else // 肯定不是第一次赋值
             {
@@ -1220,8 +1150,8 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             // 地址
             if (inst.op2.type == Type::IntLiteral)
             {
-                addr = get_int(inst.op2.name);
-                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, get_int(inst.op2.name))); // li a0,3
+                addr = stoi(inst.op2.name);
+                Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, stoi(inst.op2.name))); // li a0,3
             }
             else
             {
@@ -1285,7 +1215,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
         auto rd = getRd(inst.des);
         if (inst.op1.type == Type::IntLiteral)
         {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, get_int(inst.op1.name)));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs1, stoi(inst.op1.name)));
         }
         else
         {
@@ -1306,7 +1236,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
 
         if (inst.op2.type == Type::IntLiteral)
         {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs2, get_int(inst.op2.name)));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rs2, stoi(inst.op2.name)));
         }
         else
         {
@@ -1354,15 +1284,10 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rv::rvREG::X10, inst.op1.name));
             Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rv::rvREG::X10, rv::rvREG::X10, 0));
         }
-        else
-        {
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LI, rv::rvREG::X10, 1)); // 无条件一定跳转
-        }
 
         Instr.push_back(rv::rv_inst(rv::rvOPCODE::BNE, rv::rvREG::X10, rv::rvREG::X0, ""));
-
         assert(inst.des.type == ir::Type::IntLiteral);
-        // goto_rcd[ir_pc + get_int(inst.des.name)].push_back(Instr.size() - 1);
+        // goto_rcd[ir_pc + std::stoi(inst.des.name)].push_back(Instr.size() - 1);
         break;
     }
     case ir::Operator::cvt_i2f:

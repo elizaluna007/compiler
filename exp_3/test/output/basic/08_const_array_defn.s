@@ -6,7 +6,7 @@ a:
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-28
+	addi	sp,sp,-20
 	sw	ra,0(sp)
 	lw	t3,4(sp)
 	li	t3,1
@@ -81,22 +81,24 @@ global:
 	add	t4,t4,t5
 	sw	t3,0(t4)
 	lw	ra,0(sp)
+	addi	sp,sp,20
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
+	addi	sp,sp,-12
 	sw	ra,0(sp)
 	call	global
-	lw	t3,20(sp)
+	lw	t3,4(sp)
 	li	t3,4
-	sw	t3,20(sp)
-	lw	t4,20(sp)
+	sw	t3,4(sp)
+	lw	t4,4(sp)
 	la	t3,a
 	slli	t4,t4,2
 	add	t4,t4,t3
 	lw	t4,0(t4)
-	sw	t4,24(sp)
-	lw	a0,24(sp)
+	sw	t4,8(sp)
+	lw	a0,8(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,28
+	addi	sp,sp,12
 	jr	ra

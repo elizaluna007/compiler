@@ -12,13 +12,13 @@ t7:
 t8:
 	.word	99
 arr:
-	.word	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+	.word	0,0,0,0,0,0,0
 	.bss
 	.text
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-56
+	addi	sp,sp,-36
 	sw	ra,0(sp)
 	lw	t4,t0
 	lw	t3,4(sp)
@@ -126,38 +126,53 @@ global:
 	add	t4,t4,t5
 	sw	t3,0(t4)
 	lw	ra,0(sp)
+	addi	sp,sp,36
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
+	addi	sp,sp,-28
 	sw	ra,0(sp)
 	call	global
-	lw	t3,36(sp)
+	lw	t3,4(sp)
 	li	t3,0
-	sw	t3,36(sp)
-	lw	t3,40(sp)
+	sw	t3,4(sp)
+	lw	t3,8(sp)
 	li	t3,0
-	sw	t3,40(sp)
-	lw	t4,36(sp)
+	sw	t3,8(sp)
+.L0:
+	lw	t4,4(sp)
+	li	t5,6
+	slt	t3,t4,t5
+	sw	t3,12(sp)
+	lw	a0,12(sp)
+	bne	a0,zero,.L1
+	li	a0,1
+	bne	a0,zero,.L2
+.L1:
+	lw	t4,4(sp)
 	la	t3,arr
 	slli	t4,t4,2
 	add	t4,t4,t3
 	lw	t4,0(t4)
-	sw	t4,44(sp)
-	lw	t4,40(sp)
-	lw	t5,44(sp)
-	lw	t3,48(sp)
+	sw	t4,16(sp)
+	lw	t4,8(sp)
+	lw	t5,16(sp)
+	lw	t3,20(sp)
 	add	t3,t4,t5
-	sw	t3,48(sp)
-	lw	t3,48(sp)
-	sw	t3,40(sp)
-	lw	t4,36(sp)
-	lw	t3,52(sp)
+	sw	t3,20(sp)
+	lw	t3,20(sp)
+	sw	t3,8(sp)
+	lw	t4,4(sp)
+	lw	t3,24(sp)
 	addi	t3,t4,1
-	sw	t3,52(sp)
-	lw	t3,52(sp)
-	sw	t3,36(sp)
-	lw	a0,40(sp)
+	sw	t3,24(sp)
+	lw	t3,24(sp)
+	sw	t3,4(sp)
+	li	a0,1
+	bne	a0,zero,.L0
+.L2:
+	lw	a0,8(sp)
 	lw	ra,0(sp)
-	addi	sp,sp,56
+	addi	sp,sp,28
 	jr	ra

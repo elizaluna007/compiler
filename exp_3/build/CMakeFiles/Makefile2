@@ -137,11 +137,11 @@ clean: CMakeFiles/jsoncpp.dir/clean
 # Target rules for target CMakeFiles/compiler.dir
 
 # All Build rule for target.
-CMakeFiles/compiler.dir/all: CMakeFiles/Front.dir/all
 CMakeFiles/compiler.dir/all: CMakeFiles/IR.dir/all
-CMakeFiles/compiler.dir/all: CMakeFiles/jsoncpp.dir/all
 CMakeFiles/compiler.dir/all: CMakeFiles/Tools.dir/all
+CMakeFiles/compiler.dir/all: CMakeFiles/jsoncpp.dir/all
 CMakeFiles/compiler.dir/all: CMakeFiles/Backend.dir/all
+CMakeFiles/compiler.dir/all: CMakeFiles/Front.dir/all
 	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/depend
 	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/coursegrader/build/CMakeFiles --progress-num=20,21 "Built target compiler"

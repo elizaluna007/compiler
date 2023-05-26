@@ -1,0 +1,111 @@
+	.data
+	.bss
+	.text
+	.global	global
+	.type	global, @function
+global:
+	addi	sp,sp,-4
+	sw	ra,0(sp)
+	lw	ra,0(sp)
+	addi	sp,sp,4
+	jr	ra
+	.global	main
+	.type	main, @function
+main:
+	addi	sp,sp,-76
+	sw	ra,0(sp)
+	call	global
+	lw	t3,4(sp)
+	li	t3,0
+	sw	t3,4(sp)
+	lw	t3,8(sp)
+	li	t3,0
+	sw	t3,8(sp)
+	lw	t3,4(sp)
+	li	t3,70
+	sw	t3,4(sp)
+	lw	t3,8(sp)
+	li	t3,4
+	sw	t3,8(sp)
+	lw	t3,12(sp)
+	li	t3,0
+	sw	t3,12(sp)
+	lw	t4,12(sp)
+	lw	t3,16(sp)
+	addi	t3,t4,-4
+	sw	t3,16(sp)
+	lw	t4,4(sp)
+	lw	t5,16(sp)
+	lw	t3,20(sp)
+	sub	t3,t4,t5
+	sw	t3,20(sp)
+	lw	t4,20(sp)
+	lw	t5,8(sp)
+	lw	t3,24(sp)
+	add	t3,t4,t5
+	sw	t3,24(sp)
+	lw	t3,24(sp)
+	sw	t3,4(sp)
+	lw	t4,4(sp)
+	seqz	t4,t4
+	sw	t4,28(sp)
+	lw	t4,28(sp)
+	seqz	t4,t4
+	sw	t4,32(sp)
+	lw	t4,32(sp)
+	seqz	t4,t4
+	sw	t4,36(sp)
+	lw	t3,40(sp)
+	li	t3,0
+	sw	t3,40(sp)
+	lw	t4,40(sp)
+	lw	t5,36(sp)
+	lw	t3,44(sp)
+	sub	t3,t4,t5
+	sw	t3,44(sp)
+	lw	a0,44(sp)
+	bne	a0,zero,.L0
+	li	a0,1
+	bne	a0,zero,.L1
+.L0:
+	lw	t3,48(sp)
+	li	t3,0
+	sw	t3,48(sp)
+	lw	t4,48(sp)
+	lw	t3,52(sp)
+	addi	t3,t4,-1
+	sw	t3,52(sp)
+	lw	t3,56(sp)
+	li	t3,0
+	sw	t3,56(sp)
+	lw	t4,56(sp)
+	lw	t5,52(sp)
+	lw	t3,60(sp)
+	sub	t3,t4,t5
+	sw	t3,60(sp)
+	lw	t3,64(sp)
+	li	t3,0
+	sw	t3,64(sp)
+	lw	t4,64(sp)
+	lw	t5,60(sp)
+	lw	t3,68(sp)
+	sub	t3,t4,t5
+	sw	t3,68(sp)
+	lw	t3,68(sp)
+	sw	t3,4(sp)
+	li	a0,1
+	bne	a0,zero,.L2
+.L1:
+	lw	t4,8(sp)
+	lw	t3,72(sp)
+	addi	t3,t4,0
+	sw	t3,72(sp)
+	lw	t3,72(sp)
+	sw	t3,4(sp)
+.L2:
+	lw	a0,4(sp)
+	call	putint
+	li	a0,0
+	lw	ra,0(sp)
+	addi	sp,sp,76
+	jr	ra

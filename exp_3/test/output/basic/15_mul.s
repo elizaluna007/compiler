@@ -4,13 +4,15 @@
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-16
+	addi	sp,sp,-4
 	sw	ra,0(sp)
 	lw	ra,0(sp)
+	addi	sp,sp,4
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
+	addi	sp,sp,-16
 	sw	ra,0(sp)
 	call	global
 	lw	t3,4(sp)

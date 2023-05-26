@@ -627,13 +627,15 @@ global:
 	add	t4,t4,t5
 	sw	t3,0(t4)
 	lw	ra,0(sp)
+	addi	sp,sp,20
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
+	addi	sp,sp,-4
 	sw	ra,0(sp)
 	call	global
 	li	a0,0
 	lw	ra,0(sp)
-	addi	sp,sp,20
+	addi	sp,sp,4
 	jr	ra

@@ -4,13 +4,15 @@
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-108
+	addi	sp,sp,-4
 	sw	ra,0(sp)
 	lw	ra,0(sp)
+	addi	sp,sp,4
 	jr	ra
 	.global	main
 	.type	main, @function
 main:
+	addi	sp,sp,-148
 	sw	ra,0(sp)
 	call	global
 	lw	t3,4(sp)
@@ -65,72 +67,182 @@ main:
 	lw	t3,44(sp)
 	div	t3,t4,t5
 	sw	t3,44(sp)
+	lw	t4,44(sp)
+	li	t5,0
+	slt	t3,t4,t5
+	sw	t3,48(sp)
+	lw	t4,48(sp)
+	snez	t4,t4
+	li	t5,0
+	snez	t5,t5
+	or	t3,t4,t5
+	sw	t3,52(sp)
+	lw	a0,52(sp)
+	bne	a0,zero,.L2
 	lw	t4,4(sp)
 	lw	t5,8(sp)
-	lw	t3,48(sp)
-	sub	t3,t4,t5
-	sw	t3,48(sp)
-	lw	t3,52(sp)
-	li	t3,0
-	sw	t3,52(sp)
-	lw	t4,12(sp)
 	lw	t3,56(sp)
-	addi	t3,t4,3
+	sub	t3,t4,t5
 	sw	t3,56(sp)
 	lw	t3,60(sp)
-	li	t3,2
+	li	t3,0
 	sw	t3,60(sp)
 	lw	t4,56(sp)
 	lw	t5,60(sp)
-	lw	t3,64(sp)
-	rem	t3,t4,t5
+	sub	t3,t4,t5
+	snez	t3,t3
 	sw	t3,64(sp)
-	lw	t3,68(sp)
-	li	t3,0
+	lw	t4,64(sp)
+	snez	t4,t4
+	li	t5,1
+	snez	t5,t5
+	and	t3,t4,t5
 	sw	t3,68(sp)
+	lw	a0,68(sp)
+	bne	a0,zero,.L0
+	li	a0,1
+	bne	a0,zero,.L1
+.L0:
+	lw	t4,12(sp)
+	lw	t3,72(sp)
+	addi	t3,t4,3
+	sw	t3,72(sp)
+	lw	t3,76(sp)
+	li	t3,2
+	sw	t3,76(sp)
+	lw	t4,72(sp)
+	lw	t5,76(sp)
+	lw	t3,80(sp)
+	rem	t3,t4,t5
+	sw	t3,80(sp)
+	lw	t3,84(sp)
+	li	t3,0
+	sw	t3,84(sp)
+	lw	t4,80(sp)
+	lw	t5,84(sp)
+	sub	t3,t4,t5
+	snez	t3,t3
+	sw	t3,88(sp)
+	lw	t4,64(sp)
+	snez	t4,t4
+	lw	t5,88(sp)
+	snez	t5,t5
+	and	t3,t4,t5
+	sw	t3,68(sp)
+.L1:
+	lw	t4,48(sp)
+	snez	t4,t4
+	lw	t5,68(sp)
+	snez	t5,t5
+	or	t3,t4,t5
+	sw	t3,52(sp)
+.L2:
+	lw	a0,52(sp)
+	bne	a0,zero,.L3
+	li	a0,1
+	bne	a0,zero,.L4
+.L3:
 	lw	a0,20(sp)
 	call	putint
-	lw	t3,72(sp)
+	li	a0,1
+	bne	a0,zero,.L4
+.L4:
+	lw	t3,92(sp)
 	li	t3,2
-	sw	t3,72(sp)
+	sw	t3,92(sp)
 	lw	t4,16(sp)
-	lw	t5,72(sp)
-	lw	t3,76(sp)
+	lw	t5,92(sp)
+	lw	t3,96(sp)
 	rem	t3,t4,t5
-	sw	t3,76(sp)
-	lw	t4,76(sp)
-	lw	t3,80(sp)
+	sw	t3,96(sp)
+	lw	t4,96(sp)
+	lw	t3,100(sp)
 	addi	t3,t4,67
-	sw	t3,80(sp)
+	sw	t3,100(sp)
+	lw	t4,100(sp)
+	li	t5,0
+	slt	t3,t4,t5
+	sw	t3,104(sp)
+	lw	t4,104(sp)
+	snez	t4,t4
+	li	t5,0
+	snez	t5,t5
+	or	t3,t4,t5
+	sw	t3,108(sp)
+	lw	a0,108(sp)
+	bne	a0,zero,.L7
 	lw	t4,4(sp)
 	lw	t5,8(sp)
-	lw	t3,84(sp)
+	lw	t3,112(sp)
 	sub	t3,t4,t5
-	sw	t3,84(sp)
-	lw	t3,88(sp)
+	sw	t3,112(sp)
+	lw	t3,116(sp)
 	li	t3,0
-	sw	t3,88(sp)
+	sw	t3,116(sp)
+	lw	t4,112(sp)
+	lw	t5,116(sp)
+	sub	t3,t4,t5
+	snez	t3,t3
+	sw	t3,120(sp)
+	lw	t4,120(sp)
+	snez	t4,t4
+	li	t5,1
+	snez	t5,t5
+	and	t3,t4,t5
+	sw	t3,124(sp)
+	lw	a0,124(sp)
+	bne	a0,zero,.L5
+	li	a0,1
+	bne	a0,zero,.L6
+.L5:
 	lw	t4,12(sp)
-	lw	t3,92(sp)
+	lw	t3,128(sp)
 	addi	t3,t4,2
-	sw	t3,92(sp)
-	lw	t3,96(sp)
+	sw	t3,128(sp)
+	lw	t3,132(sp)
 	li	t3,2
-	sw	t3,96(sp)
-	lw	t4,92(sp)
-	lw	t5,96(sp)
-	lw	t3,100(sp)
+	sw	t3,132(sp)
+	lw	t4,128(sp)
+	lw	t5,132(sp)
+	lw	t3,136(sp)
 	rem	t3,t4,t5
-	sw	t3,100(sp)
-	lw	t3,104(sp)
+	sw	t3,136(sp)
+	lw	t3,140(sp)
 	li	t3,0
-	sw	t3,104(sp)
+	sw	t3,140(sp)
+	lw	t4,136(sp)
+	lw	t5,140(sp)
+	sub	t3,t4,t5
+	snez	t3,t3
+	sw	t3,144(sp)
+	lw	t4,120(sp)
+	snez	t4,t4
+	lw	t5,144(sp)
+	snez	t5,t5
+	and	t3,t4,t5
+	sw	t3,124(sp)
+.L6:
+	lw	t4,104(sp)
+	snez	t4,t4
+	lw	t5,124(sp)
+	snez	t5,t5
+	or	t3,t4,t5
+	sw	t3,108(sp)
+.L7:
+	lw	a0,108(sp)
+	bne	a0,zero,.L8
+	li	a0,1
+	bne	a0,zero,.L9
+.L8:
 	lw	t3,20(sp)
 	li	t3,4
 	sw	t3,20(sp)
 	lw	a0,20(sp)
 	call	putint
+	li	a0,1
+	bne	a0,zero,.L9
+.L9:
 	li	a0,0
 	lw	ra,0(sp)
-	addi	sp,sp,108
+	addi	sp,sp,148
 	jr	ra

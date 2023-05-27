@@ -28,18 +28,23 @@ main:
 	lw	t3,4(sp)
 	li	t3,0
 	sw	t3,4(sp)
-	lw	t4,a
-	lw	t5,b
+	la	t4,a
+	lw	t4,0(t4)
+	la	t5,b
+	lw	t5,0(t5)
 	lw	t3,8(sp)
 	mul	t3,t4,t5
 	sw	t3,8(sp)
 	lw	t4,8(sp)
-	lw	t5,c
+	la	t5,c
+	lw	t5,0(t5)
 	lw	t3,12(sp)
 	div	t3,t4,t5
 	sw	t3,12(sp)
-	lw	t4,e
-	lw	t5,d
+	la	t4,e
+	lw	t4,0(t4)
+	la	t5,d
+	lw	t5,0(t5)
 	lw	t3,16(sp)
 	add	t3,t4,t5
 	sw	t3,16(sp)
@@ -59,23 +64,29 @@ main:
 	li	a0,1
 	bne	a0,zero,.L1
 .L0:
-	lw	t4,a
-	lw	t5,b
+	la	t4,a
+	lw	t4,0(t4)
+	la	t5,b
+	lw	t5,0(t5)
 	lw	t3,28(sp)
 	add	t3,t4,t5
 	sw	t3,28(sp)
-	lw	t4,a
+	la	t4,a
+	lw	t4,0(t4)
 	lw	t5,28(sp)
 	lw	t3,32(sp)
 	mul	t3,t4,t5
 	sw	t3,32(sp)
 	lw	t4,32(sp)
-	lw	t5,c
+	la	t5,c
+	lw	t5,0(t5)
 	lw	t3,36(sp)
 	add	t3,t4,t5
 	sw	t3,36(sp)
-	lw	t4,d
-	lw	t5,e
+	la	t4,d
+	lw	t4,0(t4)
+	la	t5,e
+	lw	t5,0(t5)
 	lw	t3,40(sp)
 	add	t3,t4,t5
 	sw	t3,40(sp)
@@ -101,22 +112,28 @@ main:
 	sw	t3,48(sp)
 	lw	a0,48(sp)
 	bne	a0,zero,.L2
-	lw	t4,b
-	lw	t5,c
+	la	t4,b
+	lw	t4,0(t4)
+	la	t5,c
+	lw	t5,0(t5)
 	lw	t3,52(sp)
 	mul	t3,t4,t5
 	sw	t3,52(sp)
-	lw	t4,a
+	la	t4,a
+	lw	t4,0(t4)
 	lw	t5,52(sp)
 	lw	t3,56(sp)
 	sub	t3,t4,t5
 	sw	t3,56(sp)
-	lw	t4,a
-	lw	t5,c
+	la	t4,a
+	lw	t4,0(t4)
+	la	t5,c
+	lw	t5,0(t5)
 	lw	t3,60(sp)
 	div	t3,t4,t5
 	sw	t3,60(sp)
-	lw	t4,d
+	la	t4,d
+	lw	t4,0(t4)
 	lw	t5,60(sp)
 	lw	t3,64(sp)
 	sub	t3,t4,t5

@@ -125,12 +125,14 @@ EightWhile:
 	li	a0,1
 	bne	a0,zero,.L19
 .L9:
-	lw	t4,e
+	la	a0,e
+	lw	t4,0(a0)
 	lw	t3,60(sp)
 	addi	t3,t4,-1
 	sw	t3,60(sp)
 	lw	t3,60(sp)
-	sw	t3,e,zero
+	la	t4,e
+	sw	t3,0(t4)
 .L10:
 	la	a0,f
 	lw	t4,0(a0)
@@ -142,12 +144,14 @@ EightWhile:
 	li	a0,1
 	bne	a0,zero,.L18
 .L11:
-	lw	t4,f
+	la	a0,f
+	lw	t4,0(a0)
 	lw	t3,68(sp)
 	addi	t3,t4,-2
 	sw	t3,68(sp)
 	lw	t3,68(sp)
-	sw	t3,f,zero
+	la	t4,f
+	sw	t3,0(t4)
 .L12:
 	la	a0,g
 	lw	t4,0(a0)
@@ -159,12 +163,14 @@ EightWhile:
 	li	a0,1
 	bne	a0,zero,.L17
 .L13:
-	lw	t4,g
+	la	a0,g
+	lw	t4,0(a0)
 	lw	t3,76(sp)
 	addi	t3,t4,10
 	sw	t3,76(sp)
 	lw	t3,76(sp)
-	sw	t3,g,zero
+	la	t4,g
+	sw	t3,0(t4)
 .L14:
 	la	a0,h
 	lw	t4,0(a0)
@@ -176,48 +182,58 @@ EightWhile:
 	li	a0,1
 	bne	a0,zero,.L16
 .L15:
-	lw	t4,h
+	la	a0,h
+	lw	t4,0(a0)
 	lw	t3,84(sp)
 	addi	t3,t4,8
 	sw	t3,84(sp)
 	lw	t3,84(sp)
-	sw	t3,h,zero
+	la	t4,h
+	sw	t3,0(t4)
 	li	a0,1
 	bne	a0,zero,.L14
 .L16:
-	lw	t4,h
+	la	a0,h
+	lw	t4,0(a0)
 	lw	t3,88(sp)
 	addi	t3,t4,-1
 	sw	t3,88(sp)
 	lw	t3,88(sp)
-	sw	t3,h,zero
+	la	t4,h
+	sw	t3,0(t4)
 	li	a0,1
 	bne	a0,zero,.L12
 .L17:
-	lw	t4,g
+	la	a0,g
+	lw	t4,0(a0)
 	lw	t3,92(sp)
 	addi	t3,t4,-8
 	sw	t3,92(sp)
 	lw	t3,92(sp)
-	sw	t3,g,zero
+	la	t4,g
+	sw	t3,0(t4)
 	li	a0,1
 	bne	a0,zero,.L10
 .L18:
-	lw	t4,f
+	la	a0,f
+	lw	t4,0(a0)
 	lw	t3,96(sp)
 	addi	t3,t4,1
 	sw	t3,96(sp)
 	lw	t3,96(sp)
-	sw	t3,f,zero
+	la	t4,f
+	sw	t3,0(t4)
 	li	a0,1
 	bne	a0,zero,.L8
 .L19:
-	lw	t4,e
+	la	a0,e
+	lw	t4,0(a0)
 	lw	t3,100(sp)
 	addi	t3,t4,1
 	sw	t3,100(sp)
 	lw	t3,100(sp)
-	sw	t3,e,zero
+	la	t4,e
+	sw	t3,0(t4)
 	li	a0,1
 	bne	a0,zero,.L6
 .L20:
@@ -263,18 +279,21 @@ EightWhile:
 	lw	t3,124(sp)
 	add	t3,t4,t5
 	sw	t3,124(sp)
-	lw	t4,e
+	la	t4,e
+	lw	t4,0(t4)
 	lw	t5,16(sp)
 	lw	t3,128(sp)
 	add	t3,t4,t5
 	sw	t3,128(sp)
 	lw	t4,128(sp)
-	lw	t5,g
+	la	t5,g
+	lw	t5,0(t5)
 	lw	t3,132(sp)
 	sub	t3,t4,t5
 	sw	t3,132(sp)
 	lw	t4,132(sp)
-	lw	t5,h
+	la	t5,h
+	lw	t5,0(t5)
 	lw	t3,136(sp)
 	add	t3,t4,t5
 	sw	t3,136(sp)

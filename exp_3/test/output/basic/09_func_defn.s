@@ -39,7 +39,8 @@ main:
 	li	t4,10
 	la	t3,a
 	sw	t4,0(t3)
-	lw	a0,a
+	la	a0,a
+	lw	a0,0(a0)
 	call	func
 	sw	a0,8(sp)
 	lw	t3,8(sp)

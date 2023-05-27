@@ -486,7 +486,6 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             if (it != globalvs.end()) // 是全局变量，需要写入data
             {
                 data += inst.des.name + ":\n" + "\t.word\t" + inst.op1.name + "\n";
-                // auto iter = globalvs.find(inst.op1.name);
             }
             else
             {
@@ -654,9 +653,7 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rv::rvREG::X2, stackvarmap.add_operand(inst.des))); // lw a0,4(sp)
             Instr.push_back(rv::rv_inst(op, rd, rs1, second));
             // sw op rd imm(rs1)
-            // Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, inst.des.name, rv::rvREG::X0));
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rs1, inst.des.name));
-            Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rs1, 0));
+            Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, inst.des.name, rv::rvREG::X0));
         }
         else
         {

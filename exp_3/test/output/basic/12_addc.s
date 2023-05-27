@@ -17,7 +17,8 @@ main:
 	addi	sp,sp,-8
 	sw	ra,0(sp)
 	call	global
-	lw	t4,a
+	la	a0,a
+	lw	t4,0(a0)
 	lw	t3,4(sp)
 	addi	t3,t4,5
 	sw	t3,4(sp)

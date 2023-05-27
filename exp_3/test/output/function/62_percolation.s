@@ -16,7 +16,8 @@ global:
 	li	t3,1
 	sw	t3,4(sp)
 	lw	t4,4(sp)
-	lw	t5,t1
+	la	t5,t1
+	lw	t5,0(t5)
 	lw	t3,8(sp)
 	mul	t3,t4,t5
 	sw	t3,8(sp)
@@ -694,8 +695,10 @@ init:
 	li	t3,1
 	sw	t3,8(sp)
 .L0:
-	lw	t4,n
-	lw	t5,n
+	la	t4,n
+	lw	t4,0(t4)
+	la	t5,n
+	lw	t5,0(t5)
 	lw	t3,12(sp)
 	mul	t3,t4,t5
 	sw	t3,12(sp)
@@ -878,10 +881,13 @@ main:
 	lw	t3,28(sp)
 	li	t3,0
 	sw	t3,28(sp)
-	lw	a0,n
+	la	a0,n
+	lw	a0,0(a0)
 	call	init
-	lw	t4,n
-	lw	t5,n
+	la	t4,n
+	lw	t4,0(t4)
+	la	t5,n
+	lw	t5,0(t5)
 	lw	t3,32(sp)
 	mul	t3,t4,t5
 	sw	t3,32(sp)
@@ -921,7 +927,8 @@ main:
 	lw	t3,60(sp)
 	addi	t3,t4,-1
 	sw	t3,60(sp)
-	lw	t4,n
+	la	t4,n
+	lw	t4,0(t4)
 	lw	t5,60(sp)
 	lw	t3,64(sp)
 	mul	t3,t4,t5
@@ -1126,7 +1133,8 @@ main:
 	bne	a0,zero,.L25
 .L24:
 	lw	t4,72(sp)
-	lw	t5,n
+	la	t5,n
+	lw	t5,0(t5)
 	lw	t3,164(sp)
 	add	t3,t4,t5
 	sw	t3,164(sp)
@@ -1161,7 +1169,8 @@ main:
 	bne	a0,zero,.L27
 .L26:
 	lw	t4,72(sp)
-	lw	t5,n
+	la	t5,n
+	lw	t5,0(t5)
 	lw	t3,184(sp)
 	add	t3,t4,t5
 	sw	t3,184(sp)
@@ -1187,7 +1196,8 @@ main:
 	bne	a0,zero,.L29
 .L28:
 	lw	t4,72(sp)
-	lw	t5,n
+	la	t5,n
+	lw	t5,0(t5)
 	lw	t3,196(sp)
 	sub	t3,t4,t5
 	sw	t3,196(sp)
@@ -1222,7 +1232,8 @@ main:
 	bne	a0,zero,.L31
 .L30:
 	lw	t4,72(sp)
-	lw	t5,n
+	la	t5,n
+	lw	t5,0(t5)
 	lw	t3,216(sp)
 	sub	t3,t4,t5
 	sw	t3,216(sp)

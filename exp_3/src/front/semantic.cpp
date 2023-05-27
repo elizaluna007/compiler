@@ -17,7 +17,7 @@ int calculateIndex(const std::vector<int> &dimension, const std::vector<int> &in
     int index = 0;
     int multiplier = 1;
 
-    // ´Ó×îºóÒ»¸öÎ¬¶È¿ªÊ¼,¼ÆËãË÷ÒıÖµ
+    // ä»æœ€åä¸€ä¸ªç»´åº¦å¼€å§‹,è®¡ç®—ç´¢å¼•å€¼
     for (int i = numDimensions - 1; i >= 0; --i)
     {
         int currentIndex = indices[i];
@@ -27,17 +27,17 @@ int calculateIndex(const std::vector<int> &dimension, const std::vector<int> &in
 
     return index;
 }
-// ¼ÆÊıÆ÷,ÓÃÀ´±êÊ¶ÖĞ¼äµÄÖµ
+// è®¡æ•°å™¨,ç”¨æ¥æ ‡è¯†ä¸­é—´çš„å€¼
 int counter = 0;
-// pcÎ»ÖÃ
+// pcä½ç½®
 int pc = 0;
-// ÓÃÀ´´æ·ÅËùÓĞµÄÖ¸Áî
+// ç”¨æ¥å­˜æ”¾æ‰€æœ‰çš„æŒ‡ä»¤
 vector<Instruction *> Inst = {};
-// ÓÃÀ´Ôİ´æfunction
+// ç”¨æ¥æš‚å­˜function
 Function function_temp = Function();
 ir::CallInst *callInst_temp;
 frontend::STE ste_temp;
-// ÓÃÀ´´æ·ÅĞèÒªÖĞ¶ÏµÄÓï¾ä½øĞĞ¸üĞÂ
+// ç”¨æ¥å­˜æ”¾éœ€è¦ä¸­æ–­çš„è¯­å¥è¿›è¡Œæ›´æ–°
 vector<int> break_pc = {};
 
 map<string, int> result;
@@ -45,7 +45,7 @@ map<string, int> result_arr;
 vector<Operand> back;
 int arr_len = 0;
 int cnt = 0;
-// Êı×éÃû³ÆÒÔ¼°ÆäÎ¬¶È
+// æ•°ç»„åç§°ä»¥åŠå…¶ç»´åº¦
 map<string, vector<string>> arr_dim;
 
 #define TODO assert(0 && "TODO");
@@ -62,7 +62,7 @@ map<string, vector<string>> arr_dim;
     to->v = from->v;                         \
     to->t = from->t;
 
-// Õâ¸öº¯Êı·µ»ØÒ»¸öÖ¸Ïò×Ö·û´®ºÍ IR º¯Êı¶ÔÓ¦µÄ map µÄÖ¸Õë¡£Õâ¸ö map ´æ´¢ÁËÒ»Ğ©ÄÚÖÃº¯Êı,±ÈÈç getint¡¢putint µÈµÈ¡£
+// è¿™ä¸ªå‡½æ•°è¿”å›ä¸€ä¸ªæŒ‡å‘å­—ç¬¦ä¸²å’Œ IR å‡½æ•°å¯¹åº”çš„ map çš„æŒ‡é’ˆã€‚è¿™ä¸ª map å­˜å‚¨äº†ä¸€äº›å†…ç½®å‡½æ•°,æ¯”å¦‚ getintã€putint ç­‰ç­‰ã€‚
 map<std::string, ir::Function *> *frontend::get_lib_funcs()
 {
     static map<std::string, ir::Function *> lib_funcs = {
@@ -79,17 +79,17 @@ map<std::string, ir::Function *> *frontend::get_lib_funcs()
     };
     return &lib_funcs;
 }
-// Õâ¸öº¯ÊıµÄ×÷ÓÃÊÇÏò·ûºÅ±íÖĞÌí¼ÓÒ»¸öĞÂµÄ×÷ÓÃÓò,²ÎÊı node ±íÊ¾Õâ¸ö×÷ÓÃÓò¶ÔÓ¦µÄÓï·¨Ê÷½Úµã¡£
-// ½øÈëĞÂ×÷ÓÃÓòÊ±, Ïò·ûºÅ±íÖĞÌí¼Ó ScopeInfo, Ïàµ±ÓÚÑ¹Õ»
+// è¿™ä¸ªå‡½æ•°çš„ä½œç”¨æ˜¯å‘ç¬¦å·è¡¨ä¸­æ·»åŠ ä¸€ä¸ªæ–°çš„ä½œç”¨åŸŸ,å‚æ•° node è¡¨ç¤ºè¿™ä¸ªä½œç”¨åŸŸå¯¹åº”çš„è¯­æ³•æ ‘èŠ‚ç‚¹ã€‚
+// è¿›å…¥æ–°ä½œç”¨åŸŸæ—¶, å‘ç¬¦å·è¡¨ä¸­æ·»åŠ  ScopeInfo, ç›¸å½“äºå‹æ ˆ
 // struct ScopeInfo
 // {
 //     int cnt;
 //     string name;
 //     map_str_ste table;
 // };
-// cnt ÊÇ×÷ÓÃÓòÔÚº¯ÊıÖĞµÄÎ¨Ò»±àºÅ, ´ú±íÊÇº¯ÊıÖĞ³öÏÖµÄµÚ¼¸¸ö×÷ÓÃÓò
-// name ¿ÉÒÔÓÃÀ´·Ö±æ×÷ÓÃÓòµÄÀà±ğ, 'b' ´ú±íÊÇÒ»¸öµ¥¶ÀÇ¶Ì×µÄ×÷ÓÃÓò, 'i' 'e' 'w' ·Ö±ğ´ú±íÓÉ if else while ²úÉúµÄĞÂ×÷ÓÃÓò£¨ÄãÒ²¿ÉÒÔÈ¡ÄãÏ²»¶µÄÃû×Ö,Ö»ÊÇÕâÑù»á±íÒâ±È½ÏÇåÎú£©
-// table ÊÇÒ»ÕÅ´æ·Å·ûºÅµÄ±í, {string: STE}, string ÊÇ²Ù×÷ÊıµÄÔ­Ê¼Ãû³Æ, ±íÏî Variable Table Entry(STE), Êµ¼ÊÉÏ¾ÍÊÇÒ»¸ö IR µÄ²Ù×÷Êı,¼´ STE -> Operand, ÔÚ STE ÖĞ´æ·ÅµÄÓ¦¸ÃÊÇ±äÁ¿ÖØÃüÃûºóµÄÃû³Æ
+// cnt æ˜¯ä½œç”¨åŸŸåœ¨å‡½æ•°ä¸­çš„å”¯ä¸€ç¼–å·, ä»£è¡¨æ˜¯å‡½æ•°ä¸­å‡ºç°çš„ç¬¬å‡ ä¸ªä½œç”¨åŸŸ
+// name å¯ä»¥ç”¨æ¥åˆ†è¾¨ä½œç”¨åŸŸçš„ç±»åˆ«, 'b' ä»£è¡¨æ˜¯ä¸€ä¸ªå•ç‹¬åµŒå¥—çš„ä½œç”¨åŸŸ, 'i' 'e' 'w' åˆ†åˆ«ä»£è¡¨ç”± if else while äº§ç”Ÿçš„æ–°ä½œç”¨åŸŸï¼ˆä½ ä¹Ÿå¯ä»¥å–ä½ å–œæ¬¢çš„åå­—,åªæ˜¯è¿™æ ·ä¼šè¡¨æ„æ¯”è¾ƒæ¸…æ™°ï¼‰
+// table æ˜¯ä¸€å¼ å­˜æ”¾ç¬¦å·çš„è¡¨, {string: STE}, string æ˜¯æ“ä½œæ•°çš„åŸå§‹åç§°, è¡¨é¡¹ Variable Table Entry(STE), å®é™…ä¸Šå°±æ˜¯ä¸€ä¸ª IR çš„æ“ä½œæ•°,å³ STE -> Operand, åœ¨ STE ä¸­å­˜æ”¾çš„åº”è¯¥æ˜¯å˜é‡é‡å‘½ååçš„åç§°
 // map_str_ste = map<string, STE>;
 // struct STE
 // {
@@ -102,20 +102,20 @@ void frontend::SymbolTable::add_scope(Block *node)
     cout << "add_scope" << endl;
 #endif
 
-    ScopeInfo scope_info;                                        // Éú³ÉÒ»¸öĞÂµÄ×÷ÓÃÓò
-    scope_info.cnt = cnt++;                                      // µÃµ½ĞÂµÄ×÷ÓÃÓòµÄcnt
-    scope_info.name = "block_" + std::to_string(scope_info.cnt); // µÃµ½ĞÂµÄ×÷ÓÃÓòµÄnameÎª"block_ÀàĞÍ_±àºÅ"
-                                                                 // ÔÚ·­Òë³É IR µÄ¹ı³ÌÖĞÎÒÃÇĞèÒª½â¾ö²»Í¨¹ı×÷ÓÃÓòÖĞÍ¬Ãû±äÁ¿µÄÎÊÌâ, ÎÒÃÇµÄ½â¾ö·½°¸ÊÇÖØÃüÃû, Îª±äÁ¿Ãû¼ÓÉÏÓë×÷ÓÃÓòÏà¹ØµÄºó×ºÊ¹µÃÖØÃüÃûÖ®ºóµÄ±äÁ¿Ãû×ÖÔÚÒ»¸ö IR Function ÖĞÊÇ¶ÀÒ»ÎŞ¶şµÄ
-    scope_stack.push_back(scope_info);                           // ½«ĞÂµÄ×÷ÓÃÓòÑ¹Èë×÷ÓÃÓòÕ»
+    ScopeInfo scope_info;                                        // ç”Ÿæˆä¸€ä¸ªæ–°çš„ä½œç”¨åŸŸ
+    scope_info.cnt = cnt++;                                      // å¾—åˆ°æ–°çš„ä½œç”¨åŸŸçš„cnt
+    scope_info.name = "block_" + std::to_string(scope_info.cnt); // å¾—åˆ°æ–°çš„ä½œç”¨åŸŸçš„nameä¸º"block_ç±»å‹_ç¼–å·"
+                                                                 // åœ¨ç¿»è¯‘æˆ IR çš„è¿‡ç¨‹ä¸­æˆ‘ä»¬éœ€è¦è§£å†³ä¸é€šè¿‡ä½œç”¨åŸŸä¸­åŒåå˜é‡çš„é—®é¢˜, æˆ‘ä»¬çš„è§£å†³æ–¹æ¡ˆæ˜¯é‡å‘½å, ä¸ºå˜é‡ååŠ ä¸Šä¸ä½œç”¨åŸŸç›¸å…³çš„åç¼€ä½¿å¾—é‡å‘½åä¹‹åçš„å˜é‡åå­—åœ¨ä¸€ä¸ª IR Function ä¸­æ˜¯ç‹¬ä¸€æ— äºŒçš„
+    scope_stack.push_back(scope_info);                           // å°†æ–°çš„ä½œç”¨åŸŸå‹å…¥ä½œç”¨åŸŸæ ˆ
 }
-// Õâ¸öº¯ÊıµÄ×÷ÓÃÊÇÍË³öµ±Ç°×÷ÓÃÓò,ÔÚ·ûºÅ±íÖĞÉ¾³ıµ±Ç°×÷ÓÃÓò¶ÔÓ¦µÄÄÚÈİ¡£
+// è¿™ä¸ªå‡½æ•°çš„ä½œç”¨æ˜¯é€€å‡ºå½“å‰ä½œç”¨åŸŸ,åœ¨ç¬¦å·è¡¨ä¸­åˆ é™¤å½“å‰ä½œç”¨åŸŸå¯¹åº”çš„å†…å®¹ã€‚
 void frontend::SymbolTable::exit_scope()
 {
     scope_stack.pop_back();
 }
-// Õâ¸öº¯ÊıµÄ×÷ÓÃÊÇ¸ù¾İÒ»¸ö±êÊ¶·û id »ñÈ¡ËüÔÚ·ûºÅ±íÖĞµÄ×÷ÓÃÓòÏŞ¶¨Ãû¡£ÀıÈç,Èç¹û id ÊÇ "x",¶øÔÚµ±Ç°×÷ÓÃÓòÖĞÒÑ¾­ÓĞÁËÒ»¸öÍ¬Ãû±äÁ¿,Ôò·µ»Ø "scope_x"¡£
-// ÊäÈëÒ»¸ö±äÁ¿Ãû, ·µ»ØÆäÔÚµ±Ç°×÷ÓÃÓòÏÂÖØÃüÃûºóµÄÃû×Ö (Ïàµ±ÓÚ¼Óºó×º)
-// ÔÚ·­Òë³É IR µÄ¹ı³ÌÖĞÎÒÃÇĞèÒª½â¾ö²»Í¨¹ı×÷ÓÃÓòÖĞÍ¬Ãû±äÁ¿µÄÎÊÌâ, ÎÒÃÇµÄ½â¾ö·½°¸ÊÇÖØÃüÃû, Îª±äÁ¿Ãû¼ÓÉÏÓë×÷ÓÃÓòÏà¹ØµÄºó×ºÊ¹µÃÖØÃüÃûÖ®ºóµÄ±äÁ¿Ãû×ÖÔÚÒ»¸ö IR Function ÖĞÊÇ¶ÀÒ»ÎŞ¶şµÄ
+// è¿™ä¸ªå‡½æ•°çš„ä½œç”¨æ˜¯æ ¹æ®ä¸€ä¸ªæ ‡è¯†ç¬¦ id è·å–å®ƒåœ¨ç¬¦å·è¡¨ä¸­çš„ä½œç”¨åŸŸé™å®šåã€‚ä¾‹å¦‚,å¦‚æœ id æ˜¯ "x",è€Œåœ¨å½“å‰ä½œç”¨åŸŸä¸­å·²ç»æœ‰äº†ä¸€ä¸ªåŒåå˜é‡,åˆ™è¿”å› "scope_x"ã€‚
+// è¾“å…¥ä¸€ä¸ªå˜é‡å, è¿”å›å…¶åœ¨å½“å‰ä½œç”¨åŸŸä¸‹é‡å‘½ååçš„åå­— (ç›¸å½“äºåŠ åç¼€)
+// åœ¨ç¿»è¯‘æˆ IR çš„è¿‡ç¨‹ä¸­æˆ‘ä»¬éœ€è¦è§£å†³ä¸é€šè¿‡ä½œç”¨åŸŸä¸­åŒåå˜é‡çš„é—®é¢˜, æˆ‘ä»¬çš„è§£å†³æ–¹æ¡ˆæ˜¯é‡å‘½å, ä¸ºå˜é‡ååŠ ä¸Šä¸ä½œç”¨åŸŸç›¸å…³çš„åç¼€ä½¿å¾—é‡å‘½åä¹‹åçš„å˜é‡åå­—åœ¨ä¸€ä¸ª IR Function ä¸­æ˜¯ç‹¬ä¸€æ— äºŒçš„
 string frontend::SymbolTable::get_scoped_name(string id) const
 {
     if (scope_stack.empty())
@@ -126,46 +126,46 @@ string frontend::SymbolTable::get_scoped_name(string id) const
         return id;
     }
 #ifdef DEBUG_SEMANTIC
-    cout << "µ±Ç°×÷ÓÃÓòÊÇ" << scope_stack.back().name << endl;
-    cout << "¶¨ÒåµÄÊ±ºò¼ì²éÔÚÇ¶Ì×Ö®Íâ×÷ÓÃÓòÖĞÊÇ·ñÒÑ´æÔÚÖØÃüÃûµÄ±äÁ¿" << endl;
+    cout << "å½“å‰ä½œç”¨åŸŸæ˜¯" << scope_stack.back().name << endl;
+    cout << "å®šä¹‰çš„æ—¶å€™æ£€æŸ¥åœ¨åµŒå¥—ä¹‹å¤–ä½œç”¨åŸŸä¸­æ˜¯å¦å·²å­˜åœ¨é‡å‘½åçš„å˜é‡" << endl;
 #endif
     for (int i = scope_stack.size() - 1; i >= 0; i--)
     {
 #ifdef DEBUG_SEMANTIC
-        cout << "ÔÚ×÷ÓÃÓò" << scope_stack[i].name << "ÖĞ²éÕÒ" << id << endl;
+        cout << "åœ¨ä½œç”¨åŸŸ" << scope_stack[i].name << "ä¸­æŸ¥æ‰¾" << id << endl;
 #endif
         auto iter = scope_stack[i].table.find(id);
         if (iter != scope_stack[i].table.end())
         {
 #ifdef DEBUG_SEMANTIC
-            cout << "ÔÚ×÷ÓÃÓò" << scope_stack[i].name << "ÖĞÕÒµ½ÁË" << id << endl;
+            cout << "åœ¨ä½œç”¨åŸŸ" << scope_stack[i].name << "ä¸­æ‰¾åˆ°äº†" << id << endl;
 #endif
             return id + "_" + to_string(scope_stack.back().cnt);
         }
     }
-// ±äÁ¿ÔÚµ±Ç°×÷ÓÃÓòÄÚÃ»ÓĞ±»¶¨Òå£ºÈç¹ûµ±Ç°×÷ÓÃÓòÄÚ²»´æÔÚÓë¸Ã±äÁ¿ÃûÏàÍ¬µÄ¶¨Òå,Ôò²»ĞèÒª½øĞĞÖØÃüÃû¡£ÕâÒâÎ¶×Å¸Ã±äÁ¿ÊÇÔÚÍâ²¿×÷ÓÃÓòÖĞ¶¨ÒåµÄ»òÕß»¹Î´¶¨Òå,Òò´ËÎŞĞèÖØÃüÃû¡£
-// ±äÁ¿ÔÚµ±Ç°×÷ÓÃÓòÄÚÓĞ¶à¸ö¶¨Òå£ºÈç¹ûµ±Ç°×÷ÓÃÓòÄÚ´æÔÚ¶à¸öÓë¸Ã±äÁ¿ÃûÏàÍ¬µÄ¶¨Òå,¼´³öÏÖÁËÖØÃûÇé¿ö,ÄÇÃ´ĞèÒª½øĞĞÖØÃüÃû¡£ÒòÎªÔÚ·­Òë³É IR µÄ¹ı³ÌÖĞ,±äÁ¿ÃûÔÚÒ»¸ö×÷ÓÃÓòÄÚ±ØĞëÊÇÎ¨Ò»µÄ,·ñÔò»áÒıÆğÃüÃû³åÍ»¡£
-// ±äÁ¿ÔÚÇ¶Ì×µÄ×÷ÓÃÓòÖĞ±»¶¨Òå£ºÈç¹û±äÁ¿ÔÚÇ¶Ì×µÄ×÷ÓÃÓòÖĞ±»¶¨Òå,²¢ÇÒÍâ²ã×÷ÓÃÓòÖĞÒ²´æÔÚÓë¸Ã±äÁ¿ÃûÏàÍ¬µÄ¶¨Òå,ÄÇÃ´ĞèÒª½øĞĞÖØÃüÃû¡£ÒòÎªÔÚÄÚ²ã×÷ÓÃÓòÖĞ,ĞèÒªÇø·ÖÓëÍâ²ã×÷ÓÃÓòÖĞÍ¬ÃûµÄ±äÁ¿,ÒÔÈ·±£±äÁ¿ÒıÓÃµÄÕıÈ·ĞÔ¡£
+// å˜é‡åœ¨å½“å‰ä½œç”¨åŸŸå†…æ²¡æœ‰è¢«å®šä¹‰ï¼šå¦‚æœå½“å‰ä½œç”¨åŸŸå†…ä¸å­˜åœ¨ä¸è¯¥å˜é‡åç›¸åŒçš„å®šä¹‰,åˆ™ä¸éœ€è¦è¿›è¡Œé‡å‘½åã€‚è¿™æ„å‘³ç€è¯¥å˜é‡æ˜¯åœ¨å¤–éƒ¨ä½œç”¨åŸŸä¸­å®šä¹‰çš„æˆ–è€…è¿˜æœªå®šä¹‰,å› æ­¤æ— éœ€é‡å‘½åã€‚
+// å˜é‡åœ¨å½“å‰ä½œç”¨åŸŸå†…æœ‰å¤šä¸ªå®šä¹‰ï¼šå¦‚æœå½“å‰ä½œç”¨åŸŸå†…å­˜åœ¨å¤šä¸ªä¸è¯¥å˜é‡åç›¸åŒçš„å®šä¹‰,å³å‡ºç°äº†é‡åæƒ…å†µ,é‚£ä¹ˆéœ€è¦è¿›è¡Œé‡å‘½åã€‚å› ä¸ºåœ¨ç¿»è¯‘æˆ IR çš„è¿‡ç¨‹ä¸­,å˜é‡ååœ¨ä¸€ä¸ªä½œç”¨åŸŸå†…å¿…é¡»æ˜¯å”¯ä¸€çš„,å¦åˆ™ä¼šå¼•èµ·å‘½åå†²çªã€‚
+// å˜é‡åœ¨åµŒå¥—çš„ä½œç”¨åŸŸä¸­è¢«å®šä¹‰ï¼šå¦‚æœå˜é‡åœ¨åµŒå¥—çš„ä½œç”¨åŸŸä¸­è¢«å®šä¹‰,å¹¶ä¸”å¤–å±‚ä½œç”¨åŸŸä¸­ä¹Ÿå­˜åœ¨ä¸è¯¥å˜é‡åç›¸åŒçš„å®šä¹‰,é‚£ä¹ˆéœ€è¦è¿›è¡Œé‡å‘½åã€‚å› ä¸ºåœ¨å†…å±‚ä½œç”¨åŸŸä¸­,éœ€è¦åŒºåˆ†ä¸å¤–å±‚ä½œç”¨åŸŸä¸­åŒåçš„å˜é‡,ä»¥ç¡®ä¿å˜é‡å¼•ç”¨çš„æ­£ç¡®æ€§ã€‚
 #ifdef DEBUG_SEMANTIC
-    cout << "¶¨ÒåÊ±²»ĞèÒªÖØÃüÃû,¹Ê·µ»ØÔ­Öµ" << id << endl;
+    cout << "å®šä¹‰æ—¶ä¸éœ€è¦é‡å‘½å,æ•…è¿”å›åŸå€¼" << id << endl;
 #endif
     return id;
 }
 string frontend::SymbolTable::get_scoped_name_use(string id) const
 {
 #ifdef DEBUG_SEMANTIC
-    cout << "Ê¹ÓÃµÄÊ±ºòÖğ²ãÏòÇ°¼ì²éÊÇ·ñ´æÔÚÔ­ÖµÒÔ¼°ÖØÃüÃûµÄÖµ" << endl;
+    cout << "ä½¿ç”¨çš„æ—¶å€™é€å±‚å‘å‰æ£€æŸ¥æ˜¯å¦å­˜åœ¨åŸå€¼ä»¥åŠé‡å‘½åçš„å€¼" << endl;
 #endif
     for (int i = scope_stack.size() - 1; i >= 0; i--)
     {
 #ifdef DEBUG_SEMANTIC
-        cout << "ÔÚ×÷ÓÃÓò" << scope_stack[i].name << "ÖĞ²éÕÒ" << id << endl;
+        cout << "åœ¨ä½œç”¨åŸŸ" << scope_stack[i].name << "ä¸­æŸ¥æ‰¾" << id << endl;
 #endif
         auto iter = scope_stack[i].table.find(id);
         if (iter != scope_stack[i].table.end())
         {
 #ifdef DEBUG_SEMANTIC
-            cout << "ÔÚ×÷ÓÃÓò" << scope_stack[i].name << "ÖĞÕÒµ½ÁË" << id << endl;
+            cout << "åœ¨ä½œç”¨åŸŸ" << scope_stack[i].name << "ä¸­æ‰¾åˆ°äº†" << id << endl;
 #endif
             return id;
         }
@@ -173,18 +173,18 @@ string frontend::SymbolTable::get_scoped_name_use(string id) const
         if (iter != scope_stack[i].table.end())
         {
 #ifdef DEBUG_SEMANTIC
-            cout << "ÔÚ×÷ÓÃÓò" << scope_stack[i].name << "ÖĞÕÒµ½ÁË" << id + "_" + to_string(scope_stack[i].cnt) << endl;
+            cout << "åœ¨ä½œç”¨åŸŸ" << scope_stack[i].name << "ä¸­æ‰¾åˆ°äº†" << id + "_" + to_string(scope_stack[i].cnt) << endl;
 #endif
             return id + "_" + to_string(scope_stack[i].cnt);
         }
     }
     return id;
 }
-// Õâ¸öº¯ÊıµÄ×÷ÓÃÊÇ¸ù¾İÒ»¸ö±êÊ¶·û id »ñÈ¡Ëü¶ÔÓ¦µÄ²Ù×÷Êı¡£Èç¹ûÕâ¸ö±êÊ¶·ûÊÇÒ»¸ö±äÁ¿,Ôò·µ»ØÒ»¸ö¼Ä´æÆ÷»òÕ»ÉÏµÄÎ»ÖÃ,Èç¹ûÊÇÒ»¸ö³£Á¿,Ôò·µ»ØËüµÄÖµ¡£
-// ÔÚµ±Ç°×÷ÓÃÓò²éÕÒÕâ¸ö±êÊ¶·ûÊÇ·ñÒÑ¾­¶¨Òå,Èç¹ûÒÑ¾­¶¨Òå,Ôò·µ»ØËüµÄ²Ù×÷Êı¡£
-// Èç¹ûµ±Ç°×÷ÓÃÓòÃ»ÓĞ¶¨ÒåÕâ¸ö±êÊ¶·û,Ôòµİ¹éµØÔÚÍâ²ã×÷ÓÃÓòÖĞ²éÕÒ,Ö±µ½ÕÒµ½»òÕßµ½È«¾Ö×÷ÓÃÓòÎªÖ¹¡£
-// Èç¹ûÈ«¾Ö×÷ÓÃÓòÒ²Ã»ÓĞ¶¨ÒåÕâ¸ö±êÊ¶·û,ÔòËµÃ÷ÕâÊÇÒ»¸öÎ´ÉùÃ÷µÄ±êÊ¶·û,ĞèÒª±¨´í²¢·µ»ØÒ»¸ö´íÎóµÄ²Ù×÷Êı¡£
-// ÊäÈëÒ»¸ö±äÁ¿Ãû, ÔÚ·ûºÅ±íÖĞÑ°ÕÒ×î½üµÄÍ¬Ãû±äÁ¿, ·µ»Ø¶ÔÓ¦µÄ Operand(×¢Òâ,´Ë Operand µÄ name ÊÇÖØÃüÃûºóµÄ)
+// è¿™ä¸ªå‡½æ•°çš„ä½œç”¨æ˜¯æ ¹æ®ä¸€ä¸ªæ ‡è¯†ç¬¦ id è·å–å®ƒå¯¹åº”çš„æ“ä½œæ•°ã€‚å¦‚æœè¿™ä¸ªæ ‡è¯†ç¬¦æ˜¯ä¸€ä¸ªå˜é‡,åˆ™è¿”å›ä¸€ä¸ªå¯„å­˜å™¨æˆ–æ ˆä¸Šçš„ä½ç½®,å¦‚æœæ˜¯ä¸€ä¸ªå¸¸é‡,åˆ™è¿”å›å®ƒçš„å€¼ã€‚
+// åœ¨å½“å‰ä½œç”¨åŸŸæŸ¥æ‰¾è¿™ä¸ªæ ‡è¯†ç¬¦æ˜¯å¦å·²ç»å®šä¹‰,å¦‚æœå·²ç»å®šä¹‰,åˆ™è¿”å›å®ƒçš„æ“ä½œæ•°ã€‚
+// å¦‚æœå½“å‰ä½œç”¨åŸŸæ²¡æœ‰å®šä¹‰è¿™ä¸ªæ ‡è¯†ç¬¦,åˆ™é€’å½’åœ°åœ¨å¤–å±‚ä½œç”¨åŸŸä¸­æŸ¥æ‰¾,ç›´åˆ°æ‰¾åˆ°æˆ–è€…åˆ°å…¨å±€ä½œç”¨åŸŸä¸ºæ­¢ã€‚
+// å¦‚æœå…¨å±€ä½œç”¨åŸŸä¹Ÿæ²¡æœ‰å®šä¹‰è¿™ä¸ªæ ‡è¯†ç¬¦,åˆ™è¯´æ˜è¿™æ˜¯ä¸€ä¸ªæœªå£°æ˜çš„æ ‡è¯†ç¬¦,éœ€è¦æŠ¥é”™å¹¶è¿”å›ä¸€ä¸ªé”™è¯¯çš„æ“ä½œæ•°ã€‚
+// è¾“å…¥ä¸€ä¸ªå˜é‡å, åœ¨ç¬¦å·è¡¨ä¸­å¯»æ‰¾æœ€è¿‘çš„åŒåå˜é‡, è¿”å›å¯¹åº”çš„ Operand(æ³¨æ„,æ­¤ Operand çš„ name æ˜¯é‡å‘½ååçš„)
 Operand frontend::SymbolTable::get_operand(string id) const
 {
     auto iter = get_lib_funcs()->find(id);
@@ -192,26 +192,26 @@ Operand frontend::SymbolTable::get_operand(string id) const
     {
         return Operand(id, iter->second->returnType);
     }
-    // const auto &current_scope = scope_stack.back(); // µ±Ç°×÷ÓÃÓò
-    // auto it = current_scope.table.find(id);         // µ±Ç°×÷ÓÃÓò²éÕÒid
+    // const auto &current_scope = scope_stack.back(); // å½“å‰ä½œç”¨åŸŸ
+    // auto it = current_scope.table.find(id);         // å½“å‰ä½œç”¨åŸŸæŸ¥æ‰¾id
 
-    // rbegin()ÊÇÈİÆ÷µÄ³ÉÔ±º¯Êı,·µ»ØÒ»¸ö·´Ïòµü´úÆ÷,Ö¸ÏòÈİÆ÷ÖĞµÄ×îºóÒ»¸öÔªËØ¡£
-    // rend()ÊÇÈİÆ÷µÄ³ÉÔ±º¯Êı,·µ»ØÒ»¸ö·´Ïòµü´úÆ÷,Ö¸ÏòÈİÆ÷ÖĞµÄµÚÒ»¸öÔªËØÖ®Ç°µÄÎ»ÖÃ¡£
-    // Õâ¶Î´úÂëµÄ×÷ÓÃÊÇ´Ó×îºóÒ»¸ö×÷ÓÃÓò¿ªÊ¼ÏòÇ°±éÀú×÷ÓÃÓòÕ»ÖĞµÄÔªËØ,ÒÔ²éÕÒ·ûºÅ±íÖĞµÄ±êÊ¶·û¡£ËüÅÅ³ıÁË×îºóÒ»¸ö×÷ÓÃÓò,¼´µ±Ç°×÷ÓÃÓò¡£
+    // rbegin()æ˜¯å®¹å™¨çš„æˆå‘˜å‡½æ•°,è¿”å›ä¸€ä¸ªåå‘è¿­ä»£å™¨,æŒ‡å‘å®¹å™¨ä¸­çš„æœ€åä¸€ä¸ªå…ƒç´ ã€‚
+    // rend()æ˜¯å®¹å™¨çš„æˆå‘˜å‡½æ•°,è¿”å›ä¸€ä¸ªåå‘è¿­ä»£å™¨,æŒ‡å‘å®¹å™¨ä¸­çš„ç¬¬ä¸€ä¸ªå…ƒç´ ä¹‹å‰çš„ä½ç½®ã€‚
+    // è¿™æ®µä»£ç çš„ä½œç”¨æ˜¯ä»æœ€åä¸€ä¸ªä½œç”¨åŸŸå¼€å§‹å‘å‰éå†ä½œç”¨åŸŸæ ˆä¸­çš„å…ƒç´ ,ä»¥æŸ¥æ‰¾ç¬¦å·è¡¨ä¸­çš„æ ‡è¯†ç¬¦ã€‚å®ƒæ’é™¤äº†æœ€åä¸€ä¸ªä½œç”¨åŸŸ,å³å½“å‰ä½œç”¨åŸŸã€‚
     for (auto it = scope_stack.rbegin(); it != scope_stack.rend(); ++it)
     {
         auto iter = it->table.find(id);
-        // ÕÒµ½±êÊ¶·ûÔÚ¸Ã×÷ÓÃÓòÖĞ¶¨Òå
+        // æ‰¾åˆ°æ ‡è¯†ç¬¦åœ¨è¯¥ä½œç”¨åŸŸä¸­å®šä¹‰
         if (iter != it->table.end())
-        { // ÕÒµ½ÁË¶¨Òå,Éú³ÉĞÂµÄ²Ù×÷Êı²¢·µ»Ø
+        { // æ‰¾åˆ°äº†å®šä¹‰,ç”Ÿæˆæ–°çš„æ“ä½œæ•°å¹¶è¿”å›
             return iter->second.operand;
         }
     }
-    // ±êÊ¶·ûÎ´¶¨Òå
+    // æ ‡è¯†ç¬¦æœªå®šä¹‰
     return Operand(id);
 }
-// Õâ¸öº¯ÊıµÄ×÷ÓÃÊÇ¸ù¾İÒ»¸ö±êÊ¶·û id »ñÈ¡ËüÔÚ·ûºÅ±íÖĞ¶ÔÓ¦µÄ·ûºÅ±íÏî¡£
-// ÊäÈëÒ»¸ö±äÁ¿Ãû, ÔÚ·ûºÅ±íÖĞÑ°ÕÒ×î½üµÄÍ¬Ãû±äÁ¿, ·µ»Ø STE
+// è¿™ä¸ªå‡½æ•°çš„ä½œç”¨æ˜¯æ ¹æ®ä¸€ä¸ªæ ‡è¯†ç¬¦ id è·å–å®ƒåœ¨ç¬¦å·è¡¨ä¸­å¯¹åº”çš„ç¬¦å·è¡¨é¡¹ã€‚
+// è¾“å…¥ä¸€ä¸ªå˜é‡å, åœ¨ç¬¦å·è¡¨ä¸­å¯»æ‰¾æœ€è¿‘çš„åŒåå˜é‡, è¿”å› STE
 frontend::STE frontend::SymbolTable::get_ste(string id) const
 {
     for (auto it = scope_stack.rbegin(); it != scope_stack.rend(); it++)
@@ -222,31 +222,31 @@ frontend::STE frontend::SymbolTable::get_ste(string id) const
             return iter->second;
         }
     }
-    // ±êÊ¶·ûSTE
+    // æ ‡è¯†ç¬¦STE
     return STE();
 }
-// Õâ¸öÀàÊÇÓïÒå·ÖÎöÆ÷µÄÖ÷Ìå²¿·Ö,ËüÓĞÒ»¸öË½ÓĞ±äÁ¿ symbol_table,±íÊ¾ÓïÒå·ÖÎö¹ı³ÌÖĞµÄ·ûºÅ±í,ÒÔ¼°Ò»¸öË½ÓĞ±äÁ¿ tmp_cnt,±íÊ¾Éú³ÉÁÙÊ±±äÁ¿Ê±Ê¹ÓÃµÄ¼ÆÊıÆ÷¡£
+// è¿™ä¸ªç±»æ˜¯è¯­ä¹‰åˆ†æå™¨çš„ä¸»ä½“éƒ¨åˆ†,å®ƒæœ‰ä¸€ä¸ªç§æœ‰å˜é‡ symbol_table,è¡¨ç¤ºè¯­ä¹‰åˆ†æè¿‡ç¨‹ä¸­çš„ç¬¦å·è¡¨,ä»¥åŠä¸€ä¸ªç§æœ‰å˜é‡ tmp_cnt,è¡¨ç¤ºç”Ÿæˆä¸´æ—¶å˜é‡æ—¶ä½¿ç”¨çš„è®¡æ•°å™¨ã€‚
 frontend::Analyzer::Analyzer() : tmp_cnt(0), symbol_table()
 {
 }
-// Ëü½ÓÊÜÒ»¸ö¸ù½Úµã root,·µ»ØÒ»¸ö IR ³ÌĞò¡£Õâ¸öº¯Êı»áµİ¹éµØ±éÀúÕû¿ÃÓï·¨Ê÷,²¢µ÷ÓÃÒ»Ğ©¸¨Öúº¯ÊıÀ´ÊµÏÖ²»Í¬ÀàĞÍµÄÓïÒå·ÖÎö¡£
+// å®ƒæ¥å—ä¸€ä¸ªæ ¹èŠ‚ç‚¹ root,è¿”å›ä¸€ä¸ª IR ç¨‹åºã€‚è¿™ä¸ªå‡½æ•°ä¼šé€’å½’åœ°éå†æ•´æ£µè¯­æ³•æ ‘,å¹¶è°ƒç”¨ä¸€äº›è¾…åŠ©å‡½æ•°æ¥å®ç°ä¸åŒç±»å‹çš„è¯­ä¹‰åˆ†æã€‚
 ir::Program frontend::Analyzer::get_ir_program(CompUnit *root)
 {
     ir::Program program;
 
-    // Ìí¼ÓÈ«¾Öº¯Êı
+    // æ·»åŠ å…¨å±€å‡½æ•°
     function_temp = Function("global", Type::null);
 
-    // Ìí¼ÓÈ«¾Ö×÷ÓÃÓò
-    ScopeInfo scope_info;       // Éú³ÉÒ»¸öĞÂµÄ×÷ÓÃÓò
-    scope_info.cnt = 0;         // µÃµ½ĞÂµÄ×÷ÓÃÓòµÄcnt
-    scope_info.name = "global"; // µÃµ½ĞÂµÄ×÷ÓÃÓòµÄname
+    // æ·»åŠ å…¨å±€ä½œç”¨åŸŸ
+    ScopeInfo scope_info;       // ç”Ÿæˆä¸€ä¸ªæ–°çš„ä½œç”¨åŸŸ
+    scope_info.cnt = 0;         // å¾—åˆ°æ–°çš„ä½œç”¨åŸŸçš„cnt
+    scope_info.name = "global"; // å¾—åˆ°æ–°çš„ä½œç”¨åŸŸçš„name
     symbol_table.scope_stack.push_back(scope_info);
 #ifdef DEBUG_SEMANTIC
     cout << "add scope_info " << symbol_table.scope_stack.back().name << " in symbol table" << endl;
 #endif
 
-    // ±éÀú½Úµã
+    // éå†èŠ‚ç‚¹
     analysisCompUnit(root, program);
 
     return program;
@@ -257,7 +257,7 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin compunit" << endl;
 #endif
-    // ¸ù¾İ¹Û²ì,CompUnitµÄµÚÒ»¸öº¢×Ó½ÚµãÊÇDeclÖ»ÄÜÊÇÈ«¾Ö¸³ÖµÓï¾ä,µÚÒ»¸öº¢×Ó½ÚµãÊÇFuncDefÖ»ÄÜÊÇº¯Êı¶¨Òå
+    // æ ¹æ®è§‚å¯Ÿ,CompUnitçš„ç¬¬ä¸€ä¸ªå­©å­èŠ‚ç‚¹æ˜¯Declåªèƒ½æ˜¯å…¨å±€èµ‹å€¼è¯­å¥,ç¬¬ä¸€ä¸ªå­©å­èŠ‚ç‚¹æ˜¯FuncDefåªèƒ½æ˜¯å‡½æ•°å®šä¹‰
     if (root->children[0]->type == NodeType::DECL)
     {
         ANALYSIS(decl, Decl, 0);
@@ -274,10 +274,10 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
     }
     else
     {
-        // ÔÚĞÂµÄº¯Êı¶¨ÒåÖ®Ç°
+        // åœ¨æ–°çš„å‡½æ•°å®šä¹‰ä¹‹å‰
         if (function_temp.name == "global")
         {
-            // Ìí¼ÓÈ«¾Ö±äÁ¿
+            // æ·»åŠ å…¨å±€å˜é‡
             for (auto &iter : symbol_table.scope_stack[0].table)
             {
                 auto item = result_arr.find(iter.first);
@@ -287,7 +287,11 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
                     program.globalVal.push_back(g);
                 }
                 else
+                {
+                    // åˆ¤æ–­ä¸€ä¸‹æ˜¯ä¸æ˜¯ä¸´æ—¶å˜é‡
+                    cout << iter.first << "æ˜¯å…¨å±€å˜é‡" << endl;
                     program.globalVal.push_back(iter.second.operand);
+                }
             }
             Instruction *globalreturn = new Instruction(ir::Operand(),
                                                         ir::Operand(),
@@ -375,8 +379,8 @@ void frontend::Analyzer::analysisConstDecl(ConstDecl *root, ir::Program &program
     cout << "begin constdecl" << endl;
 #endif
     ANALYSIS(btype, BType, 1);
-    // desµÄtypeÏÈ¶¨ÒåºÃ
-    Operand des("0", btype->t); // Ä¿µÄÎ´Öª,ÀàĞÍÒÑÖª
+    // desçš„typeå…ˆå®šä¹‰å¥½
+    Operand des("0", btype->t); // ç›®çš„æœªçŸ¥,ç±»å‹å·²çŸ¥
     Operand op1;
     Operator op;
     if (btype->t == Type::Int)
@@ -486,10 +490,10 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
     Inst.back()->des.name = ident->v;
     index = 1;
     GET_CHILD_PTR(l_or_a, Term, index);
-    // ÊÇÊı×é,ĞèÒª¸Ä±ädesµÄtype
+    // æ˜¯æ•°ç»„,éœ€è¦æ”¹å˜desçš„type
     if (index < len - 2 && l_or_a->token.type == TokenType::LBRACK)
     {
-        // ÕâÀï¿¼ÂÇµ½¸³ÖµµÄÊ±ºòºóÃæ¿ÉÄÜÊÇÏÈ´æÔÚµÄÖµ,¹Ê¶ÔÔ­±¾Ö¸Áî±¸·İ,ÖØĞÂÌîÈë
+        // è¿™é‡Œè€ƒè™‘åˆ°èµ‹å€¼çš„æ—¶å€™åé¢å¯èƒ½æ˜¯å…ˆå­˜åœ¨çš„å€¼,æ•…å¯¹åŸæœ¬æŒ‡ä»¤å¤‡ä»½,é‡æ–°å¡«å…¥
         Instruction *old_inst = Inst.back();
         Inst.pop_back();
         pc--;
@@ -527,7 +531,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         vector<int> dim;
         while (index < len - 2 && l_or_a->token.type == TokenType::LBRACK)
         {
-            // op1µÄnameºÍtype
+            // op1çš„nameå’Œtype
             index++;
             ANALYSIS(constexp, ConstExp, index);
             if (!constexp->is_computable)
@@ -544,7 +548,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
                 {
                     dim.push_back(it->second);
 #ifdef DEBUG_SEMANTIC
-                    cout << "array µÄÆäÖĞÒ»¸ö½á¹¹ÈçÏÂ" << endl;
+                    cout << "array çš„å…¶ä¸­ä¸€ä¸ªç»“æ„å¦‚ä¸‹" << endl;
 #endif
                 }
             }
@@ -588,7 +592,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
         pc++;
 #ifdef DEBUG_SEMANTIC
         cout << all << "           " << toString(Inst.back()->op) << endl;
-        cout << "µÃµ½Êı×é" << Inst.back()->des.name << "µÄ´óĞ¡ÊÇ" << to_string(all) << endl;
+        cout << "å¾—åˆ°æ•°ç»„" << Inst.back()->des.name << "çš„å¤§å°æ˜¯" << to_string(all) << endl;
 #endif
 
         Operand op = Inst.back()->des;
@@ -602,7 +606,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
 #endif
         result_arr.insert({op.name, arr_len});
 #ifdef DEBUG_SEMANTIC
-        cout << "¿ªÊ¼Êı×é³õÊ¼»¯,µÃµ½µÄÊı×éµÄ´óĞ¡ÊÇ" << arr_len << endl;
+        cout << "å¼€å§‹æ•°ç»„åˆå§‹åŒ–,å¾—åˆ°çš„æ•°ç»„çš„å¤§å°æ˜¯" << arr_len << endl;
 #endif
         for (int i = 0; i < arr_len; i++)
         {
@@ -617,8 +621,8 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
             cout << "add store" << endl;
 #endif
         }
-        // Êı×éÇÒ¸³Öµ
-        // ´æÊıÖ¸Áî,Ö¸ÏòÊı×éÖĞ´æÊı¡£µÚÒ»¸ö²Ù×÷ÊıÎªÊı×éÃû,µÚ¶ş¸ö²Ù×÷ÊıÎªÒª´æÊıËùÔÚÊı×éÏÂ±ê,Ä¿µÄ²Ù×÷ÊıÎª´æÈëµÄÊı¡£
+        // æ•°ç»„ä¸”èµ‹å€¼
+        // å­˜æ•°æŒ‡ä»¤,æŒ‡å‘æ•°ç»„ä¸­å­˜æ•°ã€‚ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºæ•°ç»„å,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ºè¦å­˜æ•°æ‰€åœ¨æ•°ç»„ä¸‹æ ‡,ç›®çš„æ“ä½œæ•°ä¸ºå­˜å…¥çš„æ•°ã€‚
         if (index < len)
         {
             index++;
@@ -626,10 +630,10 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
             index++;
         }
     }
-    // ²»ÊÇÊı×é,ÄÇ¾ÍÒ»¶¨ÊÇ¸³Öµ
+    // ä¸æ˜¯æ•°ç»„,é‚£å°±ä¸€å®šæ˜¯èµ‹å€¼
     else
     {
-        // ÕâÀï¿¼ÂÇµ½¸³ÖµµÄÊ±ºòºóÃæ¿ÉÄÜÊÇÏÈ´æÔÚµÄÖµ,¹Ê¶ÔÔ­±¾Ö¸Áî±¸·İ,ÖØĞÂÌîÈë
+        // è¿™é‡Œè€ƒè™‘åˆ°èµ‹å€¼çš„æ—¶å€™åé¢å¯èƒ½æ˜¯å…ˆå­˜åœ¨çš„å€¼,æ•…å¯¹åŸæœ¬æŒ‡ä»¤å¤‡ä»½,é‡æ–°å¡«å…¥
         Instruction *old_inst = Inst.back();
         Inst.pop_back();
         pc--;
@@ -696,7 +700,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
             {
                 result.insert({old_inst->des.name, it->second});
 #ifdef DEBUG_SEMANTIC
-                cout << "resultÖĞ½« " << old_inst->des.name << " ºÍ " << it->second << " °ó¶¨" << endl;
+                cout << "resultä¸­å°† " << old_inst->des.name << " å’Œ " << it->second << " ç»‘å®š" << endl;
 #endif
             }
 
@@ -704,7 +708,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, ir::Program &program)
             {
                 result.insert({Inst.back()->des.name, stoi(constinitval->v)});
 #ifdef DEBUG_SEMANTIC
-                cout << "resultÖĞ½« " << Inst.back()->des.name << " ºÍ " << stoi(constinitval->v) << " °ó¶¨" << endl;
+                cout << "resultä¸­å°† " << Inst.back()->des.name << " å’Œ " << stoi(constinitval->v) << " ç»‘å®š" << endl;
 #endif
             }
         }
@@ -737,7 +741,7 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
     }
     else
     {
-        Operand des = Inst.back()->op1; // allocÖ¸ÁîµÄdes´æÃû³ÆºÍÀàĞÍ
+        Operand des = Inst.back()->op1; // allocæŒ‡ä»¤çš„deså­˜åç§°å’Œç±»å‹
         Type t;
         if (des.type == Type::IntPtr)
         {
@@ -749,7 +753,7 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, ir::Program &p
         }
         if (root->children[1]->type == NodeType::CONSTINITVAL)
         {
-            // ´æÊıÖ¸Áî,Ö¸ÏòÊı×éÖĞ´æÊı¡£µÚÒ»¸ö²Ù×÷ÊıÎªÊı×éÃû,µÚ¶ş¸ö²Ù×÷ÊıÎªÒª´æÊıËùÔÚÊı×éÏÂ±ê,Ä¿µÄ²Ù×÷ÊıÎª´æÈëµÄÊı
+            // å­˜æ•°æŒ‡ä»¤,æŒ‡å‘æ•°ç»„ä¸­å­˜æ•°ã€‚ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºæ•°ç»„å,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ºè¦å­˜æ•°æ‰€åœ¨æ•°ç»„ä¸‹æ ‡,ç›®çš„æ“ä½œæ•°ä¸ºå­˜å…¥çš„æ•°
             int index = 1;
             int arr_index = 0;
 
@@ -823,8 +827,8 @@ void frontend::Analyzer::analysisVarDecl(VarDecl *root, ir::Program &program)
     cout << "begin vardecl" << endl;
 #endif
     ANALYSIS(btype, BType, 0);
-    // desµÄtypeÏÈ¶¨ÒåºÃ
-    Operand des("0", btype->t); // Ä¿µÄÎ´Öª,ÀàĞÍÒÑÖª
+    // desçš„typeå…ˆå®šä¹‰å¥½
+    Operand des("0", btype->t); // ç›®çš„æœªçŸ¥,ç±»å‹å·²çŸ¥
     Operand op1;
     Operator op;
     if (btype->t == Type::Int)
@@ -903,13 +907,13 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
     cout << "begin vardef" << endl;
 #endif
-    // desµÄnameÏÈ¶¨ÒåºÃ
+    // desçš„nameå…ˆå®šä¹‰å¥½
     GET_CHILD_PTR(ident, Term, 0);
     // todo
     // ident->v = ident->token.value;
     ident->v = symbol_table.get_scoped_name(ident->token.value);
     Inst.back()->des.name = ident->v;
-    int key = 0; // ÓÃÀ´ÅĞ¶Ïµ±Ç°ÊÇ·ñÊÇÕûÊı¸³Öµ
+    int key = 0; // ç”¨æ¥åˆ¤æ–­å½“å‰æ˜¯å¦æ˜¯æ•´æ•°èµ‹å€¼
     if (Inst.back()->des.type == Type::Int)
     {
         key = 1;
@@ -919,10 +923,10 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
     if (index < len)
     {
         GET_CHILD_PTR(l_or_a, Term, index);
-        // ÊÇÊı×é,ĞèÒª¸Ä±ädesµÄtype
+        // æ˜¯æ•°ç»„,éœ€è¦æ”¹å˜desçš„type
         if (index < len && l_or_a->token.type == TokenType::LBRACK)
         {
-            // ÕâÀï¿¼ÂÇµ½¸³ÖµµÄÊ±ºòºóÃæ¿ÉÄÜÊÇÏÈ´æÔÚµÄÖµ,¹Ê¶ÔÔ­±¾Ö¸Áî±¸·İ,ÖØĞÂÌîÈë
+            // è¿™é‡Œè€ƒè™‘åˆ°èµ‹å€¼çš„æ—¶å€™åé¢å¯èƒ½æ˜¯å…ˆå­˜åœ¨çš„å€¼,æ•…å¯¹åŸæœ¬æŒ‡ä»¤å¤‡ä»½,é‡æ–°å¡«å…¥
             Instruction *old_inst = Inst.back();
             Inst.pop_back();
             pc--;
@@ -962,10 +966,10 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             vector<int> dim;
             while (index < len && l_or_a->token.type == TokenType::LBRACK)
             {
-                // op1µÄnameºÍtype
+                // op1çš„nameå’Œtype
                 index++;
                 ANALYSIS(constexp, ConstExp, index);
-                if (!constexp->is_computable) // Î´ÖªÊı,Ö±½ÓÏà³Ë
+                if (!constexp->is_computable) // æœªçŸ¥æ•°,ç›´æ¥ç›¸ä¹˜
                 {
                     id = "t" + to_string(counter++);
                     inst = new Instruction(mul_temp, Operand(constexp->v, Type::Int), Operand(id, Type::Int), Operator::mul);
@@ -979,7 +983,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                     {
                         dim.push_back(it->second);
 #ifdef DEBUG_SEMANTIC
-                        cout << "array µÄÆäÖĞÒ»¸ö½á¹¹ÈçÏÂ" << endl;
+                        cout << "array çš„å…¶ä¸­ä¸€ä¸ªç»“æ„å¦‚ä¸‹" << endl;
                         cout << "dim add " << it->second << endl;
 #endif
                     }
@@ -1020,7 +1024,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                     }
                 }
             }
-            // ½«Êı×éÃû³ÆÓëÆäÎ¬¶È°ó¶¨
+            // å°†æ•°ç»„åç§°ä¸å…¶ç»´åº¦ç»‘å®š
             arr_dim[arr_name] = dim_index;
 
             int all = 1;
@@ -1051,7 +1055,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 #endif
             result_arr.insert({op.name, arr_len});
 #ifdef DEBUG_SEMANTIC
-            cout << "¿ªÊ¼Êı×é³õÊ¼»¯,µÃµ½µÄÊı×éµÄ´óĞ¡ÊÇ" << arr_len << endl;
+            cout << "å¼€å§‹æ•°ç»„åˆå§‹åŒ–,å¾—åˆ°çš„æ•°ç»„çš„å¤§å°æ˜¯" << arr_len << endl;
 #endif
             for (int i = 0; i < arr_len; i++)
             {
@@ -1067,8 +1071,8 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
 #endif
             }
 
-            // Êı×éÇÒ¸³Öµ
-            // ´æÊıÖ¸Áî,Ö¸ÏòÊı×éÖĞ´æÊı¡£µÚÒ»¸ö²Ù×÷ÊıÎªÊı×éÃû,µÚ¶ş¸ö²Ù×÷ÊıÎªÒª´æÊıËùÔÚÊı×éÏÂ±ê,Ä¿µÄ²Ù×÷ÊıÎª´æÈëµÄÊı¡£
+            // æ•°ç»„ä¸”èµ‹å€¼
+            // å­˜æ•°æŒ‡ä»¤,æŒ‡å‘æ•°ç»„ä¸­å­˜æ•°ã€‚ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºæ•°ç»„å,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ºè¦å­˜æ•°æ‰€åœ¨æ•°ç»„ä¸‹æ ‡,ç›®çš„æ“ä½œæ•°ä¸ºå­˜å…¥çš„æ•°ã€‚
             if (index < len)
             {
                 index++;
@@ -1076,10 +1080,10 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
                 index++;
             }
         }
-        // ²»ÊÇÊı×é,ÄÇ¾ÍÒ»¶¨ÊÇ¸³Öµ
+        // ä¸æ˜¯æ•°ç»„,é‚£å°±ä¸€å®šæ˜¯èµ‹å€¼
         else
         {
-            // ÕâÀï¿¼ÂÇµ½¸³ÖµµÄÊ±ºòºóÃæ¿ÉÄÜÊÇÏÈ´æÔÚµÄÖµ,¹Ê¶ÔÔ­±¾Ö¸Áî±¸·İ,ÖØĞÂÌîÈë
+            // è¿™é‡Œè€ƒè™‘åˆ°èµ‹å€¼çš„æ—¶å€™åé¢å¯èƒ½æ˜¯å…ˆå­˜åœ¨çš„å€¼,æ•…å¯¹åŸæœ¬æŒ‡ä»¤å¤‡ä»½,é‡æ–°å¡«å…¥
             Instruction *old_inst = Inst.back();
             Inst.pop_back();
             pc--;
@@ -1141,20 +1145,20 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, ir::Program &program)
             cout << "add  " << toString(op.type) << " " << op.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
 #endif
 
-            // Èç¹ûÊÇÕûÊı¸³Öµ,Ö±½ÓÌí¼Óµ½result
+            // å¦‚æœæ˜¯æ•´æ•°èµ‹å€¼,ç›´æ¥æ·»åŠ åˆ°result
             if (key)
             {
                 if (initval->is_computable)
                 {
                     result.insert({op.name, stoi(initval->v)});
 #ifdef DEBUG_SEMANTIC
-                    cout << "resultÖĞ½« " << op.name << " ºÍ " << stoi(initval->v) << " °ó¶¨" << endl;
+                    cout << "resultä¸­å°† " << op.name << " å’Œ " << stoi(initval->v) << " ç»‘å®š" << endl;
 #endif
                 }
             }
         }
     }
-    // µ¥´¿Ò»¸öIdent,ÎŞÈÎºÎ¸³Öµ
+    // å•çº¯ä¸€ä¸ªIdent,æ— ä»»ä½•èµ‹å€¼
     else
     {
         STE ste;
@@ -1204,7 +1208,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
     }
     else
     {
-        Operand des = Inst.back()->op1; // ÉÏÒ»¸ö¿Ï¶¨ÊÇ³õÊ¼»¯µÄ,ËùÒÔµÃµ½op1
+        Operand des = Inst.back()->op1; // ä¸Šä¸€ä¸ªè‚¯å®šæ˜¯åˆå§‹åŒ–çš„,æ‰€ä»¥å¾—åˆ°op1
         Type t;
         // Type t_init;
         if (des.type == Type::IntPtr)
@@ -1218,9 +1222,9 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
             // t_init = Type::FloatLiteral;
         }
 
-        if (root->children[1]->type == NodeType::INITVAL) // ¿Ï¶¨ÊÇÊı×é¸³Öµ
+        if (root->children[1]->type == NodeType::INITVAL) // è‚¯å®šæ˜¯æ•°ç»„èµ‹å€¼
         {
-            //  ´æÊıÖ¸Áî,Ö¸ÏòÊı×éÖĞ´æÊı¡£µÚÒ»¸ö²Ù×÷ÊıÎªÊı×éÃû,µÚ¶ş¸ö²Ù×÷ÊıÎªÒª´æÊıËùÔÚÊı×éÏÂ±ê,Ä¿µÄ²Ù×÷ÊıÎª´æÈëµÄÊı
+            //  å­˜æ•°æŒ‡ä»¤,æŒ‡å‘æ•°ç»„ä¸­å­˜æ•°ã€‚ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºæ•°ç»„å,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ºè¦å­˜æ•°æ‰€åœ¨æ•°ç»„ä¸‹æ ‡,ç›®çš„æ“ä½œæ•°ä¸ºå­˜å…¥çš„æ•°
             int index = 1;
             int arr_index = 0;
             while (index < len)
@@ -1268,7 +1272,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, ir::Program &program)
             STE ste = symbol_table.get_ste(des.name);
             vector<int> dim = ste.dimension;
 #ifdef DEBUG_SEMANTIC
-            cout << "ÔÚÊı×éÖĞ¡ª¡ª" << endl;
+            cout << "åœ¨æ•°ç»„ä¸­â€”â€”" << endl;
             for (size_t i = 0; i < dim.size(); i++)
             {
                 cout << i << " is " << dim[i] << endl;
@@ -1330,7 +1334,7 @@ void frontend::Analyzer::analysisFuncDef(FuncDef *root, ir::Program &program)
     if (root->children[3]->type == NodeType::FUNCFPARAMS)
     {
         block_begin = 5;
-        // º¯Êı´æÔÚ²ÎÊı
+        // å‡½æ•°å­˜åœ¨å‚æ•°
         ANALYSIS(funcfparams, FuncFParams, 3);
     }
     else
@@ -1540,8 +1544,8 @@ void frontend::Analyzer::analysisBlock(Block *root, ir::Program &program)
     cout << "begin block" << endl;
 #endif
     root->v = "block";
-    // ÔÚ Sysy ÖĞ, ×÷ÓÃÓòÊÇÓÉ Block ¾ö¶¨µÄ
-    // ½øÈëĞÂ×÷ÓÃÓòÊ±, Ïò·ûºÅ±íÖĞÌí¼Ó ScopeInfo, Ïàµ±ÓÚÑ¹Õ»
+    // åœ¨ Sysy ä¸­, ä½œç”¨åŸŸæ˜¯ç”± Block å†³å®šçš„
+    // è¿›å…¥æ–°ä½œç”¨åŸŸæ—¶, å‘ç¬¦å·è¡¨ä¸­æ·»åŠ  ScopeInfo, ç›¸å½“äºå‹æ ˆ
     symbol_table.add_scope(root);
     int len = root->children.size();
     int index = 1;
@@ -1550,7 +1554,7 @@ void frontend::Analyzer::analysisBlock(Block *root, ir::Program &program)
         ANALYSIS(blockitem, BlockItem, index);
         index++;
     }
-    // º¯Êı¶¨Òå½áÊøÊ±,º¯ÊıÄÚ²¿µÄ×÷ÓÃÓò»áÍË³ö¡£ÔÚº¯Êı¶¨Òå½áÊøºó,º¯ÊıÄÚ²¿µÄ±äÁ¿½«²»ÔÙ¿É¼û¡£
+    // å‡½æ•°å®šä¹‰ç»“æŸæ—¶,å‡½æ•°å†…éƒ¨çš„ä½œç”¨åŸŸä¼šé€€å‡ºã€‚åœ¨å‡½æ•°å®šä¹‰ç»“æŸå,å‡½æ•°å†…éƒ¨çš„å˜é‡å°†ä¸å†å¯è§ã€‚
     symbol_table.exit_scope();
 #ifdef DEBUG_RESULT
     string sure;
@@ -1609,12 +1613,12 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
     {
         ANALYSIS(lval, LVal, 0);
         ANALYSIS(exp, Exp, 2);
-        if (lval->arr_name != "") // lvalÊÇÊı×é,ĞèÒªstore
+        if (lval->arr_name != "") // lvalæ˜¯æ•°ç»„,éœ€è¦store
         {
-            Operand op1 = symbol_table.get_operand(lval->arr_name); // Êı×éµØÖ·
-            Operand op2 = symbol_table.get_operand(lval->v);        // ÏÂ±ê
-            Operand des(exp->v, exp->t);                            // Êı¾İ
-            // ´æÊıÖ¸Áî,Ö¸ÏòÊı×éÖĞ´æÊı¡£µÚÒ»¸ö²Ù×÷ÊıÎªÊı×éÃû,µÚ¶ş¸ö²Ù×÷ÊıÎªÒª´æÊıËùÔÚÊı×éÏÂ±ê,Ä¿µÄ²Ù×÷ÊıÎª´æÈëµÄÊı¡£
+            Operand op1 = symbol_table.get_operand(lval->arr_name); // æ•°ç»„åœ°å€
+            Operand op2 = symbol_table.get_operand(lval->v);        // ä¸‹æ ‡
+            Operand des(exp->v, exp->t);                            // æ•°æ®
+            // å­˜æ•°æŒ‡ä»¤,æŒ‡å‘æ•°ç»„ä¸­å­˜æ•°ã€‚ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºæ•°ç»„å,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ºè¦å­˜æ•°æ‰€åœ¨æ•°ç»„ä¸‹æ ‡,ç›®çš„æ“ä½œæ•°ä¸ºå­˜å…¥çš„æ•°ã€‚
             ir::Instruction *storeInst = new Instruction(op1,
                                                          op2,
                                                          des, ir::Operator::store);
@@ -1635,7 +1639,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             {
                 mov_or_fmov = Operator::fmov;
             }
-            // µÚÒ»¸ö²Ù×÷ÊıÎª¸³Öµ±äÁ¿,µÚ¶ş¸ö²Ù×÷Êı²»Ê¹ÓÃ,½á¹ûÎª±»¸³Öµ±äÁ¿¡£
+            // ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºèµ‹å€¼å˜é‡,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ä½¿ç”¨,ç»“æœä¸ºè¢«èµ‹å€¼å˜é‡ã€‚
             Operand op1(exp->v, exp->t);
             Operand des(lval->v, lval->t);
             ir::Instruction *movInst = new Instruction(op1,
@@ -1654,7 +1658,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
                 {
                     result.insert({lval->v, it->second});
 #ifdef DEBUG_SEMANTIC
-                    cout << "resultÖĞ½« " << lval->v << " ºÍ " << it->second << " °ó¶¨" << endl;
+                    cout << "resultä¸­å°† " << lval->v << " å’Œ " << it->second << " ç»‘å®š" << endl;
 #endif
                 }
             }
@@ -1688,7 +1692,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             //  stmt
             ANALYSIS(cond, Cond, 2);
             Operand op1(cond->v, cond->t);
-            // µÚÒ»¸ögoto,Ö¸ÏòÌõ¼şÖĞÖ´ĞĞ
+            // ç¬¬ä¸€ä¸ªgoto,æŒ‡å‘æ¡ä»¶ä¸­æ‰§è¡Œ
             Instruction *gotoInst1 = new Instruction(op1,
                                                      ir::Operand(),
                                                      ir::Operand("2", ir::Type::IntLiteral), ir::Operator::_goto);
@@ -1697,9 +1701,9 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
             cout << "add goto" << endl;
 #endif
-            int pc_to_change1 = pc; // ĞèÒªĞŞ¸ÄµÄÖ¸ÁîµÄÎ»ÖÃ,Ö¸ÏòÏÂÒ»¸öelse if Óï¾ä¿ªÊ¼Ç°
+            int pc_to_change1 = pc; // éœ€è¦ä¿®æ”¹çš„æŒ‡ä»¤çš„ä½ç½®,æŒ‡å‘ä¸‹ä¸€ä¸ªelse if è¯­å¥å¼€å§‹å‰
 
-            // µÚ¶ş¸ögoto,Ö¸ÏòÏÂÒ»¸öÅĞ¶ÏÓï¾ä,ĞèÒª¸üĞÂ
+            // ç¬¬äºŒä¸ªgoto,æŒ‡å‘ä¸‹ä¸€ä¸ªåˆ¤æ–­è¯­å¥,éœ€è¦æ›´æ–°
             Instruction *gotoInst2 = new Instruction(ir::Operand(),
                                                      ir::Operand(),
                                                      ir::Operand("1", ir::Type::IntLiteral), ir::Operator::_goto);
@@ -1711,7 +1715,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             int pc_1 = pc;
             ANALYSIS(stmt, Stmt, 4);
             int pc_to_change2 = pc;
-            // µÚÈı¸ögoto,Ö¸ÏòÖÕµã,ĞèÒª¸üĞÂ
+            // ç¬¬ä¸‰ä¸ªgoto,æŒ‡å‘ç»ˆç‚¹,éœ€è¦æ›´æ–°
             Instruction *gotoInst = new Instruction(ir::Operand(),
                                                     ir::Operand(),
                                                     ir::Operand("1", Type::IntLiteral),
@@ -1745,7 +1749,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             int while_begin = pc;
             ANALYSIS(cond, Cond, 2);
             Operand op1(cond->v, cond->t);
-            // µÚÒ»¸ögoto,Ö¸ÏòÌõ¼şÖĞÖ´ĞĞ
+            // ç¬¬ä¸€ä¸ªgoto,æŒ‡å‘æ¡ä»¶ä¸­æ‰§è¡Œ
             Instruction *gotoInst1 = new Instruction(op1,
                                                      ir::Operand(),
                                                      ir::Operand("2", ir::Type::IntLiteral), ir::Operator::_goto);
@@ -1756,7 +1760,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
 #endif
             int pc_to_change1 = pc;
 
-            // µÚ¶ş¸ögoto,Ö¸ÏòÖÕµã
+            // ç¬¬äºŒä¸ªgoto,æŒ‡å‘ç»ˆç‚¹
             Instruction *gotoInst2 = new Instruction(ir::Operand(),
                                                      ir::Operand(),
                                                      ir::Operand("1", ir::Type::IntLiteral), ir::Operator::_goto);
@@ -1768,7 +1772,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, ir::Program &program)
             ANALYSIS(stmt, Stmt, 4);
 
             string pc_again = to_string(while_begin - pc);
-            // µÚÈı¸ögoto,Ö¸ÏòÆğµã
+            // ç¬¬ä¸‰ä¸ªgoto,æŒ‡å‘èµ·ç‚¹
             Instruction *gotoInst = new Instruction(ir::Operand(),
                                                     ir::Operand(),
                                                     ir::Operand(pc_again, Type::IntLiteral),
@@ -1951,13 +1955,13 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
     int len = root->children.size();
     int index = 1;
 
-    // ÊÇÊı×éµÄÒ»²¿·Ö
+    // æ˜¯æ•°ç»„çš„ä¸€éƒ¨åˆ†
     if (index < len)
     {
-        root->arr_name = ident->v; // ÊÇÒ»¸öÊı×é,ÏòÉÏ´«µİÊı×éÃû
+        root->arr_name = ident->v; // æ˜¯ä¸€ä¸ªæ•°ç»„,å‘ä¸Šä¼ é€’æ•°ç»„å
         Operand op = symbol_table.get_operand(ident->v);
 #ifdef DEBUG_SEMANTIC
-        cout << "ÕÒµ½ÁËÊı×é" << op.name << "µÄreturntTybeÊÇ " << toString(op.type) << endl;
+        cout << "æ‰¾åˆ°äº†æ•°ç»„" << op.name << "çš„returntTybeæ˜¯ " << toString(op.type) << endl;
 #endif
         STE ste = symbol_table.get_ste(ident->v);
         if (op.type == Type::Int || op.type == Type::Float)
@@ -1979,7 +1983,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, ir::Program &program)
         GET_CHILD_PTR(lbrack, Term, index);
         string arr_index_name;
         int num = 0;
-        vector<string> arr_index_name_list = {}; // Êµ¼ÊµÄÎ»ÖÃ
+        vector<string> arr_index_name_list = {}; // å®é™…çš„ä½ç½®
         while (index < len && lbrack->token.type == TokenType::LBRACK)
         {
             num++;
@@ -2120,14 +2124,14 @@ void frontend::Analyzer::analysisPrimaryExp(PrimaryExp *root, ir::Program &progr
     {
         ANALYSIS(lval, LVal, 0);
         COPY_EXP_NODE(lval, root);
-        if (lval->arr_name != "") // ÕâÊÇÒ»¸öÊı×é,ÔÚÕâÀïĞèÒªload³öÀ´
+        if (lval->arr_name != "") // è¿™æ˜¯ä¸€ä¸ªæ•°ç»„,åœ¨è¿™é‡Œéœ€è¦loadå‡ºæ¥
         {
-            Operand op1 = symbol_table.get_operand(lval->arr_name); // Êı×éĞÅÏ¢
-            Operand op2 = symbol_table.get_operand(lval->v);        // Î»ÖÃ
+            Operand op1 = symbol_table.get_operand(lval->arr_name); // æ•°ç»„ä¿¡æ¯
+            Operand op2 = symbol_table.get_operand(lval->v);        // ä½ç½®
             string id = "t" + to_string(counter++);
-            Operand des(id, lval->t); // ½á¹û
+            Operand des(id, lval->t); // ç»“æœ
 
-            // µÚÒ»¸ö²Ù×÷ÊıÎª¸³Öµ±äÁ¿,µÚ¶ş¸ö²Ù×÷Êı²»Ê¹ÓÃ,½á¹ûÎª±»¸³Öµ±äÁ¿¡£
+            // ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºèµ‹å€¼å˜é‡,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ä½¿ç”¨,ç»“æœä¸ºè¢«èµ‹å€¼å˜é‡ã€‚
             Instruction *loadInst = new Instruction(op1,
                                                     op2, des, ir::Operator::load);
             Inst.push_back(loadInst);
@@ -2215,7 +2219,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                 }
             }
             // a=-a->0-a
-            // defÒ»¸ö0
+            // defä¸€ä¸ª0
             Operand op1("0", t);
             string id = "t" + to_string(counter++);
             Operand des(id, t_des);
@@ -2231,8 +2235,8 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
             cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
 #endif
-            // ¼õ·¨
-            //  defÒ»¸ö0
+            // å‡æ³•
+            //  defä¸€ä¸ª0
             op1 = des;
             Operand op2(unaryexp->v, unaryexp->t);
             id = "t" + to_string(counter++);
@@ -2253,7 +2257,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
             {
                 result.insert({id, -stoi(unaryexp->v)});
 #ifdef DEBUG_SEMANTIC
-                cout << "resultÖĞ½« " << id << " ºÍ " << -stoi(unaryexp->v) << " °ó¶¨" << endl;
+                cout << "resultä¸­å°† " << id << " å’Œ " << -stoi(unaryexp->v) << " ç»‘å®š" << endl;
 #endif
             }
 
@@ -2278,7 +2282,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
                 unaryexp->is_computable = false;
                 op1 = Operand(unaryexp->v, unaryexp->t);
             }
-            // ±äÁ¿È¡·ÇÔËËã ! ,µÚÒ»¸ö²Ù×÷ÊıÎªÈ¡·Ç±äÁ¿,µÚ¶ş¸ö²Ù×÷Êı²»Ê¹ÓÃ,½á¹ûÎªÈ¡·Ç½á¹û±äÁ¿¡£
+            // å˜é‡å–éè¿ç®— ! ,ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºå–éå˜é‡,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ä½¿ç”¨,ç»“æœä¸ºå–éç»“æœå˜é‡ã€‚
             string id = "t" + to_string(counter++);
             Operand des(id, Type::Int);
             Instruction *notInst = new Instruction(op1, Operand(), des, ir::Operator::_not);
@@ -2302,9 +2306,9 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
         GET_CHILD_PTR(ident, Term, 0);
         ident->v = ident->token.value;
         COPY_EXP_NODE(ident, root);
-        vector<Operand> paraVec_true = {}; // ÓÃÀ´×°Ô­±¾Ó¦¸Ã´æÔÚµÄ²ÎÊı
+        vector<Operand> paraVec_true = {}; // ç”¨æ¥è£…åŸæœ¬åº”è¯¥å­˜åœ¨çš„å‚æ•°
 #ifdef DEBUG_SEMANTIC
-        cout << "ÏÖÔÚÑ°ÕÒµÄº¯ÊıµÄÃû³ÆÊÇ" << ident->v << endl;
+        cout << "ç°åœ¨å¯»æ‰¾çš„å‡½æ•°çš„åç§°æ˜¯" << ident->v << endl;
 #endif
         auto iter = get_lib_funcs()->find(ident->v);
         if (iter == get_lib_funcs()->end())
@@ -2330,12 +2334,12 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
         Operand op1 = symbol_table.get_operand(ident->v);
         int len = root->children.size();
         int index = 2;
-        if (index < len - 1) // ÓĞ²ÎÊı
+        if (index < len - 1) // æœ‰å‚æ•°
         {
             vector<Operand> paraList = {};
             callInst_temp = new ir::CallInst(Operand(), paraList, Operand());
             ANALYSIS(funcrparam, FuncRParams, 2);
-            // Ò»¸ö²Ù×÷ÊıÎª¸³Öµ±äÁ¿,µÚ¶ş¸ö²Ù×÷Êı²»Ê¹ÓÃ,½á¹ûÎª±»¸³Öµ±äÁ¿¡£
+            // ä¸€ä¸ªæ“ä½œæ•°ä¸ºèµ‹å€¼å˜é‡,ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ä½¿ç”¨,ç»“æœä¸ºè¢«èµ‹å€¼å˜é‡ã€‚
             Operand op1 = symbol_table.get_operand(ident->v);
             string id = "t" + to_string(counter++);
             Operand des(id, op1.type);
@@ -2356,7 +2360,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
 #endif
                     paraVec1[i] = Operand(id, Type::Float);
 #ifdef DEBUG_SEMANTIC
-                    cout << "×öÁËÒ»´Îi2fÀàĞÍ×ª»»" << endl;
+                    cout << "åšäº†ä¸€æ¬¡i2fç±»å‹è½¬æ¢" << endl;
 #endif
                 }
                 else if ((paraVec1[i].type == Type::Float || paraVec1[i].type == Type::FloatLiteral) && paraVec_true[i].type == Type::Int)
@@ -2370,7 +2374,7 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, ir::Program &program)
 #endif
                     paraVec1[i] = Operand(id, Type::Int);
 #ifdef DEBUG_SEMANTIC
-                    cout << "×öÁËÒ»´Îf2iÀàĞÍ×ª»»" << endl;
+                    cout << "åšäº†ä¸€æ¬¡f2iç±»å‹è½¬æ¢" << endl;
 #endif
                 }
 #ifdef DEBUG_SEMANTIC
@@ -2467,7 +2471,7 @@ void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, ir::Program &pro
 #ifdef DEBUG_SEMANTIC
     cout << "begin funcrparams" << endl;
 #endif
-    vector<Operand> paraVec1 = {}; // ÓÃÀ´×°µÃµ½µÄ²ÎÊı
+    vector<Operand> paraVec1 = {}; // ç”¨æ¥è£…å¾—åˆ°çš„å‚æ•°
     int len = root->children.size();
     int index = 0;
     while (index < len)
@@ -2581,7 +2585,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
         cout << "inst op is " << toString(mul_or_fmul_or_div_or_fdiv_or_mod) << endl;
 #endif
-        if (unaryexp->is_computable) // ³Ë·¨ÊÇ³£ÊıĞèÒªÏÈ¶¨Òå
+        if (unaryexp->is_computable) // ä¹˜æ³•æ˜¯å¸¸æ•°éœ€è¦å…ˆå®šä¹‰
         {
             Operand op1(unaryexp->v, t_temp);
             string id = "t" + to_string(counter++);
@@ -2590,7 +2594,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
             {
                 result.insert({id, stoi(unaryexp->v)});
 #ifdef DEBUG_SEMANTIC
-                cout << "resultÖĞ½« " << id << " ºÍ " << stoi(unaryexp->v) << " °ó¶¨" << endl;
+                cout << "resultä¸­å°† " << id << " å’Œ " << stoi(unaryexp->v) << " ç»‘å®š" << endl;
 #endif
             }
 
@@ -2614,7 +2618,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
             unaryexp->t = t;
         }
 
-        if (unaryexp_right->is_computable) // ³Ë·¨ÊÇ³£ÊıĞèÒªÏÈ¶¨Òå
+        if (unaryexp_right->is_computable) // ä¹˜æ³•æ˜¯å¸¸æ•°éœ€è¦å…ˆå®šä¹‰
         {
             Operand op1(unaryexp_right->v, t_temp);
             string id = "t" + to_string(counter++);
@@ -2622,7 +2626,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
             {
                 result.insert({id, stoi(unaryexp_right->v)});
 #ifdef DEBUG_SEMANTIC
-                cout << "resultÖĞ½« " << id << " ºÍ " << stoi(unaryexp_right->v) << " °ó¶¨" << endl;
+                cout << "resultä¸­å°† " << id << " å’Œ " << stoi(unaryexp_right->v) << " ç»‘å®š" << endl;
 #endif
             }
 
@@ -2657,7 +2661,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
         Inst.push_back(inst);
         pc++;
 #ifdef DEBUG_SEMANTIC
-        cout << "add */¡Â/mod inst" << endl;
+        cout << "add */Ã·/mod inst" << endl;
 #endif
         if (t == Type::Int)
         {
@@ -2673,21 +2677,21 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, ir::Program &program)
                 {
                     result.insert({name3, it1->second * it2->second});
 #ifdef DEBUG_SEMANTIC
-                    cout << "resultÖĞ½« " << name3 << " ºÍ " << it1->second * it2->second << " °ó¶¨" << endl;
+                    cout << "resultä¸­å°† " << name3 << " å’Œ " << it1->second * it2->second << " ç»‘å®š" << endl;
 #endif
                 }
                 else if (mul_or_fmul_or_div_or_fdiv_or_mod == Operator::div)
                 {
                     result.insert({name3, it1->second / it2->second});
 #ifdef DEBUG_SEMANTIC
-                    cout << "resultÖĞ½« " << name3 << " ºÍ " << it1->second / it2->second << " °ó¶¨" << endl;
+                    cout << "resultä¸­å°† " << name3 << " å’Œ " << it1->second / it2->second << " ç»‘å®š" << endl;
 #endif
                 }
                 else if (mul_or_fmul_or_div_or_fdiv_or_mod == Operator::mod)
                 {
                     result.insert({name3, it1->second % it2->second});
 #ifdef DEBUG_SEMANTIC
-                    cout << "resultÖĞ½« " << name3 << " ºÍ " << it1->second % it2->second << " °ó¶¨" << endl;
+                    cout << "resultä¸­å°† " << name3 << " å’Œ " << it1->second % it2->second << " ç»‘å®š" << endl;
 #endif
                 }
             }
@@ -2844,7 +2848,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
             }
         }
 
-        // Á½¸ö¶¼ÊÇ³£Á¿
+        // ä¸¤ä¸ªéƒ½æ˜¯å¸¸é‡
         if (mulexp->is_computable && mulexp_right->is_computable)
         {
             if (term->token.type == TokenType::PLUS)
@@ -2904,7 +2908,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
 #endif
                         result.insert({name3, it1->second + it2->second});
 #ifdef DEBUG_SEMANTIC
-                        cout << "resultÖĞ½« " << name3 << " ºÍ " << it1->second + it2->second << " °ó¶¨" << endl;
+                        cout << "resultä¸­å°† " << name3 << " å’Œ " << it1->second + it2->second << " ç»‘å®š" << endl;
 #endif
                     }
                     else
@@ -2914,7 +2918,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, ir::Program &program)
 #endif
                         result.insert({name3, it1->second - it2->second});
 #ifdef DEBUG_SEMANTIC
-                        cout << "resultÖĞ½« " << name3 << " ºÍ " << it1->second - it2->second << " °ó¶¨" << endl;
+                        cout << "resultä¸­å°† " << name3 << " å’Œ " << it1->second - it2->second << " ç»‘å®š" << endl;
 #endif
                     }
                 }
@@ -3184,11 +3188,11 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
     COPY_EXP_NODE(eqexp, root);
     if (root->children.size() == 3)
     {
-        // ÏÈ¶ÔÇ°Ò»¸ö×öÒ»ÏÂand
+        // å…ˆå¯¹å‰ä¸€ä¸ªåšä¸€ä¸‹and
         Operand op1(eqexp->v, eqexp->t);
         if (eqexp->t != Type::Int && eqexp->t != Type::IntLiteral)
         {
-            // ÏÖ½«ÆäÓë¸¡µãÊı0×öÒ»¸öµÈÖµÅĞ¶Ï
+            // ç°å°†å…¶ä¸æµ®ç‚¹æ•°0åšä¸€ä¸ªç­‰å€¼åˆ¤æ–­
             string id_1 = "t" + to_string(counter++);
             Instruction *inst = new Instruction(op1, Operand("0", Type::FloatLiteral), Operand(id_1, Type::Float), Operator::fneq);
             Inst.push_back(inst);
@@ -3196,7 +3200,7 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
             cout << "add neq" << endl;
 #endif
-            // È»ºó×ª»»³ÉÕûĞÍ
+            // ç„¶åè½¬æ¢æˆæ•´å‹
             string id_2 = "t" + to_string(counter++);
             Instruction *inst_2 = new Instruction(Operand(id_1, Type::Float), Operand(), Operand(id_2, Type::Int), Operator::cvt_f2i);
             Inst.push_back(inst_2);
@@ -3216,7 +3220,7 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
         Inst.push_back(andInst);
         pc++;
 #ifdef DEBUG_SEMANTIC
-        cout << "&&Ö®Ç°ÏÈÅĞ¶ÏÒ»ÏÂÇ°Ò»¸ö" << endl;
+        cout << "&&ä¹‹å‰å…ˆåˆ¤æ–­ä¸€ä¸‹å‰ä¸€ä¸ª" << endl;
 #endif
         STE ste;
         ste.operand = des;
@@ -3226,14 +3230,14 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
 #endif
         root->v = id;
 
-        // Èç¹û¿ÉÒÔ¼ÌĞøÖ´ĞĞ,·ñÔòÌø¹ı
-        // µÚÒ»¸ö²Ù×÷ÊıÎªÌø×ªÌõ¼ş,ÆäÎªÕûĞÎ±äÁ¿»òtype = Type::nullµÄ±äÁ¿,µ±ÎªÕûĞÎ±äÁ¿Ê±±íÊ¾Ìõ¼şÌø×ª£¨Öµ²»µÈÓÚ0·¢ÉúÌø×ª£©,·ñÔòÎªÎŞÌõ¼şÌø×ª¡£µÚ¶ş¸ö²Ù×÷Êı²»Ê¹ÓÃ,Ä¿µÄ²Ù×÷ÊıÓ¦ÎªÕûĞÎ,ÆäÖµÎªÌø×ªÏà¶ÔÄ¿Ç°pcµÄÆ«ÒÆÁ¿¡£
+        // å¦‚æœå¯ä»¥ç»§ç»­æ‰§è¡Œ,å¦åˆ™è·³è¿‡
+        // ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºè·³è½¬æ¡ä»¶,å…¶ä¸ºæ•´å½¢å˜é‡æˆ–type = Type::nullçš„å˜é‡,å½“ä¸ºæ•´å½¢å˜é‡æ—¶è¡¨ç¤ºæ¡ä»¶è·³è½¬ï¼ˆå€¼ä¸ç­‰äº0å‘ç”Ÿè·³è½¬ï¼‰,å¦åˆ™ä¸ºæ— æ¡ä»¶è·³è½¬ã€‚ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ä½¿ç”¨,ç›®çš„æ“ä½œæ•°åº”ä¸ºæ•´å½¢,å…¶å€¼ä¸ºè·³è½¬ç›¸å¯¹ç›®å‰pcçš„åç§»é‡ã€‚
         Instruction *gotoInst = new Instruction(des, Operand(), ir::Operand("2", Type::IntLiteral), ir::Operator::_goto);
         Inst.push_back(gotoInst);
         pc++;
 #ifdef DEBUG_SEMANTIC
         cout << "add goto" << endl;
-        cout << "&&Ö®Ç°Ò»¸öµÄ½á¹û³öÀ´ºóÅĞ¶ÏÊÇ·ñÌø×ª" << endl;
+        cout << "&&ä¹‹å‰ä¸€ä¸ªçš„ç»“æœå‡ºæ¥ååˆ¤æ–­æ˜¯å¦è·³è½¬" << endl;
 #endif
         int pc_to_change = pc;
         Instruction *gotoInst_2 = new Instruction(Operand(), Operand(), ir::Operand("2", Type::IntLiteral), ir::Operator::_goto);
@@ -3241,14 +3245,14 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
         pc++;
 #ifdef DEBUG_SEMANTIC
         cout << "add goto" << endl;
-        cout << "&&Ö®Ç°Ò»¸öµÄ½á¹û³öÀ´ºóÅĞ¶ÏÊÇ·ñÌø×ª" << endl;
+        cout << "&&ä¹‹å‰ä¸€ä¸ªçš„ç»“æœå‡ºæ¥ååˆ¤æ–­æ˜¯å¦è·³è½¬" << endl;
 #endif
         // goto
         ANALYSIS(landexp, LAndExp, 2);
         Operand op2(landexp->v, landexp->t);
         if (landexp->t != Type::Int && landexp->t != Type::IntLiteral)
         {
-            // ÏÖ½«ÆäÓë¸¡µãÊı0×öÒ»¸öµÈÖµÅĞ¶Ï
+            // ç°å°†å…¶ä¸æµ®ç‚¹æ•°0åšä¸€ä¸ªç­‰å€¼åˆ¤æ–­
             string id_1 = "t" + to_string(counter++);
             Instruction *inst = new Instruction(op2, Operand("0", Type::FloatLiteral), Operand(id_1, Type::Float), Operator::fneq);
             Inst.push_back(inst);
@@ -3256,7 +3260,7 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
             cout << "add neq" << endl;
 #endif
-            // È»ºó×ª»»³ÉÕûĞÍ
+            // ç„¶åè½¬æ¢æˆæ•´å‹
             string id_2 = "t" + to_string(counter++);
             Instruction *inst_2 = new Instruction(Operand(id_1, Type::Float), Operand(), Operand(id_2, Type::Int), Operator::cvt_f2i);
             Inst.push_back(inst_2);
@@ -3308,7 +3312,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
         Operand op1(landexp->v, landexp->t);
         if (landexp->t != Type::Int && landexp->t != Type::IntLiteral)
         {
-            // ÏÖ½«ÆäÓë¸¡µãÊı0×öÒ»¸öµÈÖµÅĞ¶Ï
+            // ç°å°†å…¶ä¸æµ®ç‚¹æ•°0åšä¸€ä¸ªç­‰å€¼åˆ¤æ–­
             string id_1 = "t" + to_string(counter++);
             Instruction *inst = new Instruction(op1, Operand("0", Type::FloatLiteral), Operand(id_1, Type::Float), Operator::fneq);
             Inst.push_back(inst);
@@ -3316,7 +3320,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
             cout << "add neq" << endl;
 #endif
-            // È»ºó×ª»»³ÉÕûĞÍ
+            // ç„¶åè½¬æ¢æˆæ•´å‹
             string id_2 = "t" + to_string(counter++);
             Instruction *inst_2 = new Instruction(Operand(id_1, Type::Float), Operand(), Operand(id_2, Type::Int), Operator::cvt_f2i);
             Inst.push_back(inst_2);
@@ -3330,7 +3334,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
             op1 = Operand(landexp->v, landexp->t);
         }
 
-        // ÏÈ¶ÔÇ°Ò»¸ö×öÒ»ÏÂorÈç¹û³ÉÁ¢ËµÃ÷op1¿Ï¶¨¿ÉÒÔ,Ö±½ÓÌø¹ı
+        // å…ˆå¯¹å‰ä¸€ä¸ªåšä¸€ä¸‹orå¦‚æœæˆç«‹è¯´æ˜op1è‚¯å®šå¯ä»¥,ç›´æ¥è·³è¿‡
         Operand op_temp("0", Type::IntLiteral);
         string id = "t" + to_string(counter++);
         Operand des(id, Type::Int);
@@ -3338,7 +3342,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
         Inst.push_back(orInst);
         pc++;
 #ifdef DEBUG_SEMANTIC
-        cout << "&&Ö®Ç°ÏÈÅĞ¶ÏÒ»ÏÂÇ°Ò»¸ö" << endl;
+        cout << "&&ä¹‹å‰å…ˆåˆ¤æ–­ä¸€ä¸‹å‰ä¸€ä¸ª" << endl;
 #endif
         STE ste;
         ste.operand = des;
@@ -3348,21 +3352,21 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
 #endif
         root->v = id;
 
-        // Èç¹û¿ÉÒÔÖ±½ÓÌø¹ıÏÂÒ»¸ö,Óë&&²»Í¬µÄÊÇÕâÀïÒ»¸öÌø×ª¾ÍĞĞÁË
-        // µÚÒ»¸ö²Ù×÷ÊıÎªÌø×ªÌõ¼ş,ÆäÎªÕûĞÎ±äÁ¿»òtype = Type::nullµÄ±äÁ¿,µ±ÎªÕûĞÎ±äÁ¿Ê±±íÊ¾Ìõ¼şÌø×ª£¨Öµ²»µÈÓÚ0·¢ÉúÌø×ª£©,·ñÔòÎªÎŞÌõ¼şÌø×ª¡£µÚ¶ş¸ö²Ù×÷Êı²»Ê¹ÓÃ,Ä¿µÄ²Ù×÷ÊıÓ¦ÎªÕûĞÎ,ÆäÖµÎªÌø×ªÏà¶ÔÄ¿Ç°pcµÄÆ«ÒÆÁ¿¡£
+        // å¦‚æœå¯ä»¥ç›´æ¥è·³è¿‡ä¸‹ä¸€ä¸ª,ä¸&&ä¸åŒçš„æ˜¯è¿™é‡Œä¸€ä¸ªè·³è½¬å°±è¡Œäº†
+        // ç¬¬ä¸€ä¸ªæ“ä½œæ•°ä¸ºè·³è½¬æ¡ä»¶,å…¶ä¸ºæ•´å½¢å˜é‡æˆ–type = Type::nullçš„å˜é‡,å½“ä¸ºæ•´å½¢å˜é‡æ—¶è¡¨ç¤ºæ¡ä»¶è·³è½¬ï¼ˆå€¼ä¸ç­‰äº0å‘ç”Ÿè·³è½¬ï¼‰,å¦åˆ™ä¸ºæ— æ¡ä»¶è·³è½¬ã€‚ç¬¬äºŒä¸ªæ“ä½œæ•°ä¸ä½¿ç”¨,ç›®çš„æ“ä½œæ•°åº”ä¸ºæ•´å½¢,å…¶å€¼ä¸ºè·³è½¬ç›¸å¯¹ç›®å‰pcçš„åç§»é‡ã€‚
         int pc_to_change = pc;
         Instruction *gotoInst = new Instruction(des, Operand(), ir::Operand("1", Type::IntLiteral), ir::Operator::_goto);
         Inst.push_back(gotoInst);
         pc++;
 #ifdef DEBUG_SEMANTIC
         cout << "add goto" << endl;
-        cout << "&&Ö®Ç°Ò»¸öµÄ½á¹û³öÀ´ºóÅĞ¶ÏÊÇ·ñÌø×ª" << endl;
+        cout << "&&ä¹‹å‰ä¸€ä¸ªçš„ç»“æœå‡ºæ¥ååˆ¤æ–­æ˜¯å¦è·³è½¬" << endl;
 #endif
         ANALYSIS(lorexp, LOrExp, 2);
         Operand op2(lorexp->v, lorexp->t);
         if (lorexp->t != Type::Int && lorexp->t != Type::IntLiteral)
         {
-            // ÏÖ½«ÆäÓë¸¡µãÊı0×öÒ»¸öµÈÖµÅĞ¶Ï
+            // ç°å°†å…¶ä¸æµ®ç‚¹æ•°0åšä¸€ä¸ªç­‰å€¼åˆ¤æ–­
             string id_1 = "t" + to_string(counter++);
             Instruction *inst = new Instruction(op2, Operand("0", Type::FloatLiteral), Operand(id_1, Type::Float), Operator::fneq);
             Inst.push_back(inst);
@@ -3370,7 +3374,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
             cout << "add neq" << endl;
 #endif
-            // È»ºó×ª»»³ÉÕûĞÍ
+            // ç„¶åè½¬æ¢æˆæ•´å‹
             string id_2 = "t" + to_string(counter++);
             Instruction *inst_2 = new Instruction(Operand(id_1, Type::Float), Operand(), Operand(id_2, Type::Int), Operator::cvt_f2i);
             Inst.push_back(inst_2);

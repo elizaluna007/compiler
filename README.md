@@ -52,7 +52,7 @@ cd coursegrader/test
 ```
 
 ```
-python3 test.py -S
+python3 test.py S
 ```
 
 ```
@@ -60,5 +60,19 @@ python3 test.py -S
 ../bin/compiler ../test.sy -s1 -o ../test.json 
 ../bin/compiler ../test.sy -s2 -o ../test.out 
 ../bin/compiler ../test.sy -S -o ../test.s 
+```
+
+成功读取全局变量
+
+```
+ Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rd, inst.op1.name));
+ Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rd, 0));
+```
+
+成功存入全局变量
+
+```
+ Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rs1, inst.op1.name));
+ Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rs1, 0));
 ```
 

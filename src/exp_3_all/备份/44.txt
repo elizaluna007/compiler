@@ -486,7 +486,6 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             if (it != globalvs.end()) // 是全局变量，需要写入data
             {
                 data += inst.des.name + ":\n" + "\t.word\t" + inst.op1.name + "\n";
-                // auto iter = globalvs.find(inst.op1.name);
             }
             else
             {

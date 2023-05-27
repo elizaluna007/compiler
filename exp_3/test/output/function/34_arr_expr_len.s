@@ -20,35 +20,46 @@ arr:
 global:
 	addi	sp,sp,-36
 	sw	ra,0(sp)
-	lw	t4,t0
+	la	a0,t0
+	lw	t4,0(a0)
 	lw	t3,4(sp)
 	addi	t3,t4,-1
-	sw	t3,t1,zero
+	la	t4,t1
+	sw	t3,0(t4)
 	lw	t3,8(sp)
 	li	t3,1
 	sw	t3,8(sp)
-	lw	t4,t3
-	lw	t5,t4
+	la	t4,t3
+	lw	t4,0(t4)
+	la	t5,t4
+	lw	t5,0(t5)
 	lw	t3,12(sp)
 	mul	t3,t4,t5
 	sw	t3,12(sp)
-	lw	t4,N
+	la	t4,N
+	lw	t4,0(t4)
 	lw	t5,12(sp)
 	lw	t3,16(sp)
 	add	t3,t4,t5
-	sw	t3,t6,zero
-	lw	t4,t7
-	lw	t5,t8
+	la	t4,t6
+	sw	t3,0(t4)
+	la	t4,t7
+	lw	t4,0(t4)
+	la	t5,t8
+	lw	t5,0(t5)
 	lw	t3,20(sp)
 	div	t3,t4,t5
 	sw	t3,20(sp)
-	lw	t4,t6
+	la	t4,t6
+	lw	t4,0(t4)
 	lw	t5,20(sp)
 	lw	t3,24(sp)
 	sub	t3,t4,t5
-	sw	t3,t10,zero
+	la	t4,t10
+	sw	t3,0(t4)
 	lw	t4,8(sp)
-	lw	t5,t10
+	la	t5,t10
+	lw	t5,0(t5)
 	lw	t3,28(sp)
 	mul	t3,t4,t5
 	sw	t3,28(sp)

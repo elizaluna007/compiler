@@ -24,7 +24,8 @@ main:
 	li	t3,2
 	sw	t3,4(sp)
 	lw	t4,4(sp)
-	lw	t5,a
+	la	t5,a
+	lw	t5,0(t5)
 	lw	t3,8(sp)
 	sub	t3,t4,t5
 	sw	t3,8(sp)

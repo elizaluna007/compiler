@@ -16,12 +16,14 @@ global:
 	li	t3,1
 	sw	t3,4(sp)
 	lw	t4,4(sp)
-	lw	t5,t1
+	la	t5,t1
+	lw	t5,0(t5)
 	lw	t3,8(sp)
 	mul	t3,t4,t5
 	sw	t3,8(sp)
 	lw	t4,8(sp)
-	lw	t5,t3
+	la	t5,t3
+	lw	t5,0(t5)
 	lw	t3,12(sp)
 	mul	t3,t4,t5
 	sw	t3,12(sp)

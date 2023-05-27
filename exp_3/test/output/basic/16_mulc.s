@@ -20,7 +20,8 @@ main:
 	lw	t3,4(sp)
 	li	t3,5
 	sw	t3,4(sp)
-	lw	t4,a
+	la	t4,a
+	lw	t4,0(t4)
 	lw	t5,4(sp)
 	lw	t3,8(sp)
 	mul	t3,t4,t5

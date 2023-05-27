@@ -18,13 +18,13 @@ t8:
 t10:
 	.word	0
 arr:
-	.word	0,0,0,0,0,0,0
+	.word	0,0,0,0,0,0,0,0
 	.bss
 	.text
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-36
+	addi	sp,sp,-32
 	sw	ra,0(sp)
 	la	a0,t0
 	lw	t4,0(a0)
@@ -60,20 +60,17 @@ global:
 	lw	t3,20(sp)
 	div	t3,t4,t5
 	sw	t3,20(sp)
-	la	t4,t6
-	lw	t4,0(t4)
+	lw	t4,16(sp)
 	lw	t5,20(sp)
 	lw	t3,24(sp)
 	sub	t3,t4,t5
 	la	t4,t10
 	sw	t3,0(t4)
 	lw	t4,8(sp)
-	la	t5,t10
-	lw	t5,0(t5)
+	lw	t5,24(sp)
 	lw	t3,28(sp)
 	mul	t3,t4,t5
 	sw	t3,28(sp)
-	sw	t3,32(sp)
 	li	t4,0
 	li	t3,0
 	la	t5,arr
@@ -147,7 +144,7 @@ global:
 	add	t4,t4,t5
 	sw	t3,0(t4)
 	lw	ra,0(sp)
-	addi	sp,sp,36
+	addi	sp,sp,32
 	jr	ra
 	.global	main
 	.type	main, @function

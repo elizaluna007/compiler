@@ -173,55 +173,104 @@ my_putint:
 	lw	t3,16(sp)
 	mul	t3,t4,t5
 	sw	t3,16(sp)
+	addi	t3,sp,24
 	sw	t3,20(sp)
-	lw	t3,24(sp)
+	li	t4,0
 	li	t3,0
-	sw	t3,24(sp)
-	lw	t3,28(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,1
 	li	t3,0
-	sw	t3,28(sp)
-	lw	t3,32(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,2
 	li	t3,0
-	sw	t3,32(sp)
-	lw	t3,36(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,3
 	li	t3,0
-	sw	t3,36(sp)
-	lw	t3,40(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,4
 	li	t3,0
-	sw	t3,40(sp)
-	lw	t3,44(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,5
 	li	t3,0
-	sw	t3,44(sp)
-	lw	t3,48(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,6
 	li	t3,0
-	sw	t3,48(sp)
-	lw	t3,52(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,7
 	li	t3,0
-	sw	t3,52(sp)
-	lw	t3,56(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,8
 	li	t3,0
-	sw	t3,56(sp)
-	lw	t3,60(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,9
 	li	t3,0
-	sw	t3,60(sp)
-	lw	t3,64(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,10
 	li	t3,0
-	sw	t3,64(sp)
-	lw	t3,68(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,11
 	li	t3,0
-	sw	t3,68(sp)
-	lw	t3,72(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,12
 	li	t3,0
-	sw	t3,72(sp)
-	lw	t3,76(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,13
 	li	t3,0
-	sw	t3,76(sp)
-	lw	t3,80(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,14
 	li	t3,0
-	sw	t3,80(sp)
-	lw	t3,84(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,15
 	li	t3,0
-	sw	t3,84(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
 	lw	t3,88(sp)
 	li	t3,0
 	sw	t3,88(sp)
@@ -249,9 +298,12 @@ my_putint:
 	lw	t3,104(sp)
 	add	t3,t4,t5
 	sw	t3,104(sp)
-	li	t3,0
+	lw	t4,88(sp)
 	lw	t3,104(sp)
-	sw	t3,24(sp)
+	lw	t5,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
 	lw	t3,108(sp)
 	li	t3,10
 	sw	t3,108(sp)
@@ -287,9 +339,11 @@ my_putint:
 	lw	t3,124(sp)
 	sw	t3,88(sp)
 	lw	t4,88(sp)
-	lw	t3,128(sp)
-	lw	t3,24(sp)
-	sw	t3,128(sp)
+	lw	t3,20(sp)
+	slli	t4,t4,2
+	add	t4,t4,t3
+	lw	t4,0(t4)
+	sw	t4,128(sp)
 	lw	a0,128(sp)
 	call	putch
 	li	a0,1

@@ -66,7 +66,11 @@ python3 test.py S
 ../bin/compiler ../test.sy -s0 -o ../test.tk 
 ../bin/compiler ../test.sy -s1 -o ../test.json 
 ../bin/compiler ../test.sy -s2 -o ../test.out 
+
+
 ../bin/compiler ../test.sy -S -o ../test.s 
+riscv32-unknown-linux-gnu-gcc ../test.s sylib-riscv-linux.a -o ../test.exe
+qemu-riscv32.sh ../test.exe > ../test.out
 ```
 
 成功读取全局变量
@@ -83,3 +87,12 @@ python3 test.py S
  Instr.push_back(rv::rv_inst(rv::rvOPCODE::SW, rd, rs1, 0));
 ```
 
+最后四个错误点
+
+../bin/compiler ./testcase/function/64_calculator.sy -S -o ./output/function/64_calculator.s
+
+../bin/compiler ./testcase/function/66_exgcd.sy -S -o ./output/function/66_exgcd.s
+
+../bin/compiler ./testcase/function/89_many_globals.sy -S -o ./output/function/89_many_globals.s（多个函数参数）
+
+../bin/compiler ./testcase/function/95_float.sy -S -o ./output/function/95_float.s

@@ -34,31 +34,56 @@ main:
 	lw	t3,20(sp)
 	mul	t3,t4,t5
 	sw	t3,20(sp)
+	addi	t3,sp,28
 	sw	t3,24(sp)
-	lw	t3,28(sp)
+	li	t4,0
 	li	t3,0
-	sw	t3,28(sp)
-	lw	t3,32(sp)
+	lw	t5,24(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,1
 	li	t3,0
-	sw	t3,32(sp)
-	lw	t3,36(sp)
+	lw	t5,24(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,2
 	li	t3,0
-	sw	t3,36(sp)
-	lw	t3,40(sp)
+	lw	t5,24(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,3
 	li	t3,0
-	sw	t3,40(sp)
-	lw	t3,44(sp)
+	lw	t5,24(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,4
 	li	t3,0
-	sw	t3,44(sp)
-	lw	t3,48(sp)
+	lw	t5,24(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,5
 	li	t3,0
-	sw	t3,48(sp)
-	lw	t3,52(sp)
+	lw	t5,24(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,6
 	li	t3,0
-	sw	t3,52(sp)
-	lw	t3,56(sp)
+	lw	t5,24(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,7
 	li	t3,0
-	sw	t3,56(sp)
+	lw	t5,24(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
 	lw	t3,60(sp)
 	li	t3,1
 	sw	t3,60(sp)
@@ -78,55 +103,104 @@ main:
 	lw	t3,76(sp)
 	mul	t3,t4,t5
 	sw	t3,76(sp)
+	addi	t3,sp,84
 	sw	t3,80(sp)
-	lw	t3,84(sp)
+	li	t4,0
 	li	t3,0
-	sw	t3,84(sp)
-	lw	t3,88(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,1
 	li	t3,0
-	sw	t3,88(sp)
-	lw	t3,92(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,2
 	li	t3,0
-	sw	t3,92(sp)
-	lw	t3,96(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,3
 	li	t3,0
-	sw	t3,96(sp)
-	lw	t3,100(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,4
 	li	t3,0
-	sw	t3,100(sp)
-	lw	t3,104(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,5
 	li	t3,0
-	sw	t3,104(sp)
-	lw	t3,108(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,6
 	li	t3,0
-	sw	t3,108(sp)
-	lw	t3,112(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,7
 	li	t3,0
-	sw	t3,112(sp)
-	lw	t3,84(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,0
 	li	t3,1
-	sw	t3,84(sp)
-	lw	t3,88(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,1
 	li	t3,2
-	sw	t3,88(sp)
-	lw	t3,92(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,2
 	li	t3,3
-	sw	t3,92(sp)
-	lw	t3,96(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,3
 	li	t3,4
-	sw	t3,96(sp)
-	lw	t3,100(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,4
 	li	t3,5
-	sw	t3,100(sp)
-	lw	t3,104(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,5
 	li	t3,6
-	sw	t3,104(sp)
-	lw	t3,108(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,6
 	li	t3,7
-	sw	t3,108(sp)
-	lw	t3,112(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
+	li	t4,7
 	li	t3,8
-	sw	t3,112(sp)
+	lw	t5,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t5
+	sw	t3,0(t4)
 	lw	t3,116(sp)
 	li	t3,3
 	sw	t3,116(sp)
@@ -144,9 +218,11 @@ main:
 	add	t3,t4,t5
 	sw	t3,128(sp)
 	lw	t4,128(sp)
-	lw	t3,132(sp)
-	lw	t3,112(sp)
-	sw	t3,132(sp)
+	lw	t3,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t3
+	lw	t4,0(t4)
+	sw	t4,132(sp)
 	lw	t3,136(sp)
 	li	t3,0
 	sw	t3,136(sp)
@@ -164,9 +240,11 @@ main:
 	add	t3,t4,t5
 	sw	t3,148(sp)
 	lw	t4,148(sp)
-	lw	t3,152(sp)
-	lw	t3,84(sp)
-	sw	t3,152(sp)
+	lw	t3,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t3
+	lw	t4,0(t4)
+	sw	t4,152(sp)
 	lw	t4,132(sp)
 	lw	t5,152(sp)
 	lw	t3,156(sp)
@@ -189,9 +267,11 @@ main:
 	add	t3,t4,t5
 	sw	t3,172(sp)
 	lw	t4,172(sp)
-	lw	t3,176(sp)
-	lw	t3,88(sp)
-	sw	t3,176(sp)
+	lw	t3,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t3
+	lw	t4,0(t4)
+	sw	t4,176(sp)
 	lw	t4,156(sp)
 	lw	t5,176(sp)
 	lw	t3,180(sp)
@@ -214,9 +294,11 @@ main:
 	add	t3,t4,t5
 	sw	t3,196(sp)
 	lw	t4,196(sp)
-	lw	t3,200(sp)
-	lw	t3,100(sp)
-	sw	t3,200(sp)
+	lw	t3,80(sp)
+	slli	t4,t4,2
+	add	t4,t4,t3
+	lw	t4,0(t4)
+	sw	t4,200(sp)
 	lw	t4,180(sp)
 	lw	t5,200(sp)
 	lw	t3,204(sp)

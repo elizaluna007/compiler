@@ -10,7 +10,7 @@ n:
 	.global	global
 	.type	global, @function
 global:
-	addi	sp,sp,-16
+	addi	sp,sp,-12
 	sw	ra,0(sp)
 	lw	t3,4(sp)
 	li	t3,1
@@ -21,7 +21,6 @@ global:
 	lw	t3,8(sp)
 	mul	t3,t4,t5
 	sw	t3,8(sp)
-	sw	t3,12(sp)
 	li	t4,0
 	li	t3,0
 	la	t5,array
@@ -683,7 +682,7 @@ global:
 	add	t4,t4,t5
 	sw	t3,0(t4)
 	lw	ra,0(sp)
-	addi	sp,sp,16
+	addi	sp,sp,12
 	jr	ra
 	.global	init
 	.type	init, @function
@@ -695,10 +694,8 @@ init:
 	li	t3,1
 	sw	t3,8(sp)
 .L0:
-	la	t4,n
-	lw	t4,0(t4)
-	la	t5,n
-	lw	t5,0(t5)
+	lw	t4,4(sp)
+	lw	t5,4(sp)
 	lw	t3,12(sp)
 	mul	t3,t4,t5
 	sw	t3,12(sp)

@@ -283,13 +283,13 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
                 auto item = result_arr.find(iter.first);
                 if (item != result_arr.end())
                 {
-                    cout << iter.first << "是全局变量" << endl;
+                    // cout << iter.first << "是全局变量" << endl;
                     ir::GlobalVal g(iter.second.operand, item->second);
                     program.globalVal.push_back(g);
                 }
                 else
                 {
-                    cout << iter.first << "是全局变量" << endl;
+                    // cout << iter.first << "是全局变量" << endl;
                     program.globalVal.push_back(iter.second.operand);
                 }
             }

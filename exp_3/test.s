@@ -649,6 +649,8 @@ main:
 	la	a0,a0
 	lw	a0,0(a0)
 	call	putint
+	li	a0,32
+	call	putch
 	li	a0,1
 	sw	a0,40(sp)
 	li	a0,1
@@ -689,6 +691,8 @@ main:
 	la	a0,a0
 	lw	a0,0(a0)
 	call	putint
+	li	a0,32
+	call	putch
 	li	a0,1
 	sw	a0,108(sp)
 	li	a0,1
@@ -761,6 +765,8 @@ main:
 	la	a0,a0
 	lw	a0,0(a0)
 	call	putint
+	li	a0,32
+	call	putch
 	li	a0,0
 	lw	ra,0(sp)
 	addi	sp,sp,240

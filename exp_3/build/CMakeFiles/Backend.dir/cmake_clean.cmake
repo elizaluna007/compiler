@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Backend.dir/src/backend/generator.o"
-  "CMakeFiles/Backend.dir/src/backend/rv_def.o"
-  "CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o"
+  "CMakeFiles/Backend.dir/src/backend/generator.cpp.o"
+  "CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o"
+  "CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o"
   "../bin/libBackend.pdb"
   "../bin/libBackend.a"
 )

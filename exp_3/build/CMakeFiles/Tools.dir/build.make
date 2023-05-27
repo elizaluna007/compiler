@@ -57,38 +57,38 @@ include CMakeFiles/Tools.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Tools.dir/flags.make
 
-CMakeFiles/Tools.dir/src/tools/ir_executor.o: CMakeFiles/Tools.dir/flags.make
-CMakeFiles/Tools.dir/src/tools/ir_executor.o: ../src/tools/ir_executor.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Tools.dir/src/tools/ir_executor.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Tools.dir/src/tools/ir_executor.o -c /coursegrader/src/tools/ir_executor.cpp
+CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o: CMakeFiles/Tools.dir/flags.make
+CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o: ../src/tools/ir_executor.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o -c /coursegrader/src/tools/ir_executor.cpp
 
-CMakeFiles/Tools.dir/src/tools/ir_executor.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Tools.dir/src/tools/ir_executor.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/tools/ir_executor.cpp > CMakeFiles/Tools.dir/src/tools/ir_executor.i
+CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/tools/ir_executor.cpp > CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.i
 
-CMakeFiles/Tools.dir/src/tools/ir_executor.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Tools.dir/src/tools/ir_executor.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/tools/ir_executor.cpp -o CMakeFiles/Tools.dir/src/tools/ir_executor.s
+CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/tools/ir_executor.cpp -o CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.s
 
-CMakeFiles/Tools.dir/src/tools/ir_executor.o.requires:
+CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.requires:
 
-.PHONY : CMakeFiles/Tools.dir/src/tools/ir_executor.o.requires
+.PHONY : CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.requires
 
-CMakeFiles/Tools.dir/src/tools/ir_executor.o.provides: CMakeFiles/Tools.dir/src/tools/ir_executor.o.requires
-	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/src/tools/ir_executor.o.provides.build
-.PHONY : CMakeFiles/Tools.dir/src/tools/ir_executor.o.provides
+CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.provides: CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.requires
+	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.provides.build
+.PHONY : CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.provides
 
-CMakeFiles/Tools.dir/src/tools/ir_executor.o.provides.build: CMakeFiles/Tools.dir/src/tools/ir_executor.o
+CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.provides.build: CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o
 
 
 # Object files for target Tools
 Tools_OBJECTS = \
-"CMakeFiles/Tools.dir/src/tools/ir_executor.o"
+"CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o"
 
 # External object files for target Tools
 Tools_EXTERNAL_OBJECTS =
 
-../bin/libTools.a: CMakeFiles/Tools.dir/src/tools/ir_executor.o
+../bin/libTools.a: CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o
 ../bin/libTools.a: CMakeFiles/Tools.dir/build.make
 ../bin/libTools.a: CMakeFiles/Tools.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library ../bin/libTools.a"
@@ -100,7 +100,7 @@ CMakeFiles/Tools.dir/build: ../bin/libTools.a
 
 .PHONY : CMakeFiles/Tools.dir/build
 
-CMakeFiles/Tools.dir/requires: CMakeFiles/Tools.dir/src/tools/ir_executor.o.requires
+CMakeFiles/Tools.dir/requires: CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o.requires
 
 .PHONY : CMakeFiles/Tools.dir/requires
 

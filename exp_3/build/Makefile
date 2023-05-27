@@ -188,260 +188,464 @@ IR/fast:
 	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/build
 .PHONY : IR/fast
 
-# target to build an object file
-main.o:
-	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/main.o
+main.o: main.cpp.o
+
 .PHONY : main.o
 
-# target to preprocess a source file
-main.i:
-	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/main.i
+# target to build an object file
+main.cpp.o:
+	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+
 .PHONY : main.i
 
-# target to generate assembly for a file
-main.s:
-	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/main.s
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+
 .PHONY : main.s
 
-# target to build an object file
-src/backend/generator.o:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/generator.o
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/main.cpp.s
+.PHONY : main.cpp.s
+
+src/backend/generator.o: src/backend/generator.cpp.o
+
 .PHONY : src/backend/generator.o
 
-# target to preprocess a source file
-src/backend/generator.i:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/generator.i
+# target to build an object file
+src/backend/generator.cpp.o:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/generator.cpp.o
+.PHONY : src/backend/generator.cpp.o
+
+src/backend/generator.i: src/backend/generator.cpp.i
+
 .PHONY : src/backend/generator.i
 
-# target to generate assembly for a file
-src/backend/generator.s:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/generator.s
+# target to preprocess a source file
+src/backend/generator.cpp.i:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/generator.cpp.i
+.PHONY : src/backend/generator.cpp.i
+
+src/backend/generator.s: src/backend/generator.cpp.s
+
 .PHONY : src/backend/generator.s
 
-# target to build an object file
-src/backend/rv_def.o:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.o
+# target to generate assembly for a file
+src/backend/generator.cpp.s:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/generator.cpp.s
+.PHONY : src/backend/generator.cpp.s
+
+src/backend/rv_def.o: src/backend/rv_def.cpp.o
+
 .PHONY : src/backend/rv_def.o
 
-# target to preprocess a source file
-src/backend/rv_def.i:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.i
+# target to build an object file
+src/backend/rv_def.cpp.o:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o
+.PHONY : src/backend/rv_def.cpp.o
+
+src/backend/rv_def.i: src/backend/rv_def.cpp.i
+
 .PHONY : src/backend/rv_def.i
 
-# target to generate assembly for a file
-src/backend/rv_def.s:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.s
+# target to preprocess a source file
+src/backend/rv_def.cpp.i:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.cpp.i
+.PHONY : src/backend/rv_def.cpp.i
+
+src/backend/rv_def.s: src/backend/rv_def.cpp.s
+
 .PHONY : src/backend/rv_def.s
 
-# target to build an object file
-src/backend/rv_inst_impl.o:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o
+# target to generate assembly for a file
+src/backend/rv_def.cpp.s:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.cpp.s
+.PHONY : src/backend/rv_def.cpp.s
+
+src/backend/rv_inst_impl.o: src/backend/rv_inst_impl.cpp.o
+
 .PHONY : src/backend/rv_inst_impl.o
 
-# target to preprocess a source file
-src/backend/rv_inst_impl.i:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.i
+# target to build an object file
+src/backend/rv_inst_impl.cpp.o:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o
+.PHONY : src/backend/rv_inst_impl.cpp.o
+
+src/backend/rv_inst_impl.i: src/backend/rv_inst_impl.cpp.i
+
 .PHONY : src/backend/rv_inst_impl.i
 
-# target to generate assembly for a file
-src/backend/rv_inst_impl.s:
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.s
+# target to preprocess a source file
+src/backend/rv_inst_impl.cpp.i:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.i
+.PHONY : src/backend/rv_inst_impl.cpp.i
+
+src/backend/rv_inst_impl.s: src/backend/rv_inst_impl.cpp.s
+
 .PHONY : src/backend/rv_inst_impl.s
 
-# target to build an object file
-src/front/abstract_syntax_tree.o:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/abstract_syntax_tree.o
+# target to generate assembly for a file
+src/backend/rv_inst_impl.cpp.s:
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.s
+.PHONY : src/backend/rv_inst_impl.cpp.s
+
+src/front/abstract_syntax_tree.o: src/front/abstract_syntax_tree.cpp.o
+
 .PHONY : src/front/abstract_syntax_tree.o
 
-# target to preprocess a source file
-src/front/abstract_syntax_tree.i:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/abstract_syntax_tree.i
+# target to build an object file
+src/front/abstract_syntax_tree.cpp.o:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.o
+.PHONY : src/front/abstract_syntax_tree.cpp.o
+
+src/front/abstract_syntax_tree.i: src/front/abstract_syntax_tree.cpp.i
+
 .PHONY : src/front/abstract_syntax_tree.i
 
-# target to generate assembly for a file
-src/front/abstract_syntax_tree.s:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/abstract_syntax_tree.s
+# target to preprocess a source file
+src/front/abstract_syntax_tree.cpp.i:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.i
+.PHONY : src/front/abstract_syntax_tree.cpp.i
+
+src/front/abstract_syntax_tree.s: src/front/abstract_syntax_tree.cpp.s
+
 .PHONY : src/front/abstract_syntax_tree.s
 
-# target to build an object file
-src/front/lexical.o:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/lexical.o
+# target to generate assembly for a file
+src/front/abstract_syntax_tree.cpp.s:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.s
+.PHONY : src/front/abstract_syntax_tree.cpp.s
+
+src/front/lexical.o: src/front/lexical.cpp.o
+
 .PHONY : src/front/lexical.o
 
-# target to preprocess a source file
-src/front/lexical.i:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/lexical.i
+# target to build an object file
+src/front/lexical.cpp.o:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/lexical.cpp.o
+.PHONY : src/front/lexical.cpp.o
+
+src/front/lexical.i: src/front/lexical.cpp.i
+
 .PHONY : src/front/lexical.i
 
-# target to generate assembly for a file
-src/front/lexical.s:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/lexical.s
+# target to preprocess a source file
+src/front/lexical.cpp.i:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/lexical.cpp.i
+.PHONY : src/front/lexical.cpp.i
+
+src/front/lexical.s: src/front/lexical.cpp.s
+
 .PHONY : src/front/lexical.s
 
-# target to build an object file
-src/front/semantic.o:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/semantic.o
+# target to generate assembly for a file
+src/front/lexical.cpp.s:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/lexical.cpp.s
+.PHONY : src/front/lexical.cpp.s
+
+src/front/semantic.o: src/front/semantic.cpp.o
+
 .PHONY : src/front/semantic.o
 
-# target to preprocess a source file
-src/front/semantic.i:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/semantic.i
+# target to build an object file
+src/front/semantic.cpp.o:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/semantic.cpp.o
+.PHONY : src/front/semantic.cpp.o
+
+src/front/semantic.i: src/front/semantic.cpp.i
+
 .PHONY : src/front/semantic.i
 
-# target to generate assembly for a file
-src/front/semantic.s:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/semantic.s
+# target to preprocess a source file
+src/front/semantic.cpp.i:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/semantic.cpp.i
+.PHONY : src/front/semantic.cpp.i
+
+src/front/semantic.s: src/front/semantic.cpp.s
+
 .PHONY : src/front/semantic.s
 
-# target to build an object file
-src/front/syntax.o:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/syntax.o
+# target to generate assembly for a file
+src/front/semantic.cpp.s:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/semantic.cpp.s
+.PHONY : src/front/semantic.cpp.s
+
+src/front/syntax.o: src/front/syntax.cpp.o
+
 .PHONY : src/front/syntax.o
 
-# target to preprocess a source file
-src/front/syntax.i:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/syntax.i
+# target to build an object file
+src/front/syntax.cpp.o:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/syntax.cpp.o
+.PHONY : src/front/syntax.cpp.o
+
+src/front/syntax.i: src/front/syntax.cpp.i
+
 .PHONY : src/front/syntax.i
 
-# target to generate assembly for a file
-src/front/syntax.s:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/syntax.s
+# target to preprocess a source file
+src/front/syntax.cpp.i:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/syntax.cpp.i
+.PHONY : src/front/syntax.cpp.i
+
+src/front/syntax.s: src/front/syntax.cpp.s
+
 .PHONY : src/front/syntax.s
 
-# target to build an object file
-src/front/token.o:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/token.o
+# target to generate assembly for a file
+src/front/syntax.cpp.s:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/syntax.cpp.s
+.PHONY : src/front/syntax.cpp.s
+
+src/front/token.o: src/front/token.cpp.o
+
 .PHONY : src/front/token.o
 
-# target to preprocess a source file
-src/front/token.i:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/token.i
+# target to build an object file
+src/front/token.cpp.o:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/token.cpp.o
+.PHONY : src/front/token.cpp.o
+
+src/front/token.i: src/front/token.cpp.i
+
 .PHONY : src/front/token.i
 
-# target to generate assembly for a file
-src/front/token.s:
-	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/token.s
+# target to preprocess a source file
+src/front/token.cpp.i:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/token.cpp.i
+.PHONY : src/front/token.cpp.i
+
+src/front/token.s: src/front/token.cpp.s
+
 .PHONY : src/front/token.s
 
-# target to build an object file
-src/ir/ir_function.o:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_function.o
+# target to generate assembly for a file
+src/front/token.cpp.s:
+	$(MAKE) -f CMakeFiles/Front.dir/build.make CMakeFiles/Front.dir/src/front/token.cpp.s
+.PHONY : src/front/token.cpp.s
+
+src/ir/ir_function.o: src/ir/ir_function.cpp.o
+
 .PHONY : src/ir/ir_function.o
 
-# target to preprocess a source file
-src/ir/ir_function.i:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_function.i
+# target to build an object file
+src/ir/ir_function.cpp.o:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_function.cpp.o
+.PHONY : src/ir/ir_function.cpp.o
+
+src/ir/ir_function.i: src/ir/ir_function.cpp.i
+
 .PHONY : src/ir/ir_function.i
 
-# target to generate assembly for a file
-src/ir/ir_function.s:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_function.s
+# target to preprocess a source file
+src/ir/ir_function.cpp.i:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_function.cpp.i
+.PHONY : src/ir/ir_function.cpp.i
+
+src/ir/ir_function.s: src/ir/ir_function.cpp.s
+
 .PHONY : src/ir/ir_function.s
 
-# target to build an object file
-src/ir/ir_instruction.o:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_instruction.o
+# target to generate assembly for a file
+src/ir/ir_function.cpp.s:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_function.cpp.s
+.PHONY : src/ir/ir_function.cpp.s
+
+src/ir/ir_instruction.o: src/ir/ir_instruction.cpp.o
+
 .PHONY : src/ir/ir_instruction.o
 
-# target to preprocess a source file
-src/ir/ir_instruction.i:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_instruction.i
+# target to build an object file
+src/ir/ir_instruction.cpp.o:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o
+.PHONY : src/ir/ir_instruction.cpp.o
+
+src/ir/ir_instruction.i: src/ir/ir_instruction.cpp.i
+
 .PHONY : src/ir/ir_instruction.i
 
-# target to generate assembly for a file
-src/ir/ir_instruction.s:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_instruction.s
+# target to preprocess a source file
+src/ir/ir_instruction.cpp.i:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.i
+.PHONY : src/ir/ir_instruction.cpp.i
+
+src/ir/ir_instruction.s: src/ir/ir_instruction.cpp.s
+
 .PHONY : src/ir/ir_instruction.s
 
-# target to build an object file
-src/ir/ir_operand.o:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operand.o
+# target to generate assembly for a file
+src/ir/ir_instruction.cpp.s:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.s
+.PHONY : src/ir/ir_instruction.cpp.s
+
+src/ir/ir_operand.o: src/ir/ir_operand.cpp.o
+
 .PHONY : src/ir/ir_operand.o
 
-# target to preprocess a source file
-src/ir/ir_operand.i:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operand.i
+# target to build an object file
+src/ir/ir_operand.cpp.o:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o
+.PHONY : src/ir/ir_operand.cpp.o
+
+src/ir/ir_operand.i: src/ir/ir_operand.cpp.i
+
 .PHONY : src/ir/ir_operand.i
 
-# target to generate assembly for a file
-src/ir/ir_operand.s:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operand.s
+# target to preprocess a source file
+src/ir/ir_operand.cpp.i:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operand.cpp.i
+.PHONY : src/ir/ir_operand.cpp.i
+
+src/ir/ir_operand.s: src/ir/ir_operand.cpp.s
+
 .PHONY : src/ir/ir_operand.s
 
-# target to build an object file
-src/ir/ir_operator.o:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operator.o
+# target to generate assembly for a file
+src/ir/ir_operand.cpp.s:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operand.cpp.s
+.PHONY : src/ir/ir_operand.cpp.s
+
+src/ir/ir_operator.o: src/ir/ir_operator.cpp.o
+
 .PHONY : src/ir/ir_operator.o
 
-# target to preprocess a source file
-src/ir/ir_operator.i:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operator.i
+# target to build an object file
+src/ir/ir_operator.cpp.o:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o
+.PHONY : src/ir/ir_operator.cpp.o
+
+src/ir/ir_operator.i: src/ir/ir_operator.cpp.i
+
 .PHONY : src/ir/ir_operator.i
 
-# target to generate assembly for a file
-src/ir/ir_operator.s:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operator.s
+# target to preprocess a source file
+src/ir/ir_operator.cpp.i:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operator.cpp.i
+.PHONY : src/ir/ir_operator.cpp.i
+
+src/ir/ir_operator.s: src/ir/ir_operator.cpp.s
+
 .PHONY : src/ir/ir_operator.s
 
-# target to build an object file
-src/ir/ir_program.o:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_program.o
+# target to generate assembly for a file
+src/ir/ir_operator.cpp.s:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operator.cpp.s
+.PHONY : src/ir/ir_operator.cpp.s
+
+src/ir/ir_program.o: src/ir/ir_program.cpp.o
+
 .PHONY : src/ir/ir_program.o
 
-# target to preprocess a source file
-src/ir/ir_program.i:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_program.i
+# target to build an object file
+src/ir/ir_program.cpp.o:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_program.cpp.o
+.PHONY : src/ir/ir_program.cpp.o
+
+src/ir/ir_program.i: src/ir/ir_program.cpp.i
+
 .PHONY : src/ir/ir_program.i
 
-# target to generate assembly for a file
-src/ir/ir_program.s:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_program.s
+# target to preprocess a source file
+src/ir/ir_program.cpp.i:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_program.cpp.i
+.PHONY : src/ir/ir_program.cpp.i
+
+src/ir/ir_program.s: src/ir/ir_program.cpp.s
+
 .PHONY : src/ir/ir_program.s
 
-# target to build an object file
-src/ir/type.o:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/type.o
+# target to generate assembly for a file
+src/ir/ir_program.cpp.s:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_program.cpp.s
+.PHONY : src/ir/ir_program.cpp.s
+
+src/ir/type.o: src/ir/type.cpp.o
+
 .PHONY : src/ir/type.o
 
-# target to preprocess a source file
-src/ir/type.i:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/type.i
+# target to build an object file
+src/ir/type.cpp.o:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/type.cpp.o
+.PHONY : src/ir/type.cpp.o
+
+src/ir/type.i: src/ir/type.cpp.i
+
 .PHONY : src/ir/type.i
 
-# target to generate assembly for a file
-src/ir/type.s:
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/type.s
+# target to preprocess a source file
+src/ir/type.cpp.i:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/type.cpp.i
+.PHONY : src/ir/type.cpp.i
+
+src/ir/type.s: src/ir/type.cpp.s
+
 .PHONY : src/ir/type.s
 
-# target to build an object file
-src/third_party/jsoncpp/jsoncpp.o:
-	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o
+# target to generate assembly for a file
+src/ir/type.cpp.s:
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/type.cpp.s
+.PHONY : src/ir/type.cpp.s
+
+src/third_party/jsoncpp/jsoncpp.o: src/third_party/jsoncpp/jsoncpp.cpp.o
+
 .PHONY : src/third_party/jsoncpp/jsoncpp.o
 
-# target to preprocess a source file
-src/third_party/jsoncpp/jsoncpp.i:
-	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.i
+# target to build an object file
+src/third_party/jsoncpp/jsoncpp.cpp.o:
+	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o
+.PHONY : src/third_party/jsoncpp/jsoncpp.cpp.o
+
+src/third_party/jsoncpp/jsoncpp.i: src/third_party/jsoncpp/jsoncpp.cpp.i
+
 .PHONY : src/third_party/jsoncpp/jsoncpp.i
 
-# target to generate assembly for a file
-src/third_party/jsoncpp/jsoncpp.s:
-	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.s
+# target to preprocess a source file
+src/third_party/jsoncpp/jsoncpp.cpp.i:
+	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.i
+.PHONY : src/third_party/jsoncpp/jsoncpp.cpp.i
+
+src/third_party/jsoncpp/jsoncpp.s: src/third_party/jsoncpp/jsoncpp.cpp.s
+
 .PHONY : src/third_party/jsoncpp/jsoncpp.s
 
-# target to build an object file
-src/tools/ir_executor.o:
-	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/src/tools/ir_executor.o
+# target to generate assembly for a file
+src/third_party/jsoncpp/jsoncpp.cpp.s:
+	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.s
+.PHONY : src/third_party/jsoncpp/jsoncpp.cpp.s
+
+src/tools/ir_executor.o: src/tools/ir_executor.cpp.o
+
 .PHONY : src/tools/ir_executor.o
 
-# target to preprocess a source file
-src/tools/ir_executor.i:
-	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/src/tools/ir_executor.i
+# target to build an object file
+src/tools/ir_executor.cpp.o:
+	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o
+.PHONY : src/tools/ir_executor.cpp.o
+
+src/tools/ir_executor.i: src/tools/ir_executor.cpp.i
+
 .PHONY : src/tools/ir_executor.i
 
-# target to generate assembly for a file
-src/tools/ir_executor.s:
-	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/src/tools/ir_executor.s
+# target to preprocess a source file
+src/tools/ir_executor.cpp.i:
+	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.i
+.PHONY : src/tools/ir_executor.cpp.i
+
+src/tools/ir_executor.s: src/tools/ir_executor.cpp.s
+
 .PHONY : src/tools/ir_executor.s
+
+# target to generate assembly for a file
+src/tools/ir_executor.cpp.s:
+	$(MAKE) -f CMakeFiles/Tools.dir/build.make CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.s
+.PHONY : src/tools/ir_executor.cpp.s
 
 # Help Target
 help:

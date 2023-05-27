@@ -1,0 +1,57 @@
+void global()
+	0: def t0, 0
+	1: subi t1, t0, 1
+	2: def N, t1
+	3: def t2, 1
+	4: def t3, 2
+	5: def t4, 4
+	6: mul t5, t3, t4
+	7: add t6, N, t5
+	8: def t7, 99
+	9: def t8, 99
+	10: div t9, t7, t8
+	11: sub t10, t6, t9
+	12: mul t11, t2, t10
+	13: alloc arr, t11
+	14: store 0, arr, 0
+	15: store 0, arr, 1
+	16: store 0, arr, 2
+	17: store 0, arr, 3
+	18: store 0, arr, 4
+	19: store 0, arr, 5
+	20: store 1, arr, 0
+	21: store 2, arr, 1
+	22: store 33, arr, 2
+	23: store 4, arr, 3
+	24: store 5, arr, 4
+	25: store 6, arr, 5
+	26: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def i, 0
+	2: def sum, 0
+	3: lss t18, i, 6
+	4: if t18 goto [pc, 2]
+	5: goto [pc, 7]
+	6: load t19, arr, i
+	7: add t20, sum, t19
+	8: mov sum, t20
+	9: addi t21, i, 1
+	10: mov i, t21
+	11: goto [pc, -8]
+	12: return sum
+end
+
+GVT:
+	N int 0
+	arr int* 6
+	t0 int 0
+	t1 int 0
+	t10 int 0
+	t3 int 0
+	t4 int 0
+	t6 int 0
+	t7 int 0
+	t8 int 0

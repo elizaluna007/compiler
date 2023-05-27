@@ -1,10 +1,10 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/IR.dir/src/ir/ir_function.o"
-  "CMakeFiles/IR.dir/src/ir/ir_instruction.o"
-  "CMakeFiles/IR.dir/src/ir/ir_operand.o"
-  "CMakeFiles/IR.dir/src/ir/ir_operator.o"
-  "CMakeFiles/IR.dir/src/ir/ir_program.o"
-  "CMakeFiles/IR.dir/src/ir/type.o"
+  "CMakeFiles/IR.dir/src/ir/ir_function.cpp.o"
+  "CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o"
+  "CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o"
+  "CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o"
+  "CMakeFiles/IR.dir/src/ir/ir_program.cpp.o"
+  "CMakeFiles/IR.dir/src/ir/type.cpp.o"
   "../bin/libIR.pdb"
   "../bin/libIR.a"
 )

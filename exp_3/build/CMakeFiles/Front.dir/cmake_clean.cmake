@@ -1,9 +1,9 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Front.dir/src/front/abstract_syntax_tree.o"
-  "CMakeFiles/Front.dir/src/front/lexical.o"
-  "CMakeFiles/Front.dir/src/front/semantic.o"
-  "CMakeFiles/Front.dir/src/front/syntax.o"
-  "CMakeFiles/Front.dir/src/front/token.o"
+  "CMakeFiles/Front.dir/src/front/abstract_syntax_tree.cpp.o"
+  "CMakeFiles/Front.dir/src/front/lexical.cpp.o"
+  "CMakeFiles/Front.dir/src/front/semantic.cpp.o"
+  "CMakeFiles/Front.dir/src/front/syntax.cpp.o"
+  "CMakeFiles/Front.dir/src/front/token.cpp.o"
   "../bin/libFront.pdb"
   "../bin/libFront.a"
 )

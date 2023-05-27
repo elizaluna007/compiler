@@ -39,6 +39,13 @@
 ### 实验三：汇编——generator.cpp
 
 ```
+set(CMAKE_C_COMPILER    "/usr/bin/x86_64-linux-gnu-gcc-7")
+set(CMAKE_CXX_COMPILER  "/usr/bin/x86_64-linux-gnu-g++-7")
+```
+
+
+
+```
 当你想用VMware
 bcdedit /set hypervisorlaunchtype off
 

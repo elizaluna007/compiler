@@ -485,7 +485,15 @@ void backend::Generator::gen_instr(const ir::Instruction &inst)
             auto it = globalvs.find(inst.des.name);
             if (it != globalvs.end()) // 是全局变量，需要写入data
             {
-                data += inst.des.name + ":\n" + "\t.word\t" + inst.op1.name + "\n";
+                data += inst.des.name + ":\n" + "\t.word\t0\n";
+                if (globalvs.find(inst.op1.name) != globalvs.end())
+                {
+                    // Instr.push_back(rv::rv_inst(rv::rvOPCODE::LA, rd, inst.op1.name));
+                    // Instr.push_back(rv::rv_inst(rv::rvOPCODE::LW, rd, rd, 0));
+                }
+                else
+                {
+                }
             }
             else
             {

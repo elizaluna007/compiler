@@ -57,168 +57,168 @@ include CMakeFiles/IR.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/IR.dir/flags.make
 
-CMakeFiles/IR.dir/src/ir/ir_function.o: CMakeFiles/IR.dir/flags.make
-CMakeFiles/IR.dir/src/ir/ir_function.o: ../src/ir/ir_function.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_function.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_function.o -c /coursegrader/src/ir/ir_function.cpp
+CMakeFiles/IR.dir/src/ir/ir_function.cpp.o: CMakeFiles/IR.dir/flags.make
+CMakeFiles/IR.dir/src/ir/ir_function.cpp.o: ../src/ir/ir_function.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_function.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_function.cpp.o -c /coursegrader/src/ir/ir_function.cpp
 
-CMakeFiles/IR.dir/src/ir/ir_function.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_function.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_function.cpp > CMakeFiles/IR.dir/src/ir/ir_function.i
+CMakeFiles/IR.dir/src/ir/ir_function.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_function.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_function.cpp > CMakeFiles/IR.dir/src/ir/ir_function.cpp.i
 
-CMakeFiles/IR.dir/src/ir/ir_function.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_function.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_function.cpp -o CMakeFiles/IR.dir/src/ir/ir_function.s
+CMakeFiles/IR.dir/src/ir/ir_function.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_function.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_function.cpp -o CMakeFiles/IR.dir/src/ir/ir_function.cpp.s
 
-CMakeFiles/IR.dir/src/ir/ir_function.o.requires:
+CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.requires:
 
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_function.o.requires
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.requires
 
-CMakeFiles/IR.dir/src/ir/ir_function.o.provides: CMakeFiles/IR.dir/src/ir/ir_function.o.requires
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_function.o.provides.build
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_function.o.provides
+CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.provides: CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.requires
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.provides.build
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.provides
 
-CMakeFiles/IR.dir/src/ir/ir_function.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_function.o
-
-
-CMakeFiles/IR.dir/src/ir/ir_instruction.o: CMakeFiles/IR.dir/flags.make
-CMakeFiles/IR.dir/src/ir/ir_instruction.o: ../src/ir/ir_instruction.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_instruction.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_instruction.o -c /coursegrader/src/ir/ir_instruction.cpp
-
-CMakeFiles/IR.dir/src/ir/ir_instruction.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_instruction.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_instruction.cpp > CMakeFiles/IR.dir/src/ir/ir_instruction.i
-
-CMakeFiles/IR.dir/src/ir/ir_instruction.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_instruction.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_instruction.cpp -o CMakeFiles/IR.dir/src/ir/ir_instruction.s
-
-CMakeFiles/IR.dir/src/ir/ir_instruction.o.requires:
-
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_instruction.o.requires
-
-CMakeFiles/IR.dir/src/ir/ir_instruction.o.provides: CMakeFiles/IR.dir/src/ir/ir_instruction.o.requires
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_instruction.o.provides.build
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_instruction.o.provides
-
-CMakeFiles/IR.dir/src/ir/ir_instruction.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_instruction.o
+CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_function.cpp.o
 
 
-CMakeFiles/IR.dir/src/ir/ir_operand.o: CMakeFiles/IR.dir/flags.make
-CMakeFiles/IR.dir/src/ir/ir_operand.o: ../src/ir/ir_operand.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_operand.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_operand.o -c /coursegrader/src/ir/ir_operand.cpp
+CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o: CMakeFiles/IR.dir/flags.make
+CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o: ../src/ir/ir_instruction.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o -c /coursegrader/src/ir/ir_instruction.cpp
 
-CMakeFiles/IR.dir/src/ir/ir_operand.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_operand.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_operand.cpp > CMakeFiles/IR.dir/src/ir/ir_operand.i
+CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_instruction.cpp > CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.i
 
-CMakeFiles/IR.dir/src/ir/ir_operand.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_operand.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_operand.cpp -o CMakeFiles/IR.dir/src/ir/ir_operand.s
+CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_instruction.cpp -o CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.s
 
-CMakeFiles/IR.dir/src/ir/ir_operand.o.requires:
+CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.requires:
 
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_operand.o.requires
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.requires
 
-CMakeFiles/IR.dir/src/ir/ir_operand.o.provides: CMakeFiles/IR.dir/src/ir/ir_operand.o.requires
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operand.o.provides.build
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_operand.o.provides
+CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.provides: CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.requires
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.provides.build
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.provides
 
-CMakeFiles/IR.dir/src/ir/ir_operand.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_operand.o
-
-
-CMakeFiles/IR.dir/src/ir/ir_operator.o: CMakeFiles/IR.dir/flags.make
-CMakeFiles/IR.dir/src/ir/ir_operator.o: ../src/ir/ir_operator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_operator.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_operator.o -c /coursegrader/src/ir/ir_operator.cpp
-
-CMakeFiles/IR.dir/src/ir/ir_operator.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_operator.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_operator.cpp > CMakeFiles/IR.dir/src/ir/ir_operator.i
-
-CMakeFiles/IR.dir/src/ir/ir_operator.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_operator.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_operator.cpp -o CMakeFiles/IR.dir/src/ir/ir_operator.s
-
-CMakeFiles/IR.dir/src/ir/ir_operator.o.requires:
-
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_operator.o.requires
-
-CMakeFiles/IR.dir/src/ir/ir_operator.o.provides: CMakeFiles/IR.dir/src/ir/ir_operator.o.requires
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operator.o.provides.build
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_operator.o.provides
-
-CMakeFiles/IR.dir/src/ir/ir_operator.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_operator.o
+CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o
 
 
-CMakeFiles/IR.dir/src/ir/ir_program.o: CMakeFiles/IR.dir/flags.make
-CMakeFiles/IR.dir/src/ir/ir_program.o: ../src/ir/ir_program.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_program.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_program.o -c /coursegrader/src/ir/ir_program.cpp
+CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o: CMakeFiles/IR.dir/flags.make
+CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o: ../src/ir/ir_operand.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o -c /coursegrader/src/ir/ir_operand.cpp
 
-CMakeFiles/IR.dir/src/ir/ir_program.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_program.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_program.cpp > CMakeFiles/IR.dir/src/ir/ir_program.i
+CMakeFiles/IR.dir/src/ir/ir_operand.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_operand.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_operand.cpp > CMakeFiles/IR.dir/src/ir/ir_operand.cpp.i
 
-CMakeFiles/IR.dir/src/ir/ir_program.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_program.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_program.cpp -o CMakeFiles/IR.dir/src/ir/ir_program.s
+CMakeFiles/IR.dir/src/ir/ir_operand.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_operand.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_operand.cpp -o CMakeFiles/IR.dir/src/ir/ir_operand.cpp.s
 
-CMakeFiles/IR.dir/src/ir/ir_program.o.requires:
+CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.requires:
 
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_program.o.requires
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.requires
 
-CMakeFiles/IR.dir/src/ir/ir_program.o.provides: CMakeFiles/IR.dir/src/ir/ir_program.o.requires
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_program.o.provides.build
-.PHONY : CMakeFiles/IR.dir/src/ir/ir_program.o.provides
+CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.provides: CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.requires
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.provides.build
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.provides
 
-CMakeFiles/IR.dir/src/ir/ir_program.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_program.o
+CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o
 
 
-CMakeFiles/IR.dir/src/ir/type.o: CMakeFiles/IR.dir/flags.make
-CMakeFiles/IR.dir/src/ir/type.o: ../src/ir/type.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/IR.dir/src/ir/type.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/type.o -c /coursegrader/src/ir/type.cpp
+CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o: CMakeFiles/IR.dir/flags.make
+CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o: ../src/ir/ir_operator.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o -c /coursegrader/src/ir/ir_operator.cpp
 
-CMakeFiles/IR.dir/src/ir/type.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/type.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/type.cpp > CMakeFiles/IR.dir/src/ir/type.i
+CMakeFiles/IR.dir/src/ir/ir_operator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_operator.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_operator.cpp > CMakeFiles/IR.dir/src/ir/ir_operator.cpp.i
 
-CMakeFiles/IR.dir/src/ir/type.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/type.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/type.cpp -o CMakeFiles/IR.dir/src/ir/type.s
+CMakeFiles/IR.dir/src/ir/ir_operator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_operator.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_operator.cpp -o CMakeFiles/IR.dir/src/ir/ir_operator.cpp.s
 
-CMakeFiles/IR.dir/src/ir/type.o.requires:
+CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.requires:
 
-.PHONY : CMakeFiles/IR.dir/src/ir/type.o.requires
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.requires
 
-CMakeFiles/IR.dir/src/ir/type.o.provides: CMakeFiles/IR.dir/src/ir/type.o.requires
-	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/type.o.provides.build
-.PHONY : CMakeFiles/IR.dir/src/ir/type.o.provides
+CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.provides: CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.requires
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.provides.build
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.provides
 
-CMakeFiles/IR.dir/src/ir/type.o.provides.build: CMakeFiles/IR.dir/src/ir/type.o
+CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o
+
+
+CMakeFiles/IR.dir/src/ir/ir_program.cpp.o: CMakeFiles/IR.dir/flags.make
+CMakeFiles/IR.dir/src/ir/ir_program.cpp.o: ../src/ir/ir_program.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_5) "Building CXX object CMakeFiles/IR.dir/src/ir/ir_program.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/ir_program.cpp.o -c /coursegrader/src/ir/ir_program.cpp
+
+CMakeFiles/IR.dir/src/ir/ir_program.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/ir_program.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/ir_program.cpp > CMakeFiles/IR.dir/src/ir/ir_program.cpp.i
+
+CMakeFiles/IR.dir/src/ir/ir_program.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/ir_program.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/ir_program.cpp -o CMakeFiles/IR.dir/src/ir/ir_program.cpp.s
+
+CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.requires:
+
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.requires
+
+CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.provides: CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.requires
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.provides.build
+.PHONY : CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.provides
+
+CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.provides.build: CMakeFiles/IR.dir/src/ir/ir_program.cpp.o
+
+
+CMakeFiles/IR.dir/src/ir/type.cpp.o: CMakeFiles/IR.dir/flags.make
+CMakeFiles/IR.dir/src/ir/type.cpp.o: ../src/ir/type.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/IR.dir/src/ir/type.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/IR.dir/src/ir/type.cpp.o -c /coursegrader/src/ir/type.cpp
+
+CMakeFiles/IR.dir/src/ir/type.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/IR.dir/src/ir/type.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/ir/type.cpp > CMakeFiles/IR.dir/src/ir/type.cpp.i
+
+CMakeFiles/IR.dir/src/ir/type.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/IR.dir/src/ir/type.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/ir/type.cpp -o CMakeFiles/IR.dir/src/ir/type.cpp.s
+
+CMakeFiles/IR.dir/src/ir/type.cpp.o.requires:
+
+.PHONY : CMakeFiles/IR.dir/src/ir/type.cpp.o.requires
+
+CMakeFiles/IR.dir/src/ir/type.cpp.o.provides: CMakeFiles/IR.dir/src/ir/type.cpp.o.requires
+	$(MAKE) -f CMakeFiles/IR.dir/build.make CMakeFiles/IR.dir/src/ir/type.cpp.o.provides.build
+.PHONY : CMakeFiles/IR.dir/src/ir/type.cpp.o.provides
+
+CMakeFiles/IR.dir/src/ir/type.cpp.o.provides.build: CMakeFiles/IR.dir/src/ir/type.cpp.o
 
 
 # Object files for target IR
 IR_OBJECTS = \
-"CMakeFiles/IR.dir/src/ir/ir_function.o" \
-"CMakeFiles/IR.dir/src/ir/ir_instruction.o" \
-"CMakeFiles/IR.dir/src/ir/ir_operand.o" \
-"CMakeFiles/IR.dir/src/ir/ir_operator.o" \
-"CMakeFiles/IR.dir/src/ir/ir_program.o" \
-"CMakeFiles/IR.dir/src/ir/type.o"
+"CMakeFiles/IR.dir/src/ir/ir_function.cpp.o" \
+"CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o" \
+"CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o" \
+"CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o" \
+"CMakeFiles/IR.dir/src/ir/ir_program.cpp.o" \
+"CMakeFiles/IR.dir/src/ir/type.cpp.o"
 
 # External object files for target IR
 IR_EXTERNAL_OBJECTS =
 
-../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_function.o
-../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_instruction.o
-../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_operand.o
-../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_operator.o
-../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_program.o
-../bin/libIR.a: CMakeFiles/IR.dir/src/ir/type.o
+../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_function.cpp.o
+../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o
+../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o
+../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o
+../bin/libIR.a: CMakeFiles/IR.dir/src/ir/ir_program.cpp.o
+../bin/libIR.a: CMakeFiles/IR.dir/src/ir/type.cpp.o
 ../bin/libIR.a: CMakeFiles/IR.dir/build.make
 ../bin/libIR.a: CMakeFiles/IR.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Linking CXX static library ../bin/libIR.a"
@@ -230,12 +230,12 @@ CMakeFiles/IR.dir/build: ../bin/libIR.a
 
 .PHONY : CMakeFiles/IR.dir/build
 
-CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_function.o.requires
-CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_instruction.o.requires
-CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_operand.o.requires
-CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_operator.o.requires
-CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_program.o.requires
-CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/type.o.requires
+CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_function.cpp.o.requires
+CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o.requires
+CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o.requires
+CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o.requires
+CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/ir_program.cpp.o.requires
+CMakeFiles/IR.dir/requires: CMakeFiles/IR.dir/src/ir/type.cpp.o.requires
 
 .PHONY : CMakeFiles/IR.dir/requires
 

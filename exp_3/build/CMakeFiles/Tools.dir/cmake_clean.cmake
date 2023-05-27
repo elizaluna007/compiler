@@ -1,5 +1,5 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/Tools.dir/src/tools/ir_executor.o"
+  "CMakeFiles/Tools.dir/src/tools/ir_executor.cpp.o"
   "../bin/libTools.pdb"
   "../bin/libTools.a"
 )

@@ -22,7 +22,7 @@ main:
 	li	t3,0
 	sw	t3,8(sp)
 	lw	t3,4(sp)
-	li	t3,70
+	li	t3,56
 	sw	t3,4(sp)
 	lw	t3,8(sp)
 	li	t3,4

@@ -34,7 +34,7 @@ main:
 	sw	t3,12(sp)
 	lw	t4,12(sp)
 	lw	t3,16(sp)
-	addi	t3,t4,75
+	addi	t3,t4,61
 	sw	t3,16(sp)
 	lw	a0,16(sp)
 	lw	ra,0(sp)

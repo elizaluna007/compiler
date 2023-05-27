@@ -57,38 +57,38 @@ include CMakeFiles/jsoncpp.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/jsoncpp.dir/flags.make
 
-CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o: CMakeFiles/jsoncpp.dir/flags.make
-CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o: ../src/third_party/jsoncpp/jsoncpp.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o -c /coursegrader/src/third_party/jsoncpp/jsoncpp.cpp
+CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o: CMakeFiles/jsoncpp.dir/flags.make
+CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o: ../src/third_party/jsoncpp/jsoncpp.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o -c /coursegrader/src/third_party/jsoncpp/jsoncpp.cpp
 
-CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/third_party/jsoncpp/jsoncpp.cpp > CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.i
+CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/third_party/jsoncpp/jsoncpp.cpp > CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.i
 
-CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/third_party/jsoncpp/jsoncpp.cpp -o CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.s
+CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/third_party/jsoncpp/jsoncpp.cpp -o CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.s
 
-CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o.requires:
+CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.requires:
 
-.PHONY : CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o.requires
+.PHONY : CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.requires
 
-CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o.provides: CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o.requires
-	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o.provides.build
-.PHONY : CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o.provides
+CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.provides: CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.requires
+	$(MAKE) -f CMakeFiles/jsoncpp.dir/build.make CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.provides.build
+.PHONY : CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.provides
 
-CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o.provides.build: CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o
+CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.provides.build: CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o
 
 
 # Object files for target jsoncpp
 jsoncpp_OBJECTS = \
-"CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o"
+"CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o"
 
 # External object files for target jsoncpp
 jsoncpp_EXTERNAL_OBJECTS =
 
-../bin/libjsoncpp.a: CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o
+../bin/libjsoncpp.a: CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o
 ../bin/libjsoncpp.a: CMakeFiles/jsoncpp.dir/build.make
 ../bin/libjsoncpp.a: CMakeFiles/jsoncpp.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX static library ../bin/libjsoncpp.a"
@@ -100,7 +100,7 @@ CMakeFiles/jsoncpp.dir/build: ../bin/libjsoncpp.a
 
 .PHONY : CMakeFiles/jsoncpp.dir/build
 
-CMakeFiles/jsoncpp.dir/requires: CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o.requires
+CMakeFiles/jsoncpp.dir/requires: CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o.requires
 
 .PHONY : CMakeFiles/jsoncpp.dir/requires
 

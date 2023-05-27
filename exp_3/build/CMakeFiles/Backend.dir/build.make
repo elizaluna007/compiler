@@ -57,90 +57,90 @@ include CMakeFiles/Backend.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/Backend.dir/flags.make
 
-CMakeFiles/Backend.dir/src/backend/generator.o: CMakeFiles/Backend.dir/flags.make
-CMakeFiles/Backend.dir/src/backend/generator.o: ../src/backend/generator.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Backend.dir/src/backend/generator.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Backend.dir/src/backend/generator.o -c /coursegrader/src/backend/generator.cpp
+CMakeFiles/Backend.dir/src/backend/generator.cpp.o: CMakeFiles/Backend.dir/flags.make
+CMakeFiles/Backend.dir/src/backend/generator.cpp.o: ../src/backend/generator.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/Backend.dir/src/backend/generator.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Backend.dir/src/backend/generator.cpp.o -c /coursegrader/src/backend/generator.cpp
 
-CMakeFiles/Backend.dir/src/backend/generator.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Backend.dir/src/backend/generator.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/backend/generator.cpp > CMakeFiles/Backend.dir/src/backend/generator.i
+CMakeFiles/Backend.dir/src/backend/generator.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Backend.dir/src/backend/generator.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/backend/generator.cpp > CMakeFiles/Backend.dir/src/backend/generator.cpp.i
 
-CMakeFiles/Backend.dir/src/backend/generator.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Backend.dir/src/backend/generator.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/backend/generator.cpp -o CMakeFiles/Backend.dir/src/backend/generator.s
+CMakeFiles/Backend.dir/src/backend/generator.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Backend.dir/src/backend/generator.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/backend/generator.cpp -o CMakeFiles/Backend.dir/src/backend/generator.cpp.s
 
-CMakeFiles/Backend.dir/src/backend/generator.o.requires:
+CMakeFiles/Backend.dir/src/backend/generator.cpp.o.requires:
 
-.PHONY : CMakeFiles/Backend.dir/src/backend/generator.o.requires
+.PHONY : CMakeFiles/Backend.dir/src/backend/generator.cpp.o.requires
 
-CMakeFiles/Backend.dir/src/backend/generator.o.provides: CMakeFiles/Backend.dir/src/backend/generator.o.requires
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/generator.o.provides.build
-.PHONY : CMakeFiles/Backend.dir/src/backend/generator.o.provides
+CMakeFiles/Backend.dir/src/backend/generator.cpp.o.provides: CMakeFiles/Backend.dir/src/backend/generator.cpp.o.requires
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/generator.cpp.o.provides.build
+.PHONY : CMakeFiles/Backend.dir/src/backend/generator.cpp.o.provides
 
-CMakeFiles/Backend.dir/src/backend/generator.o.provides.build: CMakeFiles/Backend.dir/src/backend/generator.o
-
-
-CMakeFiles/Backend.dir/src/backend/rv_def.o: CMakeFiles/Backend.dir/flags.make
-CMakeFiles/Backend.dir/src/backend/rv_def.o: ../src/backend/rv_def.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Backend.dir/src/backend/rv_def.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Backend.dir/src/backend/rv_def.o -c /coursegrader/src/backend/rv_def.cpp
-
-CMakeFiles/Backend.dir/src/backend/rv_def.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Backend.dir/src/backend/rv_def.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/backend/rv_def.cpp > CMakeFiles/Backend.dir/src/backend/rv_def.i
-
-CMakeFiles/Backend.dir/src/backend/rv_def.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Backend.dir/src/backend/rv_def.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/backend/rv_def.cpp -o CMakeFiles/Backend.dir/src/backend/rv_def.s
-
-CMakeFiles/Backend.dir/src/backend/rv_def.o.requires:
-
-.PHONY : CMakeFiles/Backend.dir/src/backend/rv_def.o.requires
-
-CMakeFiles/Backend.dir/src/backend/rv_def.o.provides: CMakeFiles/Backend.dir/src/backend/rv_def.o.requires
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.o.provides.build
-.PHONY : CMakeFiles/Backend.dir/src/backend/rv_def.o.provides
-
-CMakeFiles/Backend.dir/src/backend/rv_def.o.provides.build: CMakeFiles/Backend.dir/src/backend/rv_def.o
+CMakeFiles/Backend.dir/src/backend/generator.cpp.o.provides.build: CMakeFiles/Backend.dir/src/backend/generator.cpp.o
 
 
-CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o: CMakeFiles/Backend.dir/flags.make
-CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o: ../src/backend/rv_inst_impl.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o -c /coursegrader/src/backend/rv_inst_impl.cpp
+CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o: CMakeFiles/Backend.dir/flags.make
+CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o: ../src/backend/rv_def.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o -c /coursegrader/src/backend/rv_def.cpp
 
-CMakeFiles/Backend.dir/src/backend/rv_inst_impl.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Backend.dir/src/backend/rv_inst_impl.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/backend/rv_inst_impl.cpp > CMakeFiles/Backend.dir/src/backend/rv_inst_impl.i
+CMakeFiles/Backend.dir/src/backend/rv_def.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Backend.dir/src/backend/rv_def.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/backend/rv_def.cpp > CMakeFiles/Backend.dir/src/backend/rv_def.cpp.i
 
-CMakeFiles/Backend.dir/src/backend/rv_inst_impl.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Backend.dir/src/backend/rv_inst_impl.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/backend/rv_inst_impl.cpp -o CMakeFiles/Backend.dir/src/backend/rv_inst_impl.s
+CMakeFiles/Backend.dir/src/backend/rv_def.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Backend.dir/src/backend/rv_def.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/backend/rv_def.cpp -o CMakeFiles/Backend.dir/src/backend/rv_def.cpp.s
 
-CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o.requires:
+CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o.requires:
 
-.PHONY : CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o.requires
+.PHONY : CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o.requires
 
-CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o.provides: CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o.requires
-	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o.provides.build
-.PHONY : CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o.provides
+CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o.provides: CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o.requires
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o.provides.build
+.PHONY : CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o.provides
 
-CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o.provides.build: CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o
+CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o.provides.build: CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o
+
+
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o: CMakeFiles/Backend.dir/flags.make
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o: ../src/backend/rv_inst_impl.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o -c /coursegrader/src/backend/rv_inst_impl.cpp
+
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/src/backend/rv_inst_impl.cpp > CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.i
+
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/src/backend/rv_inst_impl.cpp -o CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.s
+
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o.requires:
+
+.PHONY : CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o.requires
+
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o.provides: CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o.requires
+	$(MAKE) -f CMakeFiles/Backend.dir/build.make CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o.provides.build
+.PHONY : CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o.provides
+
+CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o.provides.build: CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o
 
 
 # Object files for target Backend
 Backend_OBJECTS = \
-"CMakeFiles/Backend.dir/src/backend/generator.o" \
-"CMakeFiles/Backend.dir/src/backend/rv_def.o" \
-"CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o"
+"CMakeFiles/Backend.dir/src/backend/generator.cpp.o" \
+"CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o" \
+"CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o"
 
 # External object files for target Backend
 Backend_EXTERNAL_OBJECTS =
 
-../bin/libBackend.a: CMakeFiles/Backend.dir/src/backend/generator.o
-../bin/libBackend.a: CMakeFiles/Backend.dir/src/backend/rv_def.o
-../bin/libBackend.a: CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o
+../bin/libBackend.a: CMakeFiles/Backend.dir/src/backend/generator.cpp.o
+../bin/libBackend.a: CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o
+../bin/libBackend.a: CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o
 ../bin/libBackend.a: CMakeFiles/Backend.dir/build.make
 ../bin/libBackend.a: CMakeFiles/Backend.dir/link.txt
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX static library ../bin/libBackend.a"
@@ -152,9 +152,9 @@ CMakeFiles/Backend.dir/build: ../bin/libBackend.a
 
 .PHONY : CMakeFiles/Backend.dir/build
 
-CMakeFiles/Backend.dir/requires: CMakeFiles/Backend.dir/src/backend/generator.o.requires
-CMakeFiles/Backend.dir/requires: CMakeFiles/Backend.dir/src/backend/rv_def.o.requires
-CMakeFiles/Backend.dir/requires: CMakeFiles/Backend.dir/src/backend/rv_inst_impl.o.requires
+CMakeFiles/Backend.dir/requires: CMakeFiles/Backend.dir/src/backend/generator.cpp.o.requires
+CMakeFiles/Backend.dir/requires: CMakeFiles/Backend.dir/src/backend/rv_def.cpp.o.requires
+CMakeFiles/Backend.dir/requires: CMakeFiles/Backend.dir/src/backend/rv_inst_impl.cpp.o.requires
 
 .PHONY : CMakeFiles/Backend.dir/requires
 

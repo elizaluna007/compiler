@@ -57,38 +57,38 @@ include CMakeFiles/compiler.dir/progress.make
 # Include the compile flags for this target's objects.
 include CMakeFiles/compiler.dir/flags.make
 
-CMakeFiles/compiler.dir/main.o: CMakeFiles/compiler.dir/flags.make
-CMakeFiles/compiler.dir/main.o: ../main.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/compiler.dir/main.o"
-	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/compiler.dir/main.o -c /coursegrader/main.cpp
+CMakeFiles/compiler.dir/main.cpp.o: CMakeFiles/compiler.dir/flags.make
+CMakeFiles/compiler.dir/main.cpp.o: ../main.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/coursegrader/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/compiler.dir/main.cpp.o"
+	/usr/bin/x86_64-linux-gnu-g++-7  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/compiler.dir/main.cpp.o -c /coursegrader/main.cpp
 
-CMakeFiles/compiler.dir/main.i: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/compiler.dir/main.i"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/main.cpp > CMakeFiles/compiler.dir/main.i
+CMakeFiles/compiler.dir/main.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/compiler.dir/main.cpp.i"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /coursegrader/main.cpp > CMakeFiles/compiler.dir/main.cpp.i
 
-CMakeFiles/compiler.dir/main.s: cmake_force
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/compiler.dir/main.s"
-	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/main.cpp -o CMakeFiles/compiler.dir/main.s
+CMakeFiles/compiler.dir/main.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/compiler.dir/main.cpp.s"
+	/usr/bin/x86_64-linux-gnu-g++-7 $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /coursegrader/main.cpp -o CMakeFiles/compiler.dir/main.cpp.s
 
-CMakeFiles/compiler.dir/main.o.requires:
+CMakeFiles/compiler.dir/main.cpp.o.requires:
 
-.PHONY : CMakeFiles/compiler.dir/main.o.requires
+.PHONY : CMakeFiles/compiler.dir/main.cpp.o.requires
 
-CMakeFiles/compiler.dir/main.o.provides: CMakeFiles/compiler.dir/main.o.requires
-	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/main.o.provides.build
-.PHONY : CMakeFiles/compiler.dir/main.o.provides
+CMakeFiles/compiler.dir/main.cpp.o.provides: CMakeFiles/compiler.dir/main.cpp.o.requires
+	$(MAKE) -f CMakeFiles/compiler.dir/build.make CMakeFiles/compiler.dir/main.cpp.o.provides.build
+.PHONY : CMakeFiles/compiler.dir/main.cpp.o.provides
 
-CMakeFiles/compiler.dir/main.o.provides.build: CMakeFiles/compiler.dir/main.o
+CMakeFiles/compiler.dir/main.cpp.o.provides.build: CMakeFiles/compiler.dir/main.cpp.o
 
 
 # Object files for target compiler
 compiler_OBJECTS = \
-"CMakeFiles/compiler.dir/main.o"
+"CMakeFiles/compiler.dir/main.cpp.o"
 
 # External object files for target compiler
 compiler_EXTERNAL_OBJECTS =
 
-../bin/compiler: CMakeFiles/compiler.dir/main.o
+../bin/compiler: CMakeFiles/compiler.dir/main.cpp.o
 ../bin/compiler: CMakeFiles/compiler.dir/build.make
 ../bin/compiler: ../bin/libBackend.a
 ../bin/compiler: ../bin/libTools.a
@@ -104,7 +104,7 @@ CMakeFiles/compiler.dir/build: ../bin/compiler
 
 .PHONY : CMakeFiles/compiler.dir/build
 
-CMakeFiles/compiler.dir/requires: CMakeFiles/compiler.dir/main.o.requires
+CMakeFiles/compiler.dir/requires: CMakeFiles/compiler.dir/main.cpp.o.requires
 
 .PHONY : CMakeFiles/compiler.dir/requires
 

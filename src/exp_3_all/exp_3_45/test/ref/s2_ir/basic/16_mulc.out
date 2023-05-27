@@ -1,0 +1,14 @@
+void global()
+	0: def a, 5
+	1: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def t0, 5
+	2: mul t1, a, t0
+	3: return t1
+end
+
+GVT:
+	a int 0

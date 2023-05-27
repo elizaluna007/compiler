@@ -4,7 +4,7 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/coursegrader/src/third_party/jsoncpp/jsoncpp.cpp" "/coursegrader/build/CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.o"
+  "/coursegrader/src/third_party/jsoncpp/jsoncpp.cpp" "/coursegrader/build/CMakeFiles/jsoncpp.dir/src/third_party/jsoncpp/jsoncpp.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

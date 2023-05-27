@@ -1,0 +1,471 @@
+void global()
+	0: def INF, 65535
+	1: def t0, 1
+	2: def t1, 16
+	3: mul t2, t0, t1
+	4: def t3, 16
+	5: mul t4, t2, t3
+	6: alloc e, t4
+	7: store 0, e, 0
+	8: store 0, e, 1
+	9: store 0, e, 2
+	10: store 0, e, 3
+	11: store 0, e, 4
+	12: store 0, e, 5
+	13: store 0, e, 6
+	14: store 0, e, 7
+	15: store 0, e, 8
+	16: store 0, e, 9
+	17: store 0, e, 10
+	18: store 0, e, 11
+	19: store 0, e, 12
+	20: store 0, e, 13
+	21: store 0, e, 14
+	22: store 0, e, 15
+	23: store 0, e, 16
+	24: store 0, e, 17
+	25: store 0, e, 18
+	26: store 0, e, 19
+	27: store 0, e, 20
+	28: store 0, e, 21
+	29: store 0, e, 22
+	30: store 0, e, 23
+	31: store 0, e, 24
+	32: store 0, e, 25
+	33: store 0, e, 26
+	34: store 0, e, 27
+	35: store 0, e, 28
+	36: store 0, e, 29
+	37: store 0, e, 30
+	38: store 0, e, 31
+	39: store 0, e, 32
+	40: store 0, e, 33
+	41: store 0, e, 34
+	42: store 0, e, 35
+	43: store 0, e, 36
+	44: store 0, e, 37
+	45: store 0, e, 38
+	46: store 0, e, 39
+	47: store 0, e, 40
+	48: store 0, e, 41
+	49: store 0, e, 42
+	50: store 0, e, 43
+	51: store 0, e, 44
+	52: store 0, e, 45
+	53: store 0, e, 46
+	54: store 0, e, 47
+	55: store 0, e, 48
+	56: store 0, e, 49
+	57: store 0, e, 50
+	58: store 0, e, 51
+	59: store 0, e, 52
+	60: store 0, e, 53
+	61: store 0, e, 54
+	62: store 0, e, 55
+	63: store 0, e, 56
+	64: store 0, e, 57
+	65: store 0, e, 58
+	66: store 0, e, 59
+	67: store 0, e, 60
+	68: store 0, e, 61
+	69: store 0, e, 62
+	70: store 0, e, 63
+	71: store 0, e, 64
+	72: store 0, e, 65
+	73: store 0, e, 66
+	74: store 0, e, 67
+	75: store 0, e, 68
+	76: store 0, e, 69
+	77: store 0, e, 70
+	78: store 0, e, 71
+	79: store 0, e, 72
+	80: store 0, e, 73
+	81: store 0, e, 74
+	82: store 0, e, 75
+	83: store 0, e, 76
+	84: store 0, e, 77
+	85: store 0, e, 78
+	86: store 0, e, 79
+	87: store 0, e, 80
+	88: store 0, e, 81
+	89: store 0, e, 82
+	90: store 0, e, 83
+	91: store 0, e, 84
+	92: store 0, e, 85
+	93: store 0, e, 86
+	94: store 0, e, 87
+	95: store 0, e, 88
+	96: store 0, e, 89
+	97: store 0, e, 90
+	98: store 0, e, 91
+	99: store 0, e, 92
+	100: store 0, e, 93
+	101: store 0, e, 94
+	102: store 0, e, 95
+	103: store 0, e, 96
+	104: store 0, e, 97
+	105: store 0, e, 98
+	106: store 0, e, 99
+	107: store 0, e, 100
+	108: store 0, e, 101
+	109: store 0, e, 102
+	110: store 0, e, 103
+	111: store 0, e, 104
+	112: store 0, e, 105
+	113: store 0, e, 106
+	114: store 0, e, 107
+	115: store 0, e, 108
+	116: store 0, e, 109
+	117: store 0, e, 110
+	118: store 0, e, 111
+	119: store 0, e, 112
+	120: store 0, e, 113
+	121: store 0, e, 114
+	122: store 0, e, 115
+	123: store 0, e, 116
+	124: store 0, e, 117
+	125: store 0, e, 118
+	126: store 0, e, 119
+	127: store 0, e, 120
+	128: store 0, e, 121
+	129: store 0, e, 122
+	130: store 0, e, 123
+	131: store 0, e, 124
+	132: store 0, e, 125
+	133: store 0, e, 126
+	134: store 0, e, 127
+	135: store 0, e, 128
+	136: store 0, e, 129
+	137: store 0, e, 130
+	138: store 0, e, 131
+	139: store 0, e, 132
+	140: store 0, e, 133
+	141: store 0, e, 134
+	142: store 0, e, 135
+	143: store 0, e, 136
+	144: store 0, e, 137
+	145: store 0, e, 138
+	146: store 0, e, 139
+	147: store 0, e, 140
+	148: store 0, e, 141
+	149: store 0, e, 142
+	150: store 0, e, 143
+	151: store 0, e, 144
+	152: store 0, e, 145
+	153: store 0, e, 146
+	154: store 0, e, 147
+	155: store 0, e, 148
+	156: store 0, e, 149
+	157: store 0, e, 150
+	158: store 0, e, 151
+	159: store 0, e, 152
+	160: store 0, e, 153
+	161: store 0, e, 154
+	162: store 0, e, 155
+	163: store 0, e, 156
+	164: store 0, e, 157
+	165: store 0, e, 158
+	166: store 0, e, 159
+	167: store 0, e, 160
+	168: store 0, e, 161
+	169: store 0, e, 162
+	170: store 0, e, 163
+	171: store 0, e, 164
+	172: store 0, e, 165
+	173: store 0, e, 166
+	174: store 0, e, 167
+	175: store 0, e, 168
+	176: store 0, e, 169
+	177: store 0, e, 170
+	178: store 0, e, 171
+	179: store 0, e, 172
+	180: store 0, e, 173
+	181: store 0, e, 174
+	182: store 0, e, 175
+	183: store 0, e, 176
+	184: store 0, e, 177
+	185: store 0, e, 178
+	186: store 0, e, 179
+	187: store 0, e, 180
+	188: store 0, e, 181
+	189: store 0, e, 182
+	190: store 0, e, 183
+	191: store 0, e, 184
+	192: store 0, e, 185
+	193: store 0, e, 186
+	194: store 0, e, 187
+	195: store 0, e, 188
+	196: store 0, e, 189
+	197: store 0, e, 190
+	198: store 0, e, 191
+	199: store 0, e, 192
+	200: store 0, e, 193
+	201: store 0, e, 194
+	202: store 0, e, 195
+	203: store 0, e, 196
+	204: store 0, e, 197
+	205: store 0, e, 198
+	206: store 0, e, 199
+	207: store 0, e, 200
+	208: store 0, e, 201
+	209: store 0, e, 202
+	210: store 0, e, 203
+	211: store 0, e, 204
+	212: store 0, e, 205
+	213: store 0, e, 206
+	214: store 0, e, 207
+	215: store 0, e, 208
+	216: store 0, e, 209
+	217: store 0, e, 210
+	218: store 0, e, 211
+	219: store 0, e, 212
+	220: store 0, e, 213
+	221: store 0, e, 214
+	222: store 0, e, 215
+	223: store 0, e, 216
+	224: store 0, e, 217
+	225: store 0, e, 218
+	226: store 0, e, 219
+	227: store 0, e, 220
+	228: store 0, e, 221
+	229: store 0, e, 222
+	230: store 0, e, 223
+	231: store 0, e, 224
+	232: store 0, e, 225
+	233: store 0, e, 226
+	234: store 0, e, 227
+	235: store 0, e, 228
+	236: store 0, e, 229
+	237: store 0, e, 230
+	238: store 0, e, 231
+	239: store 0, e, 232
+	240: store 0, e, 233
+	241: store 0, e, 234
+	242: store 0, e, 235
+	243: store 0, e, 236
+	244: store 0, e, 237
+	245: store 0, e, 238
+	246: store 0, e, 239
+	247: store 0, e, 240
+	248: store 0, e, 241
+	249: store 0, e, 242
+	250: store 0, e, 243
+	251: store 0, e, 244
+	252: store 0, e, 245
+	253: store 0, e, 246
+	254: store 0, e, 247
+	255: store 0, e, 248
+	256: store 0, e, 249
+	257: store 0, e, 250
+	258: store 0, e, 251
+	259: store 0, e, 252
+	260: store 0, e, 253
+	261: store 0, e, 254
+	262: store 0, e, 255
+	263: def t261, 1
+	264: def t262, 16
+	265: mul t263, t261, t262
+	266: alloc book, t263
+	267: store 0, book, 0
+	268: store 0, book, 1
+	269: store 0, book, 2
+	270: store 0, book, 3
+	271: store 0, book, 4
+	272: store 0, book, 5
+	273: store 0, book, 6
+	274: store 0, book, 7
+	275: store 0, book, 8
+	276: store 0, book, 9
+	277: store 0, book, 10
+	278: store 0, book, 11
+	279: store 0, book, 12
+	280: store 0, book, 13
+	281: store 0, book, 14
+	282: store 0, book, 15
+	283: def t280, 1
+	284: def t281, 16
+	285: mul t282, t280, t281
+	286: alloc dis, t282
+	287: store 0, dis, 0
+	288: store 0, dis, 1
+	289: store 0, dis, 2
+	290: store 0, dis, 3
+	291: store 0, dis, 4
+	292: store 0, dis, 5
+	293: store 0, dis, 6
+	294: store 0, dis, 7
+	295: store 0, dis, 8
+	296: store 0, dis, 9
+	297: store 0, dis, 10
+	298: store 0, dis, 11
+	299: store 0, dis, 12
+	300: store 0, dis, 13
+	301: store 0, dis, 14
+	302: store 0, dis, 15
+	303: def n, 0
+	304: def m, 0
+	305: def v1, 0
+	306: def v2, 0
+	307: def w, 0
+	308: return null
+end
+
+void Dijkstra()
+	0: def i, 0
+	1: def j, 0
+	2: mov i, 1
+	3: leq t299, i, n
+	4: if t299 goto [pc, 2]
+	5: goto [pc, 10]
+	6: def t300, 1
+	7: mul t301, t3, t300
+	8: add t302, t301, i
+	9: load t303, e, t302
+	10: store t303, dis, i
+	11: store 0, book, i
+	12: addi t304, i, 1
+	13: mov i, t304
+	14: goto [pc, -11]
+	15: def t305, 1
+	16: store 1, book, t305
+	17: mov i, 1
+	18: subi t306, n, 1
+	19: leq t307, i, t306
+	20: if t307 goto [pc, 2]
+	21: goto [pc, 59]
+	22: def min_num, INF
+	23: def min_index, 0
+	24: def k, 1
+	25: leq t308, k, n
+	26: if t308 goto [pc, 2]
+	27: goto [pc, 19]
+	28: load t309, dis, k
+	29: gtr t310, min_num, t309
+	30: and t311, t310, 1
+	31: if t311 goto [pc, 2]
+	32: goto [pc, 5]
+	33: load t312, book, k
+	34: def t313, 0
+	35: eq t314, t312, t313
+	36: and t311, t310, t314
+	37: if t311 goto [pc, 2]
+	38: goto [pc, 5]
+	39: load t315, dis, k
+	40: mov min_num, t315
+	41: mov min_index, k
+	42: goto [pc, 1]
+	43: addi t316, k, 1
+	44: mov k, t316
+	45: goto [pc, -20]
+	46: store 1, book, min_index
+	47: def j_2, 1
+	48: leq t317, j_2, n
+	49: if t317 goto [pc, 2]
+	50: goto [pc, 27]
+	51: mul t318, t3, min_index
+	52: add t319, t318, j_2
+	53: load t320, e, t319
+	54: lss t321, t320, INF
+	55: if t321 goto [pc, 2]
+	56: goto [pc, 18]
+	57: load t322, dis, j_2
+	58: load t323, dis, min_index
+	59: mul t324, t3, min_index
+	60: add t325, t324, j_2
+	61: load t326, e, t325
+	62: add t327, t323, t326
+	63: gtr t328, t322, t327
+	64: if t328 goto [pc, 2]
+	65: goto [pc, 8]
+	66: load t329, dis, min_index
+	67: mul t330, t3, min_index
+	68: add t331, t330, j_2
+	69: load t332, e, t331
+	70: add t333, t329, t332
+	71: store t333, dis, j_2
+	72: goto [pc, 1]
+	73: goto [pc, 1]
+	74: addi t334, j_2, 1
+	75: mov j_2, t334
+	76: goto [pc, -28]
+	77: addi t335, i, 1
+	78: mov i, t335
+	79: goto [pc, -61]
+	80: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def i, 0
+	2: call t336, getint()
+	3: mov n, t336
+	4: call t337, getint()
+	5: mov m, t337
+	6: mov i, 1
+	7: leq t338, i, n
+	8: if t338 goto [pc, 2]
+	9: goto [pc, 21]
+	10: def j, 1
+	11: leq t339, j, n
+	12: if t339 goto [pc, 2]
+	13: goto [pc, 14]
+	14: eq t340, i, j
+	15: if t340 goto [pc, 2]
+	16: goto [pc, 5]
+	17: mul t341, t3, i
+	18: add t342, t341, j
+	19: store 0, e, t342
+	20: goto [pc, 4]
+	21: mul t343, t3, i
+	22: add t344, t343, j
+	23: store INF, e, t344
+	24: addi t345, j, 1
+	25: mov j, t345
+	26: goto [pc, -15]
+	27: addi t346, i, 1
+	28: mov i, t346
+	29: goto [pc, -22]
+	30: mov i, 1
+	31: leq t347, i, m
+	32: if t347 goto [pc, 2]
+	33: goto [pc, 12]
+	34: call t348, getint()
+	35: def u, t348
+	36: call t349, getint()
+	37: def v, t349
+	38: mul t350, t3, u
+	39: add t351, t350, v
+	40: call t352, getint()
+	41: store t352, e, t351
+	42: addi t353, i, 1
+	43: mov i, t353
+	44: goto [pc, -13]
+	45: call t354, Dijkstra()
+	46: mov i, 1
+	47: leq t355, i, n
+	48: if t355 goto [pc, 2]
+	49: goto [pc, 7]
+	50: load t356, dis, i
+	51: call t357, putint(t356)
+	52: call t358, putch(32)
+	53: addi t359, i, 1
+	54: mov i, t359
+	55: goto [pc, -8]
+	56: call t360, putch(10)
+	57: return 0
+end
+
+GVT:
+	INF int 0
+	book int* 16
+	dis int* 16
+	e int* 256
+	m int 0
+	n int 0
+	t1 int 0
+	t262 int 0
+	t281 int 0
+	t3 int 0
+	v1 int 0
+	v2 int 0
+	w int 0

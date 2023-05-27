@@ -1,0 +1,318 @@
+void global()
+	0: def t0, 1
+	1: def t1, 110
+	2: mul t2, t0, t1
+	3: alloc array, t2
+	4: store 0, array, 0
+	5: store 0, array, 1
+	6: store 0, array, 2
+	7: store 0, array, 3
+	8: store 0, array, 4
+	9: store 0, array, 5
+	10: store 0, array, 6
+	11: store 0, array, 7
+	12: store 0, array, 8
+	13: store 0, array, 9
+	14: store 0, array, 10
+	15: store 0, array, 11
+	16: store 0, array, 12
+	17: store 0, array, 13
+	18: store 0, array, 14
+	19: store 0, array, 15
+	20: store 0, array, 16
+	21: store 0, array, 17
+	22: store 0, array, 18
+	23: store 0, array, 19
+	24: store 0, array, 20
+	25: store 0, array, 21
+	26: store 0, array, 22
+	27: store 0, array, 23
+	28: store 0, array, 24
+	29: store 0, array, 25
+	30: store 0, array, 26
+	31: store 0, array, 27
+	32: store 0, array, 28
+	33: store 0, array, 29
+	34: store 0, array, 30
+	35: store 0, array, 31
+	36: store 0, array, 32
+	37: store 0, array, 33
+	38: store 0, array, 34
+	39: store 0, array, 35
+	40: store 0, array, 36
+	41: store 0, array, 37
+	42: store 0, array, 38
+	43: store 0, array, 39
+	44: store 0, array, 40
+	45: store 0, array, 41
+	46: store 0, array, 42
+	47: store 0, array, 43
+	48: store 0, array, 44
+	49: store 0, array, 45
+	50: store 0, array, 46
+	51: store 0, array, 47
+	52: store 0, array, 48
+	53: store 0, array, 49
+	54: store 0, array, 50
+	55: store 0, array, 51
+	56: store 0, array, 52
+	57: store 0, array, 53
+	58: store 0, array, 54
+	59: store 0, array, 55
+	60: store 0, array, 56
+	61: store 0, array, 57
+	62: store 0, array, 58
+	63: store 0, array, 59
+	64: store 0, array, 60
+	65: store 0, array, 61
+	66: store 0, array, 62
+	67: store 0, array, 63
+	68: store 0, array, 64
+	69: store 0, array, 65
+	70: store 0, array, 66
+	71: store 0, array, 67
+	72: store 0, array, 68
+	73: store 0, array, 69
+	74: store 0, array, 70
+	75: store 0, array, 71
+	76: store 0, array, 72
+	77: store 0, array, 73
+	78: store 0, array, 74
+	79: store 0, array, 75
+	80: store 0, array, 76
+	81: store 0, array, 77
+	82: store 0, array, 78
+	83: store 0, array, 79
+	84: store 0, array, 80
+	85: store 0, array, 81
+	86: store 0, array, 82
+	87: store 0, array, 83
+	88: store 0, array, 84
+	89: store 0, array, 85
+	90: store 0, array, 86
+	91: store 0, array, 87
+	92: store 0, array, 88
+	93: store 0, array, 89
+	94: store 0, array, 90
+	95: store 0, array, 91
+	96: store 0, array, 92
+	97: store 0, array, 93
+	98: store 0, array, 94
+	99: store 0, array, 95
+	100: store 0, array, 96
+	101: store 0, array, 97
+	102: store 0, array, 98
+	103: store 0, array, 99
+	104: store 0, array, 100
+	105: store 0, array, 101
+	106: store 0, array, 102
+	107: store 0, array, 103
+	108: store 0, array, 104
+	109: store 0, array, 105
+	110: store 0, array, 106
+	111: store 0, array, 107
+	112: store 0, array, 108
+	113: store 0, array, 109
+	114: def n, 0
+	115: return null
+end
+
+void init(int n)
+	0: def i, 1
+	1: mul t113, n, n
+	2: addi t114, t113, 1
+	3: leq t115, i, t114
+	4: if t115 goto [pc, 2]
+	5: goto [pc, 7]
+	6: def t116, 0
+	7: subi t117, t116, 1
+	8: store t117, array, i
+	9: addi t118, i, 1
+	10: mov i, t118
+	11: goto [pc, -10]
+	12: return null
+end
+
+int findfa(int a)
+	0: load t119, array, a
+	1: eq t120, t119, a
+	2: if t120 goto [pc, 2]
+	3: goto [pc, 3]
+	4: return a
+	5: goto [pc, 6]
+	6: load t121, array, a
+	7: call t122, findfa(t121)
+	8: store t122, array, a
+	9: load t123, array, a
+	10: return t123
+end
+
+void mmerge(int a,int b)
+	0: call t124, findfa(a)
+	1: def m, t124
+	2: call t125, findfa(b)
+	3: def n_4, t125
+	4: neq t126, m, n_4
+	5: if t126 goto [pc, 2]
+	6: goto [pc, 3]
+	7: store n_4, array, m
+	8: goto [pc, 1]
+	9: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def t, 0
+	2: def m, 0
+	3: def a_5, 0
+	4: def b_5, 0
+	5: mov t, 1
+	6: if t goto [pc, 2]
+	7: goto [pc, 141]
+	8: subi t127, t, 1
+	9: mov t, t127
+	10: mov n, 4
+	11: mov m, 10
+	12: def i, 0
+	13: def flag, 0
+	14: call t128, init(n)
+	15: mul t129, n, n
+	16: addi t130, t129, 1
+	17: def k, t130
+	18: lss t131, i, m
+	19: if t131 goto [pc, 2]
+	20: goto [pc, 119]
+	21: call t132, getint()
+	22: mov a_5, t132
+	23: call t133, getint()
+	24: mov b_5, t133
+	25: not t134, flag
+	26: if t134 goto [pc, 2]
+	27: goto [pc, 109]
+	28: subi t135, a_5, 1
+	29: mul t136, n, t135
+	30: add t137, t136, b_5
+	31: def loc, t137
+	32: store loc, array, loc
+	33: def t138, 1
+	34: eq t139, a_5, t138
+	35: if t139 goto [pc, 2]
+	36: goto [pc, 5]
+	37: def t140, 0
+	38: store 0, array, t140
+	39: call t141, mmerge(loc, 0)
+	40: goto [pc, 1]
+	41: eq t142, a_5, n
+	42: if t142 goto [pc, 2]
+	43: goto [pc, 4]
+	44: store k, array, k
+	45: call t143, mmerge(loc, k)
+	46: goto [pc, 1]
+	47: lss t144, b_5, n
+	48: and t145, t144, 1
+	49: if t145 goto [pc, 2]
+	50: goto [pc, 7]
+	51: addi t146, loc, 1
+	52: load t147, array, t146
+	53: def t148, 0
+	54: subi t149, t148, 1
+	55: neq t150, t147, t149
+	56: and t145, t144, t150
+	57: if t145 goto [pc, 2]
+	58: goto [pc, 4]
+	59: addi t151, loc, 1
+	60: call t152, mmerge(loc, t151)
+	61: goto [pc, 1]
+	62: gtr t153, b_5, 1
+	63: and t154, t153, 1
+	64: if t154 goto [pc, 2]
+	65: goto [pc, 7]
+	66: subi t155, loc, 1
+	67: load t156, array, t155
+	68: def t157, 0
+	69: subi t158, t157, 1
+	70: neq t159, t156, t158
+	71: and t154, t153, t159
+	72: if t154 goto [pc, 2]
+	73: goto [pc, 4]
+	74: subi t160, loc, 1
+	75: call t161, mmerge(loc, t160)
+	76: goto [pc, 1]
+	77: lss t162, a_5, n
+	78: and t163, t162, 1
+	79: if t163 goto [pc, 2]
+	80: goto [pc, 7]
+	81: add t164, loc, n
+	82: load t165, array, t164
+	83: def t166, 0
+	84: subi t167, t166, 1
+	85: neq t168, t165, t167
+	86: and t163, t162, t168
+	87: if t163 goto [pc, 2]
+	88: goto [pc, 4]
+	89: add t169, loc, n
+	90: call t170, mmerge(loc, t169)
+	91: goto [pc, 1]
+	92: gtr t171, a_5, 1
+	93: and t172, t171, 1
+	94: if t172 goto [pc, 2]
+	95: goto [pc, 7]
+	96: sub t173, loc, n
+	97: load t174, array, t173
+	98: def t175, 0
+	99: subi t176, t175, 1
+	100: neq t177, t174, t176
+	101: and t172, t171, t177
+	102: if t172 goto [pc, 2]
+	103: goto [pc, 4]
+	104: sub t178, loc, n
+	105: call t179, mmerge(loc, t178)
+	106: goto [pc, 1]
+	107: def t180, 0
+	108: load t181, array, t180
+	109: def t182, 0
+	110: subi t183, t182, 1
+	111: neq t184, t181, t183
+	112: and t185, t184, 1
+	113: if t185 goto [pc, 2]
+	114: goto [pc, 13]
+	115: load t186, array, k
+	116: def t187, 0
+	117: subi t188, t187, 1
+	118: neq t189, t186, t188
+	119: and t190, t189, 1
+	120: if t190 goto [pc, 2]
+	121: goto [pc, 5]
+	122: call t191, findfa(0)
+	123: call t192, findfa(k)
+	124: eq t193, t191, t192
+	125: and t190, t189, t193
+	126: and t185, t184, t190
+	127: if t185 goto [pc, 2]
+	128: goto [pc, 7]
+	129: mov flag, 1
+	130: addi t194, i, 1
+	131: def tmp, t194
+	132: call t195, putint(tmp)
+	133: call t196, putch(10)
+	134: goto [pc, 1]
+	135: goto [pc, 1]
+	136: addi t197, i, 1
+	137: mov i, t197
+	138: goto [pc, -120]
+	139: not t198, flag
+	140: if t198 goto [pc, 2]
+	141: goto [pc, 6]
+	142: def t199, 0
+	143: subi t200, t199, 1
+	144: call t201, putint(t200)
+	145: call t202, putch(10)
+	146: goto [pc, 1]
+	147: goto [pc, -141]
+	148: return 0
+end
+
+GVT:
+	array int* 110
+	n int 0
+	t1 int 0

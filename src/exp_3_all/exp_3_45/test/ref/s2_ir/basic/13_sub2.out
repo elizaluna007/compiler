@@ -1,0 +1,15 @@
+void global()
+	0: def a, 10
+	1: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def b, 0
+	2: mov b, 2
+	3: sub t0, b, a
+	4: return t0
+end
+
+GVT:
+	a int 0

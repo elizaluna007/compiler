@@ -1,0 +1,49 @@
+void global()
+	0: return null
+end
+
+int deepWhileBr(int a,int b)
+	0: def c, 0
+	1: add t0, a, b
+	2: mov c, t0
+	3: lss t1, c, 75
+	4: if t1 goto [pc, 2]
+	5: goto [pc, 27]
+	6: def d, 0
+	7: mov d, 42
+	8: lss t2, c, 100
+	9: if t2 goto [pc, 2]
+	10: goto [pc, 21]
+	11: add t3, c, d
+	12: mov c, t3
+	13: gtr t4, c, 99
+	14: if t4 goto [pc, 2]
+	15: goto [pc, 15]
+	16: def e, 0
+	17: def t5, 2
+	18: mul t6, d, t5
+	19: mov e, t6
+	20: def t7, 1
+	21: def t8, 1
+	22: eq t9, t7, t8
+	23: if t9 goto [pc, 2]
+	24: goto [pc, 5]
+	25: def t10, 2
+	26: mul t11, e, t10
+	27: mov c, t11
+	28: goto [pc, 1]
+	29: goto [pc, 1]
+	30: goto [pc, 1]
+	31: goto [pc, -28]
+	32: return c
+end
+
+int main()
+	0: call t0, global()
+	1: def p, 0
+	2: mov p, 2
+	3: call t12, deepWhileBr(p, p)
+	4: return t12
+end
+
+GVT:

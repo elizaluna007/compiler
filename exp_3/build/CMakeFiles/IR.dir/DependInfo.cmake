@@ -4,12 +4,12 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/coursegrader/src/ir/ir_function.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_function.o"
-  "/coursegrader/src/ir/ir_instruction.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_instruction.o"
-  "/coursegrader/src/ir/ir_operand.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_operand.o"
-  "/coursegrader/src/ir/ir_operator.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_operator.o"
-  "/coursegrader/src/ir/ir_program.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_program.o"
-  "/coursegrader/src/ir/type.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/type.o"
+  "/coursegrader/src/ir/ir_function.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_function.cpp.o"
+  "/coursegrader/src/ir/ir_instruction.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_instruction.cpp.o"
+  "/coursegrader/src/ir/ir_operand.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_operand.cpp.o"
+  "/coursegrader/src/ir/ir_operator.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_operator.cpp.o"
+  "/coursegrader/src/ir/ir_program.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/ir_program.cpp.o"
+  "/coursegrader/src/ir/type.cpp" "/coursegrader/build/CMakeFiles/IR.dir/src/ir/type.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

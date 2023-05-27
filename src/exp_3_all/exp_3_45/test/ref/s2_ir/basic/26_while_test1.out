@@ -1,0 +1,33 @@
+void global()
+	0: return null
+end
+
+int doubleWhile()
+	0: def i, 0
+	1: mov i, 5
+	2: def j, 0
+	3: mov j, 7
+	4: lss t0, i, 100
+	5: if t0 goto [pc, 2]
+	6: goto [pc, 12]
+	7: addi t1, i, 30
+	8: mov i, t1
+	9: lss t2, j, 100
+	10: if t2 goto [pc, 2]
+	11: goto [pc, 4]
+	12: addi t3, j, 6
+	13: mov j, t3
+	14: goto [pc, -5]
+	15: subi t4, j, 100
+	16: mov j, t4
+	17: goto [pc, -13]
+	18: return j
+end
+
+int main()
+	0: call t0, global()
+	1: call t5, doubleWhile()
+	2: return t5
+end
+
+GVT:

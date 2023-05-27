@@ -1,0 +1,69 @@
+void global()
+	0: return null
+end
+
+int main()
+	0: call t0, global()
+	1: def t0, 1
+	2: def t1, 4
+	3: mul t2, t0, t1
+	4: def t3, 2
+	5: mul t4, t2, t3
+	6: alloc a, t4
+	7: store 0, a, 0
+	8: store 0, a, 1
+	9: store 0, a, 2
+	10: store 0, a, 3
+	11: store 0, a, 4
+	12: store 0, a, 5
+	13: store 0, a, 6
+	14: store 0, a, 7
+	15: def t13, 1
+	16: def t14, 4
+	17: mul t15, t13, t14
+	18: def t16, 2
+	19: mul t17, t15, t16
+	20: alloc b, t17
+	21: store 0, b, 0
+	22: store 0, b, 1
+	23: store 0, b, 2
+	24: store 0, b, 3
+	25: store 0, b, 4
+	26: store 0, b, 5
+	27: store 0, b, 6
+	28: store 0, b, 7
+	29: store 1, b, 0
+	30: store 2, b, 1
+	31: store 3, b, 2
+	32: store 4, b, 3
+	33: store 5, b, 4
+	34: store 6, b, 5
+	35: store 7, b, 6
+	36: store 8, b, 7
+	37: def t26, 3
+	38: def t27, 1
+	39: mul t28, t16, t26
+	40: add t29, t28, t27
+	41: load t30, b, t29
+	42: def t31, 0
+	43: def t32, 0
+	44: mul t33, t16, t31
+	45: add t34, t33, t32
+	46: load t35, b, t34
+	47: add t36, t30, t35
+	48: def t37, 0
+	49: def t38, 1
+	50: mul t39, t16, t37
+	51: add t40, t39, t38
+	52: load t41, b, t40
+	53: add t42, t36, t41
+	54: def t43, 2
+	55: def t44, 0
+	56: mul t45, t16, t43
+	57: add t46, t45, t44
+	58: load t47, b, t46
+	59: add t48, t42, t47
+	60: return t48
+end
+
+GVT:

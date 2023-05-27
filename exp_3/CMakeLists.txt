@@ -1,6 +1,4 @@
-set(CMAKE_C_COMPILER    "/usr/bin/x86_64-linux-gnu-gcc-7")
-set(CMAKE_CXX_COMPILER  "/usr/bin/x86_64-linux-gnu-g++-7")
-# cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.10)
 project(compiler)
 
 # compile flags
@@ -53,3 +51,5 @@ add_executable(compiler main.cpp)
 # every lib should be linked with [compiler]
 target_link_libraries(compiler Backend Tools Front IR jsoncpp)
 
+set(CMAKE_C_COMPILER    "/usr/bin/x86_64-linux-gnu-gcc-7")
+set(CMAKE_CXX_COMPILER  "/usr/bin/x86_64-linux-gnu-g++-7")

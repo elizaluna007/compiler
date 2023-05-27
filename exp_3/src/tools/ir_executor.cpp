@@ -7,8 +7,8 @@
 #include<iostream>
 
 #define TODO assert(0 && "TODO");
-// #define DEBUG_EXEC_BRIEF  1
-// #define DEBUG_EXEC_DETAIL 0
+#define DEBUG_EXEC_BRIEF  1
+#define DEBUG_EXEC_DETAIL 0
 #define IS_INT_OPERAND(operand) (operand.type == Type::Int || operand.type == Type::IntLiteral)
 #define IS_FLOAT_OPERAND(operand) (operand.type == Type::Float || operand.type == Type::FloatLiteral)
 
@@ -128,8 +128,7 @@ int ir::Executor::run() {
             if (gte.val.type == Type::IntPtr) {
                 entry.second._val.iptr = new int[gte.maxlen];
                 // global variable need to init as 0
-                // for (size_t i = 0; i < gte.maxlen; i++) {
-                for (int i = 0; i < gte.maxlen; i++) {
+                for (size_t i = 0; i < gte.maxlen; i++) {
                     entry.second._val.iptr[i] = 0;
                 }
                 
@@ -137,8 +136,7 @@ int ir::Executor::run() {
             else if (gte.val.type == Type::FloatPtr) {
                 entry.second._val.fptr = new float[gte.maxlen];
                 // global variable need to init as 0
-                // for (size_t i = 0; i < gte.maxlen; i++) {
-                for (int i = 0; i < gte.maxlen; i++) {
+                for (size_t i = 0; i < gte.maxlen; i++) {
                     entry.second._val.fptr[i] = 0;
                 }
             }

@@ -1,0 +1,66 @@
+void global()
+	0: return null
+end
+
+int exgcd(int a,int b,int* x,int* y)
+	0: def t0, 0
+	1: eq t1, b, t0
+	2: if t1 goto [pc, 2]
+	3: goto [pc, 7]
+	4: def t2, 0
+	5: store 1, x, t2
+	6: def t3, 0
+	7: store 0, y, t3
+	8: return a
+	9: goto [pc, 19]
+	10: mod t4, a, b
+	11: call t5, exgcd(b, t4, x, y)
+	12: def r, t5
+	13: def t6, 0
+	14: load t7, x, t6
+	15: def t, t7
+	16: def t8, 0
+	17: def t9, 0
+	18: load t10, y, t9
+	19: store t10, x, t8
+	20: def t11, 0
+	21: div t12, a, b
+	22: def t13, 0
+	23: load t14, y, t13
+	24: mul t15, t12, t14
+	25: sub t16, t, t15
+	26: store t16, y, t11
+	27: return r
+end
+
+int main()
+	0: call t0, global()
+	1: def a_3, 7
+	2: def b_3, 15
+	3: def t17, 1
+	4: def t18, 1
+	5: mul t19, t17, t18
+	6: alloc x_3, t19
+	7: store 0, x_3, 0
+	8: store 1, x_3, 0
+	9: def t21, 1
+	10: def t22, 1
+	11: mul t23, t21, t22
+	12: alloc y_3, t23
+	13: store 0, y_3, 0
+	14: store 1, y_3, 0
+	15: call t25, exgcd(a_3, b_3, x_3, y_3)
+	16: def t26, 0
+	17: def t27, 0
+	18: load t28, x_3, t27
+	19: mod t29, t28, b_3
+	20: add t30, t29, b_3
+	21: mod t31, t30, b_3
+	22: store t31, x_3, t26
+	23: def t32, 0
+	24: load t33, x_3, t32
+	25: call t34, putint(t33)
+	26: return 0
+end
+
+GVT:

@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "d:/360MoveData/Users/Luna/Desktop/compiler/s3_train",
-      "program": "d:/360MoveData/Users/Luna/Desktop/compiler/s3_train/build/Debug/outDebug",
+      "cwd": "d:/360MoveData/Users/Luna/Desktop/compiler/src/exp_3_all/s3_train",
+      "program": "d:/360MoveData/Users/Luna/Desktop/compiler/src/exp_3_all/s3_train/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

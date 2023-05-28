@@ -130,11 +130,13 @@ namespace rv
         FDIV,
         CVT_I2F,
         CVT_F2I,
+        FLOOR,
         FEQ,
         FLT,
         FLE,
         // Pseudo Instructions
         LA,
+        LLA,
         LI,
         MOV,
         J,

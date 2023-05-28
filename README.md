@@ -70,7 +70,7 @@ python3 test.py S
 
 ../bin/compiler ../test.sy -S -o ../test.s 
 riscv32-unknown-linux-gnu-gcc ../test.s sylib-riscv-linux.a -o ../test.exe
-qemu-riscv32.sh ../test.exe > ../test.out
+qemu-riscv32.sh ../test.exe < ../test.in > ../test.out
 ```
 
 成功读取全局变量
@@ -96,3 +96,9 @@ qemu-riscv32.sh ../test.exe > ../test.out
 ../bin/compiler ./testcase/function/89_many_globals.sy -S -o ./output/function/89_many_globals.s（多个函数参数）
 
 ../bin/compiler ./testcase/function/95_float.sy -S -o ./output/function/95_float.s
+
+```
+直接生成汇编
+riscv64-linux-gnu-gcc -S 89.c -o 89.s
+```
+

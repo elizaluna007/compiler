@@ -283,13 +283,13 @@ void frontend::Analyzer::analysisCompUnit(CompUnit *root, ir::Program &program)
                 auto item = result_arr.find(iter.first);
                 if (item != result_arr.end())
                 {
-                    // cout << iter.first << "是全局变量" << endl;
+                    cout << iter.first << "是全局变量" << endl;
                     ir::GlobalVal g(iter.second.operand, item->second);
                     program.globalVal.push_back(g);
                 }
                 else
                 {
-                    // cout << iter.first << "是全局变量" << endl;
+                    cout << iter.first << "是全局变量" << endl;
                     program.globalVal.push_back(iter.second.operand);
                 }
             }
@@ -3043,6 +3043,7 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, ir::Program &program)
         STE ste;
         ste.operand = des;
         symbol_table.scope_stack.back().table.insert({des.name, ste});
+
 #ifdef DEBUG_SEMANTIC
         cout << "add  " << toString(des.type) << " " << des.name << "  in table  " << symbol_table.scope_stack.back().name << endl;
 #endif
@@ -3364,6 +3365,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
 #endif
         ANALYSIS(lorexp, LOrExp, 2);
         Operand op2(lorexp->v, lorexp->t);
+
         if (lorexp->t != Type::Int && lorexp->t != Type::IntLiteral)
         {
             // 现将其与浮点数0做一个等值判断
@@ -3382,10 +3384,20 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, ir::Program &program)
 #ifdef DEBUG_SEMANTIC
             cout << "add f2i" << endl;
 #endif
-            lorexp->t = Type::Int;
-            lorexp->v = id_2;
-            lorexp->is_computable = false;
-            op2 = Operand(lorexp->v, lorexp->t);
+            if (lorexp->t == Type::FloatLiteral && lorexp->v != "0")
+            {
+                lorexp->t = Type::IntLiteral;
+                lorexp->v = "1";
+                lorexp->is_computable = true;
+                op2 = Operand(lorexp->v, lorexp->t);
+            }
+            else
+            {
+                lorexp->t = Type::Int;
+                lorexp->v = id_2;
+                lorexp->is_computable = false;
+                op2 = Operand(lorexp->v, lorexp->t);
+            }
         }
         Instruction *orInst_2 = new Instruction(op1, op2, des, Operator::_or);
         Inst.push_back(orInst_2);

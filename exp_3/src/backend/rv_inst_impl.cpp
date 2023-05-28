@@ -70,34 +70,20 @@ std::string rv::rv_inst::draw() const
 
     case rvOPCODE::SW:
     {
-        if (label.empty())
-            return "\t" + toString(op) + "\t" + toString(rd) + "," + std::to_string(int(imm)) + "(" + toString(rs1) + ")" + "\n";
 
-        // else if (rs1 == rv::rvREG::X0)
-        //     return "\t" + toString(op) + "\t" + toString(rd) + "," + label + "\n"; // 全局变量加载
-        else
-            return "\t" + toString(op) + "\t" + toString(rd) + "," + label + "," + toString(rs1) + "\n"; // 全局变量加载
+        return "\t" + toString(op) + "\t" + toString(rd) + "," + std::to_string(int(imm)) + "(" + toString(rs1) + ")" + "\n";
         break;
     }
 
     case rv::rvOPCODE::FLW:
     {
-        if (label.empty())
-            return "\t" + toString(op) + "\t" + toString(rd) + "," + std::to_string(int(imm)) + "(" + toString(rs1) + ")" + "\n";
-        else if (rs1 == rv::rvREG::X0)
-            return "\t" + toString(op) + "\t" + toString(rd) + "," + label + "\n"; // 全局变量加载
-        else
-            return "\t" + toString(op) + "\t" + toString(rd) + "," + label + "," + toString(rs1) + "\n"; // 全局变量加载
+        return "\t" + toString(op) + "\t" + toString(frd) + "," + std::to_string(int(imm)) + "(" + toString(rs1) + ")" + "\n";
         break;
     }
 
     case rv::rvOPCODE::FSW:
     {
-        if (label.empty())
-            return "\t" + toString(op) + "\t" + toString(frd) + "," + std::to_string(int(imm)) + "(" + toString(frs1) + ")" + "\n";
-        else
-            return "\t" + toString(op) + "\t" + toString(frd) + "," + label + "\n"; // 全局变量加载
-
+        return "\t" + toString(op) + "\t" + toString(frd) + "," + std::to_string(int(imm)) + "(" + toString(rs1) + ")" + "\n";
         break;
     }
 
@@ -114,10 +100,8 @@ std::string rv::rv_inst::draw() const
 
     case rvOPCODE::LA:
     {
-        if (frd != rv::rvFREG::F0)
-            return "\t" + toString(op) + "\t" + toString(frd) + "," + label + "\n";
-        else
-            return "\t" + toString(op) + "\t" + toString(rd) + "," + label + "\n";
+
+        return "\t" + toString(op) + "\t" + toString(rd) + "," + label + "\n";
         break;
     }
 
@@ -154,6 +138,11 @@ std::string rv::rv_inst::draw() const
     case rv::rvOPCODE::CVT_I2F:
     {
         return "\t" + toString(op) + "\t" + toString(frd) + "," + toString(rs1) + "\n";
+        break;
+    }
+    case rv::rvOPCODE::FLOOR:
+    {
+        return "\t" + toString(op) + "\t" + toString(frd) + "," + toString(frs1) + "\n";
         break;
     }
 
@@ -196,6 +185,7 @@ rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, std::string label, rvREG rs1) : op(o
 rv::rv_inst::rv_inst(rvOPCODE op, rvFREG frd, std::string label, rvREG rs1) : op(op), frd(frd), label(label), rs1(rs1){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, rvREG rs2) : op(op), rd(rd), rs1(rs1), rs2(rs2){};
 
+rv::rv_inst::rv_inst(rvOPCODE op, rvFREG frd, rvFREG frs1) : op(op), frs1(frs1){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvFREG frd, uint32_t imm) : op(op), frd(frd), imm(imm){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvFREG frd, rvFREG frs1, rvFREG frs2) : op(op), frd(frd), frs1(frs1), frs2(frs2){};
 rv::rv_inst::rv_inst(rvOPCODE op, rvREG rd, rvFREG frs1, rvFREG frs2) : op(op), rd(rd), frs1(frs1), frs2(frs2){};

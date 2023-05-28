@@ -36,6 +36,7 @@ namespace rv
         rv_inst(rvOPCODE op, rvFREG frd, std::string label);
         rv_inst(rvOPCODE op, rvREG rs1, rvREG rs2, std::string label);
         rv_inst(rvOPCODE op, rvREG rs1, uint32_t imm, rvFREG rs2);
+        rv_inst(rvOPCODE op, rvFREG frd, rvFREG frs1);
 
         // rv_inst(rvOPCODE op, rvREG rd, rvREG rs1, rvREG rs2, uint32_t imm, rvFREG frd, rvFREG frs1, rvFREG frs2, std::string label);
     };

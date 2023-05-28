@@ -45,7 +45,6 @@ def run_compiler(arg1):
                 cmd = ' '.join([compiler_path, testcase_dir + src, step, "-o", output_dir + fname + "." + oftype])
                 if is_windows:
                     cmd = cmd.replace('/','\\')
-                print(cmd)
                 cp = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL)
                 if cp.returncode != 0:
                     record[src] = {"retval": cp.returncode, "err_detail": cp.stderr}

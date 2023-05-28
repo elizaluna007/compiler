@@ -1,0 +1,87 @@
+// float global constants
+const float RADIUS = 5.5, PI = 03.141592653589793, EPS = 0.000001;
+
+// hexadecimal float constant
+const float PI_HEX = 3.141592741012573242, HEX2 = 0.078125;
+
+// float constant evaluation
+const float FACT = -33000.0, EVAL1 = PI * RADIUS * RADIUS, EVAL2 = 2 * PI_HEX * RADIUS, EVAL3 = PI * 2 * RADIUS;
+
+// float constant implicit conversion
+const float CONV1 = 233, CONV2 = 0xfff;
+const int MAX = 1000000000, TWO = 2.9, THREE = 3.2, FIVE = TWO + THREE;
+
+// float -> float function
+float float_abs(float x) {
+  if (x < 0) return -x;
+  return x;
+}
+
+// int -> float function & float/int expression
+float circle_area(int radius) {
+  return (PI * radius * radius + (radius * radius) * PI) / 2;
+}
+
+// float -> float -> int function & float/int expression
+int float_eq(float a, float b) {
+  if (float_abs(a - b) < EPS) {
+    return 1 * 2. / 2;
+  } else {
+    return 0;
+  }
+}
+
+void error() {
+  putch(101);
+  putch(114);
+  putch(114);
+  putch(111);
+  putch(114);
+  putch(10);
+}
+
+void ok() {
+  putch(111);
+  putch(107);
+  putch(10);
+}
+
+void assert(int cond) {
+  if (!cond) {
+    error();
+  } else {
+    ok();
+  }
+}
+
+void assert_not(int cond) {
+  if (cond) {
+    error();
+  } else {
+    ok();
+  }
+}
+
+int main() {
+  float f = 2*16 + 32 - 0x40 - 0.1;
+
+    putfloat(HEX2);
+    putch(10);
+    putfloat(FACT);
+    putch(10);
+
+    float a=0.078125;
+    float b=-33000.0;
+    putfloat(a);
+    putch(10);
+    putfloat(b);
+    putch(10);
+
+  assert_not(float_eq(HEX2, FACT));
+  assert_not(float_eq(EVAL1, EVAL2));
+  assert(float_eq(EVAL2, EVAL3));
+  assert(float_eq(circle_area(RADIUS) /* f->i implicit conversion */,
+                  circle_area(FIVE)));
+  assert_not(float_eq(CONV1, CONV2) /* i->f implicit conversion */);
+  return 0;
+}

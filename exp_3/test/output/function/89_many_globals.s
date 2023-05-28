@@ -94,56 +94,55 @@ global:
 testParam8:
 	addi	sp,sp,-64
 	sw	ra,0(sp)
-	lw	a0,0(sp)
-	addi	a0,a0,-4
-	lw	a1,0(a0)
+	addi	s0,sp,64
+	lw	a1,4(s0)
 	sw	a1,4(sp)
-	lw	a1,0(a0)
+	lw	a1,8(s0)
 	sw	a1,8(sp)
-	lw	a1,0(a0)
+	lw	a1,12(s0)
 	sw	a1,12(sp)
-	lw	a1,0(a0)
+	lw	a1,16(s0)
 	sw	a1,16(sp)
-	lw	a1,0(a0)
+	lw	a1,20(s0)
 	sw	a1,20(sp)
-	lw	a1,0(a0)
+	lw	a1,24(s0)
 	sw	a1,24(sp)
-	lw	a1,0(a0)
+	lw	a1,28(s0)
 	sw	a1,28(sp)
-	lw	a1,0(a0)
+	lw	a1,32(s0)
 	sw	a1,32(sp)
-	lw	t4,32(sp)
-	lw	t5,28(sp)
+	lw	t4,4(sp)
+	lw	t5,8(sp)
 	lw	t3,36(sp)
 	add	t3,t4,t5
 	sw	t3,36(sp)
 	lw	t4,36(sp)
-	lw	t5,24(sp)
+	lw	t5,12(sp)
 	lw	t3,40(sp)
 	add	t3,t4,t5
 	sw	t3,40(sp)
 	lw	t4,40(sp)
-	lw	t5,20(sp)
+	lw	t5,16(sp)
 	lw	t3,44(sp)
 	add	t3,t4,t5
 	sw	t3,44(sp)
 	lw	t4,44(sp)
-	lw	t5,16(sp)
+	lw	t5,20(sp)
 	lw	t3,48(sp)
 	add	t3,t4,t5
 	sw	t3,48(sp)
 	lw	t4,48(sp)
-	lw	t5,12(sp)
+	lw	t5,24(sp)
 	lw	t3,52(sp)
 	add	t3,t4,t5
 	sw	t3,52(sp)
 	lw	t4,52(sp)
-	lw	t5,8(sp)
+	lw	t5,28(sp)
 	lw	t3,56(sp)
 	add	t3,t4,t5
 	sw	t3,56(sp)
 	lw	t4,56(sp)
-	lw	t5,4(sp)
+	lw	t5,32(sp)
 	lw	t3,60(sp)
 	add	t3,t4,t5
 	sw	t3,60(sp)
@@ -156,112 +155,111 @@ testParam8:
 testParam16:
 	addi	sp,sp,-128
 	sw	ra,0(sp)
-	lw	a0,0(sp)
-	addi	a0,a0,-4
-	lw	a1,0(a0)
+	addi	s0,sp,128
+	lw	a1,40(s0)
 	sw	a1,4(sp)
-	lw	a1,0(a0)
+	lw	a1,44(s0)
 	sw	a1,8(sp)
-	lw	a1,0(a0)
+	lw	a1,48(s0)
 	sw	a1,12(sp)
-	lw	a1,0(a0)
+	lw	a1,52(s0)
 	sw	a1,16(sp)
-	lw	a1,0(a0)
+	lw	a1,56(s0)
 	sw	a1,20(sp)
-	lw	a1,0(a0)
+	lw	a1,60(s0)
 	sw	a1,24(sp)
-	lw	a1,0(a0)
+	lw	a1,64(s0)
 	sw	a1,28(sp)
-	lw	a1,0(a0)
+	lw	a1,68(s0)
 	sw	a1,32(sp)
-	lw	a1,0(a0)
+	lw	a1,72(s0)
 	sw	a1,36(sp)
-	lw	a1,0(a0)
+	lw	a1,76(s0)
 	sw	a1,40(sp)
-	lw	a1,0(a0)
+	lw	a1,80(s0)
 	sw	a1,44(sp)
-	lw	a1,0(a0)
+	lw	a1,84(s0)
 	sw	a1,48(sp)
-	lw	a1,0(a0)
+	lw	a1,88(s0)
 	sw	a1,52(sp)
-	lw	a1,0(a0)
+	lw	a1,92(s0)
 	sw	a1,56(sp)
-	lw	a1,0(a0)
+	lw	a1,96(s0)
 	sw	a1,60(sp)
-	lw	a1,0(a0)
+	lw	a1,100(s0)
 	sw	a1,64(sp)
-	lw	t4,64(sp)
-	lw	t5,60(sp)
+	lw	t4,4(sp)
+	lw	t5,8(sp)
 	lw	t3,68(sp)
 	add	t3,t4,t5
 	sw	t3,68(sp)
 	lw	t4,68(sp)
-	lw	t5,56(sp)
+	lw	t5,12(sp)
 	lw	t3,72(sp)
 	add	t3,t4,t5
 	sw	t3,72(sp)
 	lw	t4,72(sp)
-	lw	t5,52(sp)
+	lw	t5,16(sp)
 	lw	t3,76(sp)
 	sub	t3,t4,t5
 	sw	t3,76(sp)
 	lw	t4,76(sp)
-	lw	t5,48(sp)
+	lw	t5,20(sp)
 	lw	t3,80(sp)
 	sub	t3,t4,t5
 	sw	t3,80(sp)
 	lw	t4,80(sp)
-	lw	t5,44(sp)
+	lw	t5,24(sp)
 	lw	t3,84(sp)
 	sub	t3,t4,t5
 	sw	t3,84(sp)
 	lw	t4,84(sp)
-	lw	t5,40(sp)
+	lw	t5,28(sp)
 	lw	t3,88(sp)
 	sub	t3,t4,t5
 	sw	t3,88(sp)
 	lw	t4,88(sp)
-	lw	t5,36(sp)
+	lw	t5,32(sp)
 	lw	t3,92(sp)
 	sub	t3,t4,t5
 	sw	t3,92(sp)
 	lw	t4,92(sp)
-	lw	t5,32(sp)
+	lw	t5,36(sp)
 	lw	t3,96(sp)
 	add	t3,t4,t5
 	sw	t3,96(sp)
 	lw	t4,96(sp)
-	lw	t5,28(sp)
+	lw	t5,40(sp)
 	lw	t3,100(sp)
 	add	t3,t4,t5
 	sw	t3,100(sp)
 	lw	t4,100(sp)
-	lw	t5,24(sp)
+	lw	t5,44(sp)
 	lw	t3,104(sp)
 	add	t3,t4,t5
 	sw	t3,104(sp)
 	lw	t4,104(sp)
-	lw	t5,20(sp)
+	lw	t5,48(sp)
 	lw	t3,108(sp)
 	add	t3,t4,t5
 	sw	t3,108(sp)
 	lw	t4,108(sp)
-	lw	t5,16(sp)
+	lw	t5,52(sp)
 	lw	t3,112(sp)
 	add	t3,t4,t5
 	sw	t3,112(sp)
 	lw	t4,112(sp)
-	lw	t5,12(sp)
+	lw	t5,56(sp)
 	lw	t3,116(sp)
 	add	t3,t4,t5
 	sw	t3,116(sp)
 	lw	t4,116(sp)
-	lw	t5,8(sp)
+	lw	t5,60(sp)
 	lw	t3,120(sp)
 	add	t3,t4,t5
 	sw	t3,120(sp)
 	lw	t4,120(sp)
-	lw	t5,4(sp)
+	lw	t5,64(sp)
 	lw	t3,124(sp)
 	add	t3,t4,t5
 	sw	t3,124(sp)
@@ -274,224 +272,223 @@ testParam16:
 testParam32:
 	addi	sp,sp,-256
 	sw	ra,0(sp)
-	lw	a0,0(sp)
-	addi	a0,a0,-4
-	lw	a1,0(a0)
+	addi	s0,sp,256
+	lw	a1,108(s0)
 	sw	a1,4(sp)
-	lw	a1,0(a0)
+	lw	a1,112(s0)
 	sw	a1,8(sp)
-	lw	a1,0(a0)
+	lw	a1,116(s0)
 	sw	a1,12(sp)
-	lw	a1,0(a0)
+	lw	a1,120(s0)
 	sw	a1,16(sp)
-	lw	a1,0(a0)
+	lw	a1,124(s0)
 	sw	a1,20(sp)
-	lw	a1,0(a0)
+	lw	a1,128(s0)
 	sw	a1,24(sp)
-	lw	a1,0(a0)
+	lw	a1,132(s0)
 	sw	a1,28(sp)
-	lw	a1,0(a0)
+	lw	a1,136(s0)
 	sw	a1,32(sp)
-	lw	a1,0(a0)
+	lw	a1,140(s0)
 	sw	a1,36(sp)
-	lw	a1,0(a0)
+	lw	a1,144(s0)
 	sw	a1,40(sp)
-	lw	a1,0(a0)
+	lw	a1,148(s0)
 	sw	a1,44(sp)
-	lw	a1,0(a0)
+	lw	a1,152(s0)
 	sw	a1,48(sp)
-	lw	a1,0(a0)
+	lw	a1,156(s0)
 	sw	a1,52(sp)
-	lw	a1,0(a0)
+	lw	a1,160(s0)
 	sw	a1,56(sp)
-	lw	a1,0(a0)
+	lw	a1,164(s0)
 	sw	a1,60(sp)
-	lw	a1,0(a0)
+	lw	a1,168(s0)
 	sw	a1,64(sp)
-	lw	a1,0(a0)
+	lw	a1,172(s0)
 	sw	a1,68(sp)
-	lw	a1,0(a0)
+	lw	a1,176(s0)
 	sw	a1,72(sp)
-	lw	a1,0(a0)
+	lw	a1,180(s0)
 	sw	a1,76(sp)
-	lw	a1,0(a0)
+	lw	a1,184(s0)
 	sw	a1,80(sp)
-	lw	a1,0(a0)
+	lw	a1,188(s0)
 	sw	a1,84(sp)
-	lw	a1,0(a0)
+	lw	a1,192(s0)
 	sw	a1,88(sp)
-	lw	a1,0(a0)
+	lw	a1,196(s0)
 	sw	a1,92(sp)
-	lw	a1,0(a0)
+	lw	a1,200(s0)
 	sw	a1,96(sp)
-	lw	a1,0(a0)
+	lw	a1,204(s0)
 	sw	a1,100(sp)
-	lw	a1,0(a0)
+	lw	a1,208(s0)
 	sw	a1,104(sp)
-	lw	a1,0(a0)
+	lw	a1,212(s0)
 	sw	a1,108(sp)
-	lw	a1,0(a0)
+	lw	a1,216(s0)
 	sw	a1,112(sp)
-	lw	a1,0(a0)
+	lw	a1,220(s0)
 	sw	a1,116(sp)
-	lw	a1,0(a0)
+	lw	a1,224(s0)
 	sw	a1,120(sp)
-	lw	a1,0(a0)
+	lw	a1,228(s0)
 	sw	a1,124(sp)
-	lw	a1,0(a0)
+	lw	a1,232(s0)
 	sw	a1,128(sp)
-	lw	t4,128(sp)
-	lw	t5,124(sp)
+	lw	t4,4(sp)
+	lw	t5,8(sp)
 	lw	t3,132(sp)
 	add	t3,t4,t5
 	sw	t3,132(sp)
 	lw	t4,132(sp)
-	lw	t5,120(sp)
+	lw	t5,12(sp)
 	lw	t3,136(sp)
 	add	t3,t4,t5
 	sw	t3,136(sp)
 	lw	t4,136(sp)
-	lw	t5,116(sp)
+	lw	t5,16(sp)
 	lw	t3,140(sp)
 	add	t3,t4,t5
 	sw	t3,140(sp)
 	lw	t4,140(sp)
-	lw	t5,112(sp)
+	lw	t5,20(sp)
 	lw	t3,144(sp)
 	add	t3,t4,t5
 	sw	t3,144(sp)
 	lw	t4,144(sp)
-	lw	t5,108(sp)
+	lw	t5,24(sp)
 	lw	t3,148(sp)
 	add	t3,t4,t5
 	sw	t3,148(sp)
 	lw	t4,148(sp)
-	lw	t5,104(sp)
+	lw	t5,28(sp)
 	lw	t3,152(sp)
 	add	t3,t4,t5
 	sw	t3,152(sp)
 	lw	t4,152(sp)
-	lw	t5,100(sp)
+	lw	t5,32(sp)
 	lw	t3,156(sp)
 	add	t3,t4,t5
 	sw	t3,156(sp)
 	lw	t4,156(sp)
-	lw	t5,96(sp)
+	lw	t5,36(sp)
 	lw	t3,160(sp)
 	add	t3,t4,t5
 	sw	t3,160(sp)
 	lw	t4,160(sp)
-	lw	t5,92(sp)
+	lw	t5,40(sp)
 	lw	t3,164(sp)
 	add	t3,t4,t5
 	sw	t3,164(sp)
 	lw	t4,164(sp)
-	lw	t5,88(sp)
+	lw	t5,44(sp)
 	lw	t3,168(sp)
 	add	t3,t4,t5
 	sw	t3,168(sp)
 	lw	t4,168(sp)
-	lw	t5,84(sp)
+	lw	t5,48(sp)
 	lw	t3,172(sp)
 	add	t3,t4,t5
 	sw	t3,172(sp)
 	lw	t4,172(sp)
-	lw	t5,80(sp)
+	lw	t5,52(sp)
 	lw	t3,176(sp)
 	add	t3,t4,t5
 	sw	t3,176(sp)
 	lw	t4,176(sp)
-	lw	t5,76(sp)
+	lw	t5,56(sp)
 	lw	t3,180(sp)
 	add	t3,t4,t5
 	sw	t3,180(sp)
 	lw	t4,180(sp)
-	lw	t5,72(sp)
+	lw	t5,60(sp)
 	lw	t3,184(sp)
 	add	t3,t4,t5
 	sw	t3,184(sp)
 	lw	t4,184(sp)
-	lw	t5,68(sp)
+	lw	t5,64(sp)
 	lw	t3,188(sp)
 	add	t3,t4,t5
 	sw	t3,188(sp)
 	lw	t4,188(sp)
-	lw	t5,64(sp)
+	lw	t5,68(sp)
 	lw	t3,192(sp)
 	add	t3,t4,t5
 	sw	t3,192(sp)
 	lw	t4,192(sp)
-	lw	t5,60(sp)
+	lw	t5,72(sp)
 	lw	t3,196(sp)
 	add	t3,t4,t5
 	sw	t3,196(sp)
 	lw	t4,196(sp)
-	lw	t5,56(sp)
+	lw	t5,76(sp)
 	lw	t3,200(sp)
 	sub	t3,t4,t5
 	sw	t3,200(sp)
 	lw	t4,200(sp)
-	lw	t5,52(sp)
+	lw	t5,80(sp)
 	lw	t3,204(sp)
 	sub	t3,t4,t5
 	sw	t3,204(sp)
 	lw	t4,204(sp)
-	lw	t5,48(sp)
+	lw	t5,84(sp)
 	lw	t3,208(sp)
 	sub	t3,t4,t5
 	sw	t3,208(sp)
 	lw	t4,208(sp)
-	lw	t5,44(sp)
+	lw	t5,88(sp)
 	lw	t3,212(sp)
 	sub	t3,t4,t5
 	sw	t3,212(sp)
 	lw	t4,212(sp)
-	lw	t5,40(sp)
+	lw	t5,92(sp)
 	lw	t3,216(sp)
 	sub	t3,t4,t5
 	sw	t3,216(sp)
 	lw	t4,216(sp)
-	lw	t5,36(sp)
+	lw	t5,96(sp)
 	lw	t3,220(sp)
 	add	t3,t4,t5
 	sw	t3,220(sp)
 	lw	t4,220(sp)
-	lw	t5,32(sp)
+	lw	t5,100(sp)
 	lw	t3,224(sp)
 	add	t3,t4,t5
 	sw	t3,224(sp)
 	lw	t4,224(sp)
-	lw	t5,28(sp)
+	lw	t5,104(sp)
 	lw	t3,228(sp)
 	add	t3,t4,t5
 	sw	t3,228(sp)
 	lw	t4,228(sp)
-	lw	t5,24(sp)
+	lw	t5,108(sp)
 	lw	t3,232(sp)
 	add	t3,t4,t5
 	sw	t3,232(sp)
 	lw	t4,232(sp)
-	lw	t5,20(sp)
+	lw	t5,112(sp)
 	lw	t3,236(sp)
 	add	t3,t4,t5
 	sw	t3,236(sp)
 	lw	t4,236(sp)
-	lw	t5,16(sp)
+	lw	t5,116(sp)
 	lw	t3,240(sp)
 	add	t3,t4,t5
 	sw	t3,240(sp)
 	lw	t4,240(sp)
-	lw	t5,12(sp)
+	lw	t5,120(sp)
 	lw	t3,244(sp)
 	add	t3,t4,t5
 	sw	t3,244(sp)
 	lw	t4,244(sp)
-	lw	t5,8(sp)
+	lw	t5,124(sp)
 	lw	t3,248(sp)
 	add	t3,t4,t5
 	sw	t3,248(sp)
 	lw	t4,248(sp)
-	lw	t5,4(sp)
+	lw	t5,128(sp)
 	lw	t3,252(sp)
 	add	t3,t4,t5
 	sw	t3,252(sp)
@@ -625,21 +622,29 @@ main:
 	li	t4,1
 	la	t3,a39
 	sw	t4,0(t3)
-	li	a0,1
+	la	a0,a0
+	lw	a0,0(a0)
 	sw	a0,4(sp)
-	li	a0,1
+	la	a0,a1
+	lw	a0,0(a0)
 	sw	a0,8(sp)
-	li	a0,1
+	la	a0,a2
+	lw	a0,0(a0)
 	sw	a0,12(sp)
-	li	a0,1
+	la	a0,a3
+	lw	a0,0(a0)
 	sw	a0,16(sp)
-	li	a0,1
+	la	a0,a4
+	lw	a0,0(a0)
 	sw	a0,20(sp)
-	li	a0,1
+	la	a0,a5
+	lw	a0,0(a0)
 	sw	a0,24(sp)
-	li	a0,1
+	la	a0,a6
+	lw	a0,0(a0)
 	sw	a0,28(sp)
-	li	a0,1
+	la	a0,a7
+	lw	a0,0(a0)
 	sw	a0,32(sp)
 	call	testParam8
 	sw	a0,36(sp)
@@ -649,37 +654,53 @@ main:
 	la	a0,a0
 	lw	a0,0(a0)
 	call	putint
-	li	a0,1
+	la	a0,a32
+	lw	a0,0(a0)
 	sw	a0,40(sp)
-	li	a0,1
+	la	a0,a33
+	lw	a0,0(a0)
 	sw	a0,44(sp)
-	li	a0,1
+	la	a0,a34
+	lw	a0,0(a0)
 	sw	a0,48(sp)
-	li	a0,1
+	la	a0,a35
+	lw	a0,0(a0)
 	sw	a0,52(sp)
-	li	a0,1
+	la	a0,a36
+	lw	a0,0(a0)
 	sw	a0,56(sp)
-	li	a0,1
+	la	a0,a37
+	lw	a0,0(a0)
 	sw	a0,60(sp)
-	li	a0,1
+	la	a0,a38
+	lw	a0,0(a0)
 	sw	a0,64(sp)
-	li	a0,1
+	la	a0,a39
+	lw	a0,0(a0)
 	sw	a0,68(sp)
-	li	a0,1
+	la	a0,a8
+	lw	a0,0(a0)
 	sw	a0,72(sp)
-	li	a0,1
+	la	a0,a9
+	lw	a0,0(a0)
 	sw	a0,76(sp)
-	li	a0,1
+	la	a0,a10
+	lw	a0,0(a0)
 	sw	a0,80(sp)
-	li	a0,1
+	la	a0,a11
+	lw	a0,0(a0)
 	sw	a0,84(sp)
-	li	a0,1
+	la	a0,a12
+	lw	a0,0(a0)
 	sw	a0,88(sp)
-	li	a0,1
+	la	a0,a13
+	lw	a0,0(a0)
 	sw	a0,92(sp)
-	li	a0,1
+	la	a0,a14
+	lw	a0,0(a0)
 	sw	a0,96(sp)
-	li	a0,1
+	la	a0,a15
+	lw	a0,0(a0)
 	sw	a0,100(sp)
 	call	testParam16
 	sw	a0,104(sp)
@@ -689,69 +710,101 @@ main:
 	la	a0,a0
 	lw	a0,0(a0)
 	call	putint
-	li	a0,1
+	la	a0,a0
+	lw	a0,0(a0)
 	sw	a0,108(sp)
-	li	a0,1
+	la	a0,a1
+	lw	a0,0(a0)
 	sw	a0,112(sp)
-	li	a0,1
+	la	a0,a2
+	lw	a0,0(a0)
 	sw	a0,116(sp)
-	li	a0,1
+	la	a0,a3
+	lw	a0,0(a0)
 	sw	a0,120(sp)
-	li	a0,1
+	la	a0,a4
+	lw	a0,0(a0)
 	sw	a0,124(sp)
-	li	a0,1
+	la	a0,a5
+	lw	a0,0(a0)
 	sw	a0,128(sp)
-	li	a0,1
+	la	a0,a6
+	lw	a0,0(a0)
 	sw	a0,132(sp)
-	li	a0,1
+	la	a0,a7
+	lw	a0,0(a0)
 	sw	a0,136(sp)
-	li	a0,1
+	la	a0,a8
+	lw	a0,0(a0)
 	sw	a0,140(sp)
-	li	a0,1
+	la	a0,a9
+	lw	a0,0(a0)
 	sw	a0,144(sp)
-	li	a0,1
+	la	a0,a10
+	lw	a0,0(a0)
 	sw	a0,148(sp)
-	li	a0,1
+	la	a0,a11
+	lw	a0,0(a0)
 	sw	a0,152(sp)
-	li	a0,1
+	la	a0,a12
+	lw	a0,0(a0)
 	sw	a0,156(sp)
-	li	a0,1
+	la	a0,a13
+	lw	a0,0(a0)
 	sw	a0,160(sp)
-	li	a0,1
+	la	a0,a14
+	lw	a0,0(a0)
 	sw	a0,164(sp)
-	li	a0,1
+	la	a0,a15
+	lw	a0,0(a0)
 	sw	a0,168(sp)
-	li	a0,1
+	la	a0,a16
+	lw	a0,0(a0)
 	sw	a0,172(sp)
-	li	a0,1
+	la	a0,a17
+	lw	a0,0(a0)
 	sw	a0,176(sp)
-	li	a0,1
+	la	a0,a18
+	lw	a0,0(a0)
 	sw	a0,180(sp)
-	li	a0,1
+	la	a0,a19
+	lw	a0,0(a0)
 	sw	a0,184(sp)
-	li	a0,1
+	la	a0,a20
+	lw	a0,0(a0)
 	sw	a0,188(sp)
-	li	a0,1
+	la	a0,a21
+	lw	a0,0(a0)
 	sw	a0,192(sp)
-	li	a0,1
+	la	a0,a22
+	lw	a0,0(a0)
 	sw	a0,196(sp)
-	li	a0,1
+	la	a0,a23
+	lw	a0,0(a0)
 	sw	a0,200(sp)
-	li	a0,1
+	la	a0,a24
+	lw	a0,0(a0)
 	sw	a0,204(sp)
-	li	a0,1
+	la	a0,a25
+	lw	a0,0(a0)
 	sw	a0,208(sp)
-	li	a0,1
+	la	a0,a26
+	lw	a0,0(a0)
 	sw	a0,212(sp)
-	li	a0,1
+	la	a0,a27
+	lw	a0,0(a0)
 	sw	a0,216(sp)
-	li	a0,1
+	la	a0,a28
+	lw	a0,0(a0)
 	sw	a0,220(sp)
-	li	a0,1
+	la	a0,a29
+	lw	a0,0(a0)
 	sw	a0,224(sp)
-	li	a0,1
+	la	a0,a30
+	lw	a0,0(a0)
 	sw	a0,228(sp)
-	li	a0,1
+	la	a0,a31
+	lw	a0,0(a0)
 	sw	a0,232(sp)
 	call	testParam32
 	sw	a0,236(sp)
